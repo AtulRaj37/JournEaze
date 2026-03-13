@@ -1,0 +1,7 @@
+# Ignore local build artifacts — keep context clean for Docker
+node_modules
+apps/api/dist
+apps/web/.next
+apps/web/out
+*.log
+.git
