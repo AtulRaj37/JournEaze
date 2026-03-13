@@ -13,6 +13,8 @@ out/
 .env.local
 .env.*.local
 .env.production
+# keep .env.example so others know what vars are needed
+
 
 # ── Logs ──
 *.log
