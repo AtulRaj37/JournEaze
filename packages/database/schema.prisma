@@ -1,0 +1,357 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// -----------------------------------------------------------------------------
+// USER MODELS
+// -----------------------------------------------------------------------------
+
+enum SystemRole {
+  USER
+  ADMIN
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  passwordHash  String?
+  role          SystemRole @default(USER)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  tripsCreated  Trip[]    @relation("TripCreator")
+  tripMembers   TripMember[]
+  expensesPaid  Expense[] @relation("ExpensePayer")
+  messages      Message[]
+  votes         Vote[]
+  notifications Notification[]
+  activityLogs  ActivityLog[]
+  settlementsPaid     Settlement[] @relation("SettlementPayer")
+  settlementsReceived Settlement[] @relation("SettlementReceiver")
+  documentsUploaded   Document[]   @relation("DocumentUploader")
+  pollsCreated        Poll[]       @relation("PollCreator")
+  notes               Note[]
+}
+
+// -----------------------------------------------------------------------------
+// TRIP & COLLABORATION MODELS
+// -----------------------------------------------------------------------------
+
+enum TripStatus {
+  PLANNING
+  UPCOMING
+  ONGOING
+  COMPLETED
+}
+
+enum TravelType {
+  SOLO
+  COUPLE
+  FRIENDS
+  FAMILY
+}
+
+model Trip {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  destination String
+  destinationCity    String?
+  destinationCountry String?
+  latitude    Float?
+  longitude   Float?
+  startDate   DateTime
+  endDate     DateTime
+  status      TripStatus @default(PLANNING)
+  travelType  TravelType?
+  budget      Float?
+  currency    String?    @default("INR")
+  coverImage  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  creatorId   String
+  creator     User     @relation("TripCreator", fields: [creatorId], references: [id])
+  
+  members     TripMember[]
+  days        ItineraryDay[]
+  expenses    Expense[]
+  settlements Settlement[]
+  messages    Message[]
+  documents   Document[]
+  polls       Poll[]
+  activityLogs ActivityLog[]
+  notes       Note[]
+
+  @@index([creatorId])
+}
+
+enum MemberRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+model TripMember {
+  id        String     @id @default(uuid())
+  tripId    String
+  userId    String
+  role      MemberRole @default(EDITOR)
+  joinedAt  DateTime   @default(now())
+
+  // Relations
+  trip      Trip       @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([tripId, userId]) // A user can only join a trip once
+  @@index([tripId])
+  @@index([userId])
+}
+
+// -----------------------------------------------------------------------------
+// ITINERARY MODELS
+// -----------------------------------------------------------------------------
+
+model ItineraryDay {
+  id        String   @id @default(uuid())
+  tripId    String
+  date      DateTime
+  dayNumber Int
+
+  // Relations
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  activities ItineraryActivity[]
+
+  @@unique([tripId, dayNumber])
+  @@index([tripId])
+}
+
+model ItineraryActivity {
+  id           String   @id @default(uuid())
+  dayId        String
+  title        String
+  description  String?
+  startTime    DateTime?
+  endTime      DateTime?
+  latitude     Float?
+  longitude    Float?
+  locationName String?
+  costEstimate Float?
+  orderIndex   Int      @default(0) // For drag & drop sorting
+  createdById  String?
+
+  // Relations
+  day          ItineraryDay @relation(fields: [dayId], references: [id], onDelete: Cascade)
+
+  @@index([dayId])
+}
+
+// -----------------------------------------------------------------------------
+// EXPENSE & LEDGER MODELS
+// -----------------------------------------------------------------------------
+
+model Expense {
+  id          String   @id @default(uuid())
+  tripId      String
+  payerId     String
+  amount      Float
+  description String
+  category    String?  // e.g. "Food", "Transport", "Accommodation"
+  date        DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  // Relations
+  trip        Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  payer       User     @relation("ExpensePayer", fields: [payerId], references: [id])
+  splits      ExpenseSplit[]
+
+  @@index([tripId])
+  @@index([payerId])
+}
+
+model ExpenseSplit {
+  id        String   @id @default(uuid())
+  expenseId String
+  userId    String
+  amount    Float
+
+  // Relations
+  expense   Expense  @relation(fields: [expenseId], references: [id], onDelete: Cascade)
+  
+  @@unique([expenseId, userId])
+  @@index([expenseId])
+  @@index([userId])
+}
+
+model Settlement {
+  id          String   @id @default(uuid())
+  tripId      String
+  payerId     String
+  receiverId  String
+  amount      Float
+  status      String   @default("PENDING") // e.g. "PENDING", "COMPLETED"
+  date        DateTime @default(now())
+
+  // Relations
+  trip        Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  payer       User     @relation("SettlementPayer", fields: [payerId], references: [id])
+  receiver    User     @relation("SettlementReceiver", fields: [receiverId], references: [id])
+
+  @@index([tripId])
+  @@index([payerId])
+  @@index([receiverId])
+}
+
+// -----------------------------------------------------------------------------
+// COMMUNICATION & VOTING
+// -----------------------------------------------------------------------------
+
+model Message {
+  id        String   @id @default(uuid())
+  tripId    String
+  userId    String
+  content   String
+  createdAt DateTime @default(now())
+
+  // Relations
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([tripId])
+  @@index([userId])
+}
+
+model Poll {
+  id          String   @id @default(uuid())
+  tripId      String
+  createdById String
+  question    String
+  createdAt   DateTime @default(now())
+  endsAt      DateTime?
+
+  // Relations
+  trip        Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  createdBy   User     @relation("PollCreator", fields: [createdById], references: [id])
+  options     PollOption[]
+  votes       Vote[]
+
+  @@index([tripId])
+  @@index([createdById])
+}
+
+model PollOption {
+  id        String   @id @default(uuid())
+  pollId    String
+  text      String
+
+  // Relations
+  poll      Poll     @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  votes     Vote[]
+
+  @@index([pollId])
+}
+
+model Vote {
+  id        String   @id @default(uuid())
+  pollId    String
+  optionId  String
+  userId    String
+
+  // Relations
+  poll      Poll       @relation(fields: [pollId], references: [id], onDelete: Cascade)
+  option    PollOption @relation(fields: [optionId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id])
+
+  @@unique([pollId, userId])
+  @@index([pollId])
+  @@index([optionId])
+  @@index([userId])
+}
+
+// -----------------------------------------------------------------------------
+// DOCUMENTS (KNOWLEDGE VAULT)
+// -----------------------------------------------------------------------------
+
+model Document {
+  id          String   @id @default(uuid())
+  tripId      String
+  uploadedById String
+  title       String
+  url         String   // S3 or Cloudinary URL
+  type        String   // "ticket", "receipt", "note"
+  createdAt   DateTime @default(now())
+
+  // Relations
+  trip        Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  uploadedBy  User     @relation("DocumentUploader", fields: [uploadedById], references: [id])
+
+  @@index([tripId])
+  @@index([uploadedById])
+}
+
+// -----------------------------------------------------------------------------
+// LOGGING & NOTIFICATIONS
+// -----------------------------------------------------------------------------
+
+model ActivityLog {
+  id          String   @id @default(uuid())
+  tripId      String?
+  userId      String
+  action      String   // e.g. "CREATED_TRIP", "ADDED_EXPENSE", "DELETED_ITINERARY"
+  details     String?  // JSON string containing relevant changes
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trip        Trip?    @relation(fields: [tripId], references: [id], onDelete: SetNull)
+
+  @@index([tripId])
+  @@index([userId])
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  body        String
+  isRead      Boolean  @default(false)
+  type        String   // e.g. "REMINDER", "EXPENSE", "INVITE"
+  link        String?  // URL to navigate to when clicked
+  createdAt   DateTime @default(now())
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// -----------------------------------------------------------------------------
+// NOTES (Collaborative Trip Notes)
+// -----------------------------------------------------------------------------
+
+model Note {
+  id        String   @id @default(uuid())
+  tripId    String
+  userId    String
+  content   String
+  fileUrl   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  trip      Trip     @relation(fields: [tripId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([tripId])
+  @@index([userId])
+}

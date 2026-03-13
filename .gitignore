@@ -1,0 +1,44 @@
+# ── Dependencies ──
+node_modules/
+.pnpm-store/
+
+# ── Build outputs ──
+dist/
+build/
+.next/
+out/
+
+# ── Environment files (never commit secrets) ──
+.env
+.env.local
+.env.*.local
+.env.production
+
+# ── Logs ──
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# ── OS files ──
+.DS_Store
+Thumbs.db
+nul
+nul.*
+
+# ── Editor ──
+.vscode/settings.json
+.idea/
+
+# ── Prisma ──
+apps/api/prisma/migrations/dev.db
+apps/api/prisma/*.db
+
+# ── Uploads ──
+apps/api/uploads/
+
+# ── Next.js cache ──
+apps/web/.next/
+apps/web/out/
+
+# ── TypeScript incremental cache ──
+*.tsbuildinfo

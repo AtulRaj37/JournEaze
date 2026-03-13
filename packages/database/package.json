@@ -1,0 +1,12 @@
+{
+  "name": "@journeaze/database",
+  "version": "1.0.0",
+  "main": "generated/client/index.js",
+  "types": "generated/client/index.d.ts",
+  "dependencies": {
+    "@prisma/client": "^5.22.0"
+  },
+  "devDependencies": {
+    "prisma": "^5.22.0"
+  }
+}
