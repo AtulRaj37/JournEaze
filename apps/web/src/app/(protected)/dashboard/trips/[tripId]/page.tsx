@@ -224,6 +224,25 @@ export default function TripDetailsPage() {
         } catch (e) { console.error(e); }
     };
 
+    const handleUpdateNote = async (noteId: string) => {
+        if (!editNoteContent.trim()) return;
+        setIsUpdatingNote(true);
+        try {
+            const res = await fetch(`${apiUrl}/notes/${noteId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+                body: JSON.stringify({ content: editNoteContent }),
+            });
+            if (res.ok) {
+                setNotes(prev => prev.map(n => n.id === noteId ? { ...n, content: editNoteContent } : n));
+                setEditingNoteId(null);
+                setEditNoteContent("");
+            }
+        } catch (e) { console.error(e); }
+        finally { setIsUpdatingNote(false); }
+    };
+
+
     // ─── Expense Handler ────────────────────────────────────────────
     const handleAddExpense = async (e: React.FormEvent) => {
         e.preventDefault();
