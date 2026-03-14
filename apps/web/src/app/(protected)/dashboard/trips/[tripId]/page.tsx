@@ -51,7 +51,6 @@ export default function TripDetailsPage() {
 
     // Destination Overview
     const [overview, setOverview] = useState<any>(null);
-    const [isLoadingOverview, setIsLoadingOverview] = useState(false);
 
     // Notes State
     const [notes, setNotes] = useState<any[]>([]);
@@ -112,29 +111,25 @@ export default function TripDetailsPage() {
 
     useEffect(() => { if (tripId) fetchTripDetails(); }, [tripId, fetchTripDetails]);
 
-    // Fetch AI destination overview
-    useEffect(() => {
-        if (!trip?.destination || overview) return;
-        setIsLoadingOverview(true);
-        fetch(`${apiUrl}/ai/destination-overview?destination=${encodeURIComponent(trip.destination)}`, {
-            headers: { Authorization: `Bearer ${getToken()}` }
-        })
-        .then(r => r.ok ? r.json() : null)
-        .then(data => { if (data) setOverview(data); })
-        .catch(() => {})
-        .finally(() => setIsLoadingOverview(false));
-    }, [trip?.destination, apiUrl, overview]);
+    const [aiInsightsLoaded, setAiInsightsLoaded] = useState(false);
+    const [isLoadingInsights, setIsLoadingInsights] = useState(false);
 
-    // Fetch destination highlights (places, foods, culture)
-    useEffect(() => {
-        if (!trip?.destination || highlights) return;
-        fetch(`${apiUrl}/ai/destination-highlights?destination=${encodeURIComponent(trip.destinationCity || trip.destination)}`, {
-            headers: { Authorization: `Bearer ${getToken()}` }
-        })
-        .then(r => r.ok ? r.json() : null)
-        .then(data => { if (data) setHighlights(data); })
-        .catch(() => {});
-    }, [trip?.destination, apiUrl, highlights]);
+    const fetchAiInsights = async () => {
+        if (!trip?.destination || aiInsightsLoaded) return;
+        setIsLoadingInsights(true);
+        try {
+            const dest = encodeURIComponent(trip.destination);
+            const headers = { Authorization: `Bearer ${getToken()}` };
+            const [overviewRes, highlightsRes] = await Promise.all([
+                fetch(`${apiUrl}/ai/destination-overview?destination=${dest}`, { headers }),
+                fetch(`${apiUrl}/ai/destination-highlights?destination=${encodeURIComponent(trip.destinationCity || trip.destination)}`, { headers }),
+            ]);
+            if (overviewRes.ok) setOverview(await overviewRes.json());
+            if (highlightsRes.ok) setHighlights(await highlightsRes.json());
+            setAiInsightsLoaded(true);
+        } catch (e) { console.error(e); }
+        finally { setIsLoadingInsights(false); }
+    };
 
     // ─── AI Handler ─────────────────────────────────────────────────
     const handleGenerateAi = async (type: 'itinerary' | 'packing-list' | 'travel-tips') => {
@@ -463,10 +458,37 @@ export default function TripDetailsPage() {
                                             </button>
                                         </div>
 
-                                        {isLoadingOverview ? (
-                                            <div className="flex items-center justify-center py-12">
-                                                <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
-                                                <span className="ml-2 text-zinc-500">Loading destination info...</span>
+                                        {isLoadingInsights ? (
+                                            <div className="flex flex-col items-center justify-center py-16 gap-4">
+                                                <div className="relative">
+                                                    <div className="w-14 h-14 rounded-full bg-orange-500/10 flex items-center justify-center">
+                                                        <Loader2 className="w-7 h-7 animate-spin text-orange-400" />
+                                                    </div>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-white font-semibold">Generating AI Insights</p>
+                                                    <p className="text-zinc-500 text-sm mt-1">Fetching destination data for {trip.destination}…</p>
+                                                </div>
+                                            </div>
+                                        ) : !aiInsightsLoaded ? (
+                                            <div className="flex flex-col items-center justify-center py-16 gap-5">
+                                                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500/20 to-amber-500/10 border border-orange-500/20 flex items-center justify-center">
+                                                    <Sparkles className="w-8 h-8 text-orange-400" />
+                                                </div>
+                                                <div className="text-center max-w-sm">
+                                                    <h3 className="text-white font-bold text-lg mb-2">AI Destination Insights</h3>
+                                                    <p className="text-zinc-400 text-sm leading-relaxed">
+                                                        Get AI-powered overview, history, top attractions, best time to visit, local foods, and cultural highlights for <span className="text-orange-400 font-medium">{trip.destination}</span>.
+                                                    </p>
+                                                </div>
+                                                <button
+                                                    onClick={fetchAiInsights}
+                                                    className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 hover:scale-105"
+                                                >
+                                                    <Sparkles className="w-4 h-4" />
+                                                    Generate AI Insights
+                                                </button>
+                                                <p className="text-zinc-600 text-xs">Results are cached — only calls AI once per destination</p>
                                             </div>
                                         ) : overviewTab === "overview" ? (
                                             <div className="space-y-4">

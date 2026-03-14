@@ -282,9 +282,23 @@ exports.Prisma.NoteScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.AiDestinationCacheScalarFieldEnum = {
+  id: 'id',
+  destination: 'destination',
+  overview: 'overview',
+  highlights: 'highlights',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -295,6 +309,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.SystemRole = exports.$Enums.SystemRole = {
   USER: 'USER',
@@ -337,7 +357,8 @@ exports.Prisma.ModelName = {
   Document: 'Document',
   ActivityLog: 'ActivityLog',
   Notification: 'Notification',
-  Note: 'Note'
+  Note: 'Note',
+  AiDestinationCache: 'AiDestinationCache'
 };
 
 /**

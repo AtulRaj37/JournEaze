@@ -355,3 +355,17 @@ model Note {
   @@index([tripId])
   @@index([userId])
 }
+
+// -----------------------------------------------------------------------------
+// AI DESTINATION CACHE — persists Gemini results across restarts
+// One row per unique destination; shared across all users
+// -----------------------------------------------------------------------------
+
+model AiDestinationCache {
+  id          String   @id @default(cuid())
+  destination String   @unique // normalised lowercase key
+  overview    Json? // result of generateDestinationOverview
+  highlights  Json? // result of generateDestinationHighlights
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
