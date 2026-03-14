@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "main": "generated/client/index.js",
   "types": "generated/client/index.d.ts",
-  "dependencies": {
-    "@prisma/client": "^5.22.0"
+  "scripts": {
+    "migrate:deploy": "prisma migrate deploy"
   },
-  "devDependencies": {
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
     "prisma": "^5.22.0"
   }
 }

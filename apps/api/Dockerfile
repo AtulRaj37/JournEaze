@@ -56,6 +56,6 @@ COPY --from=builder /app/packages/database/migrations ./packages/database/migrat
 # Expose Port and Run
 EXPOSE 3000
 ENV NODE_ENV=production
-WORKDIR /app/apps/api
-# Run DB migrations then start the server
-CMD ["sh", "-c", "cd /app/packages/database && npx prisma migrate deploy && cd /app/apps/api && node dist/main.js"]
+WORKDIR /app
+# Run DB migrations via the workspace package script (uses installed prisma@5.22.0, no npx download)
+CMD ["sh", "-c", "pnpm --filter @journeaze/database run migrate:deploy && node /app/apps/api/dist/main.js"]
