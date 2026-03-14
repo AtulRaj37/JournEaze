@@ -50,8 +50,12 @@ COPY --from=builder /app/packages/database/generated ./packages/database/generat
 # Install Production Dependencies only
 RUN pnpm install -r --prod
 
+# Copy prisma migration files for deploy-time migration
+COPY --from=builder /app/packages/database/migrations ./packages/database/migrations
+
 # Expose Port and Run
 EXPOSE 3000
 ENV NODE_ENV=production
 WORKDIR /app/apps/api
-CMD ["node", "dist/main.js"]
+# Run DB migrations then start the server
+CMD ["sh", "-c", "cd /app/packages/database && npx prisma migrate deploy && cd /app/apps/api && node dist/main.js"]
