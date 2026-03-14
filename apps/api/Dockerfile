@@ -2,7 +2,10 @@
 FROM node:20-alpine AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+# Install OpenSSL so Prisma can detect the correct binary (openssl-3.0.x on Alpine)
+RUN apk add --no-cache openssl
 RUN corepack enable
+
 
 # ---------- Build Stage ----------
 FROM base AS builder
