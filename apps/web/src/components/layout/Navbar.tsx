@@ -85,16 +85,18 @@ export default function Navbar() {
           })}
 
           {/* New Trip CTA */}
-          <motion.button
-            whileHover={{ scale: 1.04, boxShadow: "0 0 22px rgba(255,95,0,0.5)" }}
-            whileTap={{ scale: 0.97 }}
-            onClick={() => router.push("/dashboard")}
-            className="ml-2 flex items-center gap-1.5 px-5 py-2 rounded-xl text-sm font-semibold text-white"
-            style={{ background: "linear-gradient(135deg,#ff5f00,#ff9b3d)" }}
-          >
-            <Plus className="w-3.5 h-3.5" />
-            New Trip
-          </motion.button>
+          {pathname !== "/dashboard" && (
+            <motion.button
+              whileHover={{ scale: 1.04, boxShadow: "0 0 22px rgba(255,95,0,0.5)" }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => router.push("/dashboard")}
+              className="ml-2 flex items-center gap-1.5 px-5 py-2 rounded-xl text-sm font-semibold text-white"
+              style={{ background: "linear-gradient(135deg,#ff5f00,#ff9b3d)" }}
+            >
+              <Plus className="w-3.5 h-3.5" />
+              New Trip
+            </motion.button>
+          )}
         </nav>
 
         {/* ─── Right actions ─── */}

@@ -9,7 +9,9 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Loader2, Plus, MapPin, Calendar, Users, User, Heart, Sparkles } from "lucide-react";
+import { Loader2, Plus, MapPin, Calendar, Users, User, Heart, Sparkles, MoreVertical, Edit2, Trash2, CheckCircle2 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import dynamic from "next/dynamic";
 
 const ParticleBackground = dynamic(() => import("@/components/ui/ParticleBackground"), { ssr: false });
@@ -63,6 +65,10 @@ export default function DashboardPage() {
     const [currency] = useState("INR");
     const [coverImage, setCoverImage] = useState("");
     const [isFetchingImage, setIsFetchingImage] = useState(false);
+
+    // Edit/Delete states
+    const [editingTripId, setEditingTripId] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
     // Autocomplete states
     const [suggestions, setSuggestions] = useState<any[]>([]);
@@ -205,22 +211,71 @@ export default function DashboardPage() {
 
             if (!res.ok) {
                 const errorData = await res.json().catch(() => ({}));
-                throw new Error(errorData.message || "Failed to create trip");
+                throw new Error(errorData.message || (editingTripId ? "Failed to update trip" : "Failed to create trip"));
             }
             
             await fetchTrips();
             setIsDialogOpen(false);
-            // Reset form
-            setTitle(""); setDestination(""); setDestinationCity(""); setDestinationCountry("");
-            setLatitude(null); setLongitude(null); setStartDate(""); setEndDate("");
-            setTravelType(""); setBudget(undefined); setCoverImage("");
-
+            resetForm();
         } catch (err: any) {
             setError(err.message);
         } finally {
             setIsCreating(false);
         }
     };
+
+    const resetForm = () => {
+        setTitle(""); setDestination(""); setDestinationCity(""); setDestinationCountry("");
+        setLatitude(null); setLongitude(null); setStartDate(""); setEndDate("");
+        setTravelType(""); setBudget(undefined); setCoverImage("");
+        setEditingTripId(null);
+    };
+
+    const handleEditClick = (trip: any) => {
+        setTitle(trip.title); setDestination(trip.destination); setDestinationCity(trip.destinationCity || "");
+        setDestinationCountry(trip.destinationCountry || ""); setLatitude(trip.latitude || null);
+        setLongitude(trip.longitude || null); setStartDate(trip.startDate.split('T')[0]);
+        setEndDate(trip.endDate.split('T')[0]); setTravelType(trip.travelType || "");
+        setBudget(trip.budget || undefined); setCoverImage(trip.coverImage || "");
+        setEditingTripId(trip.id);
+        setIsDialogOpen(true);
+    };
+
+    const handleDeleteClick = async (tripId: string) => {
+        if (!confirm("Are you sure you want to delete this trip? This action cannot be undone.")) return;
+        setIsDeleting(tripId);
+        try {
+            const res = await fetch(`${apiUrl}/trips/${tripId}`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${getToken()}` },
+            });
+            if (res.ok) await fetchTrips();
+            else alert("Failed to delete trip");
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsDeleting(null);
+        }
+    };
+
+    const handleCompleteJourney = async (tripId: string) => {
+        if (!confirm("Mark this journey as completed? It will be moved to your past trips.")) return;
+        try {
+            const res = await fetch(`${apiUrl}/trips/${tripId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+                body: JSON.stringify({ status: "COMPLETED" }),
+            });
+            if (res.ok) await fetchTrips();
+            else alert("Failed to complete journey");
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+    // Filter trips
+    const upcomingTrips = trips.filter(t => t.status !== "COMPLETED");
+    const completedTrips = trips.filter(t => t.status === "COMPLETED");
 
     return (
         <motion.div
@@ -275,9 +330,9 @@ export default function DashboardPage() {
                         </DialogTrigger>
                         <DialogContent className="sm:max-w-[520px] bg-zinc-900 border-zinc-800 text-white rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
                             <DialogHeader>
-                                <DialogTitle className="text-xl">Plan a New Journey</DialogTitle>
+                                <DialogTitle className="text-xl">{editingTripId ? "Edit Journey" : "Plan a New Journey"}</DialogTitle>
                                 <DialogDescription className="text-zinc-400">
-                                    Set up the foundation for your next great adventure.
+                                    {editingTripId ? "Update the details of your expedition." : "Set up the foundation for your next great adventure."}
                                 </DialogDescription>
                             </DialogHeader>
                             <form onSubmit={handleCreateTrip} className="space-y-5 pt-4">
@@ -407,7 +462,7 @@ export default function DashboardPage() {
                                 <DialogFooter className="pt-4">
                                     <Button type="submit" disabled={isCreating || isFetchingImage} className="w-full bg-white text-black hover:bg-zinc-200 h-12 rounded-xl font-semibold text-base">
                                         {(isCreating || isFetchingImage) ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                                        {isCreating ? "Creating..." : isFetchingImage ? "Preparing Destination..." : "Blast Off 🚀"}
+                                        {isCreating ? (editingTripId ? "Saving..." : "Creating...") : isFetchingImage ? "Preparing Destination..." : (editingTripId ? "Save Changes" : "Blast Off 🚀")}
                                     </Button>
                                 </DialogFooter>
                             </form>
@@ -419,67 +474,127 @@ export default function DashboardPage() {
                     <div className="flex justify-center py-20">
                         <Loader2 className="h-8 w-8 animate-spin text-zinc-500" />
                     </div>
-                ) : trips.length === 0 ? (
-                    <div className="text-center py-20 border border-zinc-800 border-dashed rounded-2xl bg-zinc-900/20">
-                        <h3 className="text-xl font-medium text-white mb-2">No expeditions yet</h3>
-                        <p className="text-zinc-400 mb-6">Create your first trip to start collaborating.</p>
-                        <Button onClick={() => setIsDialogOpen(true)} variant="outline" className="border-zinc-700 hover:bg-zinc-800">
-                            Create Trip
-                        </Button>
-                    </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {trips.map((trip, idx) => (
-                            <motion.div
-                                key={trip.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: idx * 0.1 }}
-                            >
-                                <Link href={`/dashboard/trips/${trip.id}`}>
-                                    <Card className="group h-full bg-zinc-900/50 hover:bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-all cursor-pointer text-white overflow-hidden shadow-lg hover:shadow-xl hover:-translate-y-1">
-                                        <div className="h-44 relative overflow-hidden">
-                                            {trip.coverImage ? (
-                                                <div 
-                                                    className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
-                                                    style={{ backgroundImage: `url(${trip.coverImage})` }}
-                                                ></div>
-                                            ) : (
-                                                <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-zinc-800 to-zinc-950"></div>
-                                            )}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/30 to-transparent"></div>
-                                            {trip.travelType && (
-                                                <span className="absolute top-3 right-3 px-3 py-1 bg-black/60 backdrop-blur-sm text-xs rounded-full text-zinc-200 border border-zinc-700/50 font-medium">
-                                                    {trip.travelType}
-                                                </span>
-                                            )}
-                                            <div className="absolute bottom-3 left-4 right-4">
-                                                <h3 className="text-lg font-bold text-white drop-shadow-lg truncate">{trip.title}</h3>
-                                            </div>
-                                        </div>
-                                        <CardHeader className="pt-3 pb-4">
-                                            <div className="flex flex-col gap-1.5">
-                                                <div className="flex items-center text-sm text-zinc-400">
-                                                    <MapPin className="w-3.5 h-3.5 mr-2 text-blue-400 flex-shrink-0" />
-                                                    <span className="truncate">{trip.destinationCity || trip.destination}</span>
-                                                </div>
-                                                <div className="flex items-center text-sm text-zinc-400">
-                                                    <Calendar className="w-3.5 h-3.5 mr-2 text-green-400 flex-shrink-0" />
-                                                    {formatDateRange(trip.startDate, trip.endDate)}
-                                                </div>
-                                                <div className="flex items-center text-sm text-zinc-400">
-                                                    <Users className="w-3.5 h-3.5 mr-2 text-purple-400 flex-shrink-0" />
-                                                    {trip._count?.members || trip.members?.length || 1} Explorer{(trip._count?.members || trip.members?.length || 1) > 1 ? "s" : ""}
-                                                </div>
-                                            </div>
-                                        </CardHeader>
-                                    </Card>
-                                </Link>
-                            </motion.div>
-                        ))}
-                    </div>
+                    <Tabs defaultValue="upcoming" className="w-full">
+                        <TabsList className="bg-zinc-900/50 border border-zinc-800/60 p-1 mb-8">
+                            <TabsTrigger value="upcoming" className="data-[state=active]:bg-zinc-800 data-[state=active]:text-white">Upcoming Expeditions ({upcomingTrips.length})</TabsTrigger>
+                            <TabsTrigger value="completed" className="data-[state=active]:bg-zinc-800 data-[state=active]:text-white">Past Journeys ({completedTrips.length})</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="upcoming">
+                            {upcomingTrips.length === 0 ? (
+                                <div className="text-center py-20 border border-zinc-800 border-dashed rounded-2xl bg-zinc-900/20">
+                                    <h3 className="text-xl font-medium text-white mb-2">No active expeditions</h3>
+                                    <p className="text-zinc-400 mb-6">Create your first trip to start collaborating.</p>
+                                    <Button onClick={() => { resetForm(); setIsDialogOpen(true); }} variant="outline" className="border-zinc-700 hover:bg-zinc-800">
+                                        Create Trip
+                                    </Button>
+                                </div>
+                            ) : (
+                                <TripGrid trips={upcomingTrips} isDeleting={isDeleting} onComplete={handleCompleteJourney} onEdit={handleEditClick} onDelete={handleDeleteClick} />
+                            )}
+                        </TabsContent>
+
+                        <TabsContent value="completed">
+                            {completedTrips.length === 0 ? (
+                                <div className="text-center py-20 border border-zinc-800 border-dashed rounded-2xl bg-zinc-900/20">
+                                    <h3 className="text-xl font-medium text-zinc-400 mb-2">No completed journeys yet</h3>
+                                    <p className="text-zinc-500">When you finish a trip and mark it as complete, it will appear here as a memory.</p>
+                                </div>
+                            ) : (
+                                <TripGrid trips={completedTrips} isDeleting={isDeleting} onComplete={handleCompleteJourney} onEdit={handleEditClick} onDelete={handleDeleteClick} isCompletedTab />
+                            )}
+                        </TabsContent>
+                    </Tabs>
                 )}
             </div>
         </motion.div>
+    );
+}
+
+function TripGrid({ trips, isDeleting, onComplete, onEdit, onDelete, isCompletedTab = false }: { trips: any[], isDeleting: string | null, onComplete: (id: string) => void, onEdit: (trip: any) => void, onDelete: (id: string) => void, isCompletedTab?: boolean }) {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {trips.map((trip, idx) => (
+                <motion.div
+                    key={trip.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    className="relative group"
+                >
+                    <Link href={`/dashboard/trips/${trip.id}`} className="block h-full">
+                        <Card className={`group h-full bg-zinc-900/50 hover:bg-zinc-900 border-zinc-800 hover:border-zinc-700 transition-all cursor-pointer text-white overflow-hidden shadow-lg hover:shadow-xl hover:-translate-y-1 ${isCompletedTab ? 'opacity-80 grayscale-[30%] hover:grayscale-0' : ''}`}>
+                            <div className="h-44 relative overflow-hidden">
+                                {trip.coverImage ? (
+                                    <div 
+                                        className="absolute inset-0 bg-cover bg-center group-hover:scale-105 transition-transform duration-500"
+                                        style={{ backgroundImage: `url(${trip.coverImage})` }}
+                                    ></div>
+                                ) : (
+                                    <div className="absolute inset-0 bg-gradient-to-br from-purple-900/40 via-zinc-800 to-zinc-950"></div>
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/30 to-transparent"></div>
+                                
+                                <div className="absolute top-3 right-3 flex items-center gap-2">
+                                    {trip.travelType && (
+                                        <span className="px-3 py-1 bg-black/60 backdrop-blur-sm text-xs rounded-full text-zinc-200 border border-zinc-700/50 font-medium">
+                                            {trip.travelType}
+                                        </span>
+                                    )}
+                                </div>
+                                
+                                <div className="absolute bottom-3 left-4 right-4">
+                                    <h3 className="text-lg font-bold text-white drop-shadow-lg truncate pr-8">{trip.title}</h3>
+                                </div>
+                            </div>
+                            <CardHeader className="pt-3 pb-4">
+                                <div className="flex flex-col gap-1.5">
+                                    <div className="flex items-center text-sm text-zinc-400">
+                                        <MapPin className="w-3.5 h-3.5 mr-2 text-blue-400 flex-shrink-0" />
+                                        <span className="truncate">{trip.destinationCity || trip.destination}</span>
+                                    </div>
+                                    <div className="flex items-center text-sm text-zinc-400">
+                                        <Calendar className="w-3.5 h-3.5 mr-2 text-green-400 flex-shrink-0" />
+                                        {formatDateRange(trip.startDate, trip.endDate)}
+                                    </div>
+                                    <div className="flex items-center text-sm text-zinc-400">
+                                        <Users className="w-3.5 h-3.5 mr-2 text-purple-400 flex-shrink-0" />
+                                        {trip._count?.members || trip.members?.length || 1} Explorer{(trip._count?.members || trip.members?.length || 1) > 1 ? "s" : ""}
+                                    </div>
+                                    {isCompletedTab && (
+                                        <div className="mt-2 flex items-center text-xs text-emerald-500 font-medium bg-emerald-500/10 w-fit px-2 py-1 rounded-md">
+                                            <CheckCircle2 className="w-3 h-3 mr-1" /> Journey Completed
+                                        </div>
+                                    )}
+                                </div>
+                            </CardHeader>
+                        </Card>
+                    </Link>
+
+                    {/* Quick Actions Dropdown */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger className="absolute bottom-[88px] right-3 z-20 p-2 bg-black/40 hover:bg-black/60 backdrop-blur-md rounded-full text-white transition-colors border border-white/10 opacity-0 group-hover:opacity-100" onClick={(e) => e.preventDefault()}>
+                            {isDeleting === trip.id ? <Loader2 className="w-4 h-4 animate-spin text-red-400" /> : <MoreVertical className="w-4 h-4" />}
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800 text-zinc-200 min-w-[160px] p-1.5 rounded-xl shadow-xl">
+                            {!isCompletedTab && (
+                                <DropdownMenuItem onClick={(e) => { e.preventDefault(); onEdit(trip); }} className="cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 rounded-lg py-2.5">
+                                    <Edit2 className="w-4 h-4 mr-2 text-blue-400" /> Edit Details
+                                </DropdownMenuItem>
+                            )}
+                            {!isCompletedTab && (
+                                <DropdownMenuItem onClick={(e) => { e.preventDefault(); onComplete(trip.id); }} className="cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 rounded-lg py-2.5">
+                                    <CheckCircle2 className="w-4 h-4 mr-2 text-emerald-400" /> Mark Completed
+                                </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem onClick={(e) => { e.preventDefault(); onDelete(trip.id); }} disabled={isDeleting === trip.id} className="cursor-pointer text-red-400 hover:bg-red-500/10 focus:bg-red-500/10 hover:text-red-400 focus:text-red-400 rounded-lg py-2.5">
+                                <Trash2 className="w-4 h-4 mr-2" /> Delete Trip
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </motion.div>
+            ))}
+        </div>
     );
 }

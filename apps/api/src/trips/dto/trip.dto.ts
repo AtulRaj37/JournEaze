@@ -113,6 +113,10 @@ export class UpdateTripDto {
   @IsString()
   @IsOptional()
   coverImage?: string;
+
+  @IsString()
+  @IsOptional()
+  status?: 'PLANNING' | 'UPCOMING' | 'ONGOING' | 'COMPLETED';
 }
 
 export class InviteMemberDto {
