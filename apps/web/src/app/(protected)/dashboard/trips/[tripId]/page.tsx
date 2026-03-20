@@ -10,7 +10,8 @@ import { Input } from "@/components/ui/input";
 import {
     MapPin, Calendar, Users, Sparkles, Receipt, PlaneTakeoff, Loader2, ArrowLeft, CheckCircle2,
     StickyNote, Map as MapIcon, Plus, Trash2, Globe, Clock, Languages, Banknote, ThermometerSun, Bus,
-    Info, FileText, UserPlus, ImageIcon, Paperclip, X, Edit2, Save, Download, UploadCloud
+    Info, FileText, UserPlus, ImageIcon, Paperclip, X, Edit2, Save, Download, UploadCloud,
+    Link2, Copy, Hash, Mail, QrCode, Check
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -78,6 +79,10 @@ export default function TripDetailsPage() {
     const [inviteEmail, setInviteEmail] = useState("");
     const [isInviting, setIsInviting] = useState(false);
     const [inviteMsg, setInviteMsg] = useState("");
+    const [inviteMode, setInviteMode] = useState<'link'|'id'|'email'>('link');
+    const [inviteUserId, setInviteUserId] = useState("");
+    const [linkCopied, setLinkCopied] = useState(false);
+    const [idCopied, setIdCopied] = useState(false);
     const [isChangingCover, setIsChangingCover] = useState(false);
     
     // Cover Image Upload Ref
@@ -730,27 +735,151 @@ export default function TripDetailsPage() {
                                 </Card>
 
                                 <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl">
-                                    <CardHeader><CardTitle className="text-lg text-white font-medium">Fellow Explorers</CardTitle></CardHeader>
-                                    <CardContent className="space-y-4">
+                                    <CardHeader className="border-b border-zinc-800/50 pb-4">
+                                        <CardTitle className="text-lg text-white font-medium flex items-center gap-2">
+                                            <Users className="w-4 h-4 text-purple-400" /> Fellow Explorers
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="p-4 space-y-4">
+                                        {/* Member List */}
+                                        <div className="space-y-2">
                                         {trip.members?.map((member: any) => (
-                                            <div key={member.id} className="flex items-center gap-3">
-                                                <Avatar className="h-10 w-10 border border-zinc-700">
-                                                    <AvatarFallback className="bg-zinc-800 text-zinc-300">{member.user.name?.charAt(0) || "U"}</AvatarFallback>
+                                            <div key={member.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-zinc-800/50 transition-colors">
+                                                <Avatar className="h-9 w-9 border border-zinc-700">
+                                                    <AvatarFallback className="bg-zinc-800 text-zinc-300 text-sm">{member.user.name?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
                                                 </Avatar>
-                                                <div>
-                                                    <p className="text-sm font-medium text-white">{member.user.name || "Traveller"}</p>
-                                                    <p className="text-xs text-zinc-500">{member.role}</p>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-white truncate">{member.user.name || "Traveller"}</p>
+                                                    <p className="text-xs text-zinc-500 truncate">{member.user.email || ""}</p>
                                                 </div>
+                                                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                                                    member.role === 'ADMIN' ? 'bg-orange-500/20 text-orange-400' :
+                                                    member.role === 'EDITOR' ? 'bg-blue-500/20 text-blue-400' :
+                                                    'bg-zinc-700/50 text-zinc-400'
+                                                }`}>{member.role}</span>
                                             </div>
                                         ))}
-                                        <div className="pt-4 border-t border-zinc-800 space-y-2">
-                                            <div className="flex gap-2">
-                                                <Input value={inviteEmail} onChange={(e) => setInviteEmail(e.target.value)} placeholder="Email to invite" className="bg-zinc-950 border-zinc-800 text-sm h-9" />
-                                                <Button onClick={handleInvite} disabled={isInviting} size="sm" className="bg-purple-600 hover:bg-purple-700 h-9">
-                                                    <UserPlus className="w-4 h-4" />
-                                                </Button>
+                                        </div>
+
+                                        {/* Invite Section */}
+                                        <div className="border-t border-zinc-800 pt-4">
+                                            <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">Invite Explorers</p>
+
+                                            {/* Mode Tabs */}
+                                            <div className="flex gap-1 bg-zinc-800/60 p-1 rounded-lg mb-4">
+                                                {([['link', Link2, 'Link'], ['id', Hash, 'User ID'], ['email', Mail, 'Email']] as const).map(([mode, Icon, label]) => (
+                                                    <button
+                                                        key={mode}
+                                                        onClick={() => { setInviteMode(mode); setInviteMsg(""); }}
+                                                        className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-all ${
+                                                            inviteMode === mode ? 'bg-zinc-700 text-white shadow' : 'text-zinc-500 hover:text-zinc-300'
+                                                        }`}
+                                                    >
+                                                        <Icon className="w-3 h-3" />{label}
+                                                    </button>
+                                                ))}
                                             </div>
-                                            {inviteMsg && <p className="text-xs text-zinc-400">{inviteMsg}</p>}
+
+                                            {/* Link Mode */}
+                                            {inviteMode === 'link' && (
+                                                <div className="space-y-3">
+                                                    <p className="text-xs text-zinc-500">Share this link — anyone with it can request to join your trip.</p>
+                                                    <div className="flex gap-2">
+                                                        <div className="flex-1 flex items-center gap-2 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 overflow-hidden">
+                                                            <Link2 className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                                                            <span className="text-xs text-zinc-400 truncate font-mono">{typeof window !== 'undefined' ? `${window.location.origin}/join/${tripId}` : `...`}</span>
+                                                        </div>
+                                                        <Button
+                                                            size="sm"
+                                                            onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/join/${tripId}`); setLinkCopied(true); setTimeout(() => setLinkCopied(false), 2000); }}
+                                                            className={`h-9 px-3 transition-all ${ linkCopied ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-zinc-700 hover:bg-zinc-600' } text-white`}
+                                                        >
+                                                            {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                                        </Button>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 mt-2">
+                                                        <div className="h-px flex-1 bg-zinc-800" />
+                                                        <span className="text-xs text-zinc-600">or share trip ID</span>
+                                                        <div className="h-px flex-1 bg-zinc-800" />
+                                                    </div>
+                                                    <div className="flex gap-2">
+                                                        <div className="flex-1 flex items-center gap-2 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2">
+                                                            <Hash className="w-3.5 h-3.5 text-zinc-500 shrink-0" />
+                                                            <span className="text-xs text-zinc-400 font-mono truncate">{tripId}</span>
+                                                        </div>
+                                                        <Button
+                                                            size="sm"
+                                                            onClick={() => { navigator.clipboard.writeText(tripId); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
+                                                            className={`h-9 px-3 transition-all ${ idCopied ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-zinc-700 hover:bg-zinc-600' } text-white`}
+                                                        >
+                                                            {idCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* User ID Mode */}
+                                            {inviteMode === 'id' && (
+                                                <div className="space-y-3">
+                                                    <p className="text-xs text-zinc-500">Paste a user's ID to send them a direct invite. They can find their ID in their profile settings.</p>
+                                                    <div className="flex gap-2">
+                                                        <div className="relative flex-1">
+                                                            <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+                                                            <Input
+                                                                value={inviteUserId}
+                                                                onChange={e => setInviteUserId(e.target.value)}
+                                                                placeholder="Paste User ID here..."
+                                                                className="bg-zinc-950 border-zinc-800 text-sm h-9 pl-8 font-mono"
+                                                            />
+                                                        </div>
+                                                        <Button
+                                                            onClick={async () => {
+                                                                if (!inviteUserId.trim()) return;
+                                                                setIsInviting(true); setInviteMsg("");
+                                                                try {
+                                                                    const res = await fetch(`${apiUrl}/trips/${tripId}/invite`, {
+                                                                        method: 'POST',
+                                                                        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+                                                                        body: JSON.stringify({ userId: inviteUserId.trim() }),
+                                                                    });
+                                                                    if (res.ok) { setInviteMsg('✅ Invited!'); setInviteUserId(''); }
+                                                                    else { const d = await res.json().catch(() => ({})); setInviteMsg(d.message || '❌ Failed to invite'); }
+                                                                } catch { setInviteMsg('❌ Network error'); }
+                                                                finally { setIsInviting(false); }
+                                                            }}
+                                                            disabled={isInviting || !inviteUserId.trim()}
+                                                            size="sm"
+                                                            className="bg-purple-600 hover:bg-purple-700 h-9 px-3"
+                                                        >
+                                                            {isInviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+                                                        </Button>
+                                                    </div>
+                                                    {inviteMsg && <p className={`text-xs ${inviteMsg.startsWith('✅') ? 'text-emerald-400' : 'text-red-400'}`}>{inviteMsg}</p>}
+                                                </div>
+                                            )}
+
+                                            {/* Email Mode */}
+                                            {inviteMode === 'email' && (
+                                                <div className="space-y-3">
+                                                    <p className="text-xs text-zinc-500">Send an invite to someone's registered email address.</p>
+                                                    <div className="flex gap-2">
+                                                        <div className="relative flex-1">
+                                                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+                                                            <Input
+                                                                value={inviteEmail}
+                                                                onChange={e => setInviteEmail(e.target.value)}
+                                                                placeholder="friend@email.com"
+                                                                type="email"
+                                                                className="bg-zinc-950 border-zinc-800 text-sm h-9 pl-8"
+                                                            />
+                                                        </div>
+                                                        <Button onClick={handleInvite} disabled={isInviting || !inviteEmail.trim()} size="sm" className="bg-purple-600 hover:bg-purple-700 h-9 px-3">
+                                                            {isInviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
+                                                        </Button>
+                                                    </div>
+                                                    {inviteMsg && <p className={`text-xs ${inviteMsg.startsWith('✅') || inviteMsg.toLowerCase().includes('sent') ? 'text-emerald-400' : 'text-red-400'}`}>{inviteMsg}</p>}
+                                                </div>
+                                            )}
                                         </div>
                                     </CardContent>
                                 </Card>
