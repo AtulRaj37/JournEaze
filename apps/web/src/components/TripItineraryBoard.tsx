@@ -11,6 +11,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function TripItineraryBoard({ initialItinerary, tripId, onUpdate }: any) {
     const [itinerary, setItinerary] = useState<any[]>([]);
+    const [editingActId, setEditingActId] = useState<string | null>(null);
 
     useEffect(() => {
         if (initialItinerary) {
@@ -106,6 +107,17 @@ export default function TripItineraryBoard({ initialItinerary, tripId, onUpdate 
         if (onUpdate) onUpdate(newItin);
     };
 
+    const updateActivityField = (dayIdx: number, actIdx: number, field: string, value: string) => {
+        const newItin = [...itinerary];
+        newItin[dayIdx].activities[actIdx][field] = value;
+        setItinerary(newItin);
+    };
+
+    const handleSaveEdit = () => {
+        setEditingActId(null);
+        if (onUpdate) onUpdate(itinerary);
+    };
+
     if (!itinerary.length) return null;
 
     return (
@@ -168,11 +180,46 @@ export default function TripItineraryBoard({ initialItinerary, tripId, onUpdate 
                                                                 </span>
                                                                 {act.time && <span className="text-xs font-medium text-zinc-500">{act.time}</span>}
                                                             </div>
-                                                            <h4 className={`text-base font-bold truncate transition-colors ${act.completed ? 'text-zinc-500 line-through' : 'text-zinc-100'}`}>
-                                                                {act.title || act.description}
-                                                            </h4>
-                                                            {act.description && act.title && (
-                                                                <p className="text-sm text-zinc-400 mt-1.5 leading-relaxed line-clamp-2">{act.description}</p>
+                                                            {editingActId === act.id ? (
+                                                                <div className="w-full flex gap-2 items-center mb-1">
+                                                                    <input 
+                                                                        type="text"
+                                                                        value={act.title || ""}
+                                                                        onChange={(e) => updateActivityField(dayIdx, actIdx, "title", e.target.value)}
+                                                                        onBlur={handleSaveEdit}
+                                                                        onKeyDown={(e) => e.key === 'Enter' && handleSaveEdit()}
+                                                                        placeholder="Activity Name"
+                                                                        className="flex-1 bg-zinc-950 border border-zinc-700 focus:border-purple-500 rounded px-2 py-1 text-sm font-bold text-white outline-none"
+                                                                        autoFocus
+                                                                    />
+                                                                </div>
+                                                            ) : (
+                                                                <h4 
+                                                                    onClick={() => setEditingActId(act.id)}
+                                                                    className={`text-base font-bold truncate transition-colors cursor-pointer hover:text-purple-400 ${act.completed ? 'text-zinc-500 line-through' : 'text-zinc-100'}`}
+                                                                >
+                                                                    {act.title || act.description}
+                                                                </h4>
+                                                            )}
+
+                                                            {editingActId === act.id ? (
+                                                                <textarea
+                                                                    value={act.description || ""}
+                                                                    onChange={(e) => updateActivityField(dayIdx, actIdx, "description", e.target.value)}
+                                                                    onBlur={handleSaveEdit}
+                                                                    placeholder="Activity Description"
+                                                                    className="w-full mt-1.5 bg-zinc-950 border border-zinc-700 focus:border-purple-500 rounded px-2 py-1 text-xs text-zinc-300 outline-none resize-none"
+                                                                    rows={2}
+                                                                />
+                                                            ) : (
+                                                                (act.description && act.title) ? (
+                                                                    <p 
+                                                                        onClick={() => setEditingActId(act.id)}
+                                                                        className="text-sm text-zinc-400 mt-1.5 leading-relaxed line-clamp-2 cursor-pointer hover:text-zinc-300"
+                                                                    >
+                                                                        {act.description}
+                                                                    </p>
+                                                                ) : null
                                                             )}
                                                             
                                                             {act.costEstimate > 0 && (

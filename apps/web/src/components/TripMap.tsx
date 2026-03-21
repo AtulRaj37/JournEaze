@@ -47,6 +47,11 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
   const [showToSuggestions, setShowToSuggestions] = useState(false);
   const [isSearchingFrom, setIsSearchingFrom] = useState(false);
   const [isSearchingTo, setIsSearchingTo] = useState(false);
+
+  // Stops Autocomplete State
+  const [stopSuggestions, setStopSuggestions] = useState<Record<string, any[]>>({});
+  const [showStopSuggestions, setShowStopSuggestions] = useState<Record<string, boolean>>({});
+  const stopDebounceRefs = useRef<Record<string, NodeJS.Timeout | null>>({});
   const fromDebounceRef = useRef<any>(null);
   const toDebounceRef = useRef<any>(null);
   const fromContainerRef = useRef<HTMLDivElement>(null);
@@ -166,10 +171,30 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
 
   const handleRemoveStop = (id: string) => {
     setStops(stops.filter(s => s.id !== id));
+    if (stopDebounceRefs.current[id]) clearTimeout(stopDebounceRefs.current[id] as NodeJS.Timeout);
+  };
+
+  const searchStopPlaces = async (query: string, stopId: string) => {
+    if (query.length < 2) {
+      setStopSuggestions(prev => ({ ...prev, [stopId]: [] }));
+      setShowStopSuggestions(prev => ({ ...prev, [stopId]: false }));
+      return;
+    }
+    try {
+      const res = await fetch(`${apiUrl}/places/autocomplete?input=${encodeURIComponent(query)}`);
+      if (res.ok) {
+        const data = await res.json();
+        const predictions = data.predictions || [];
+        setStopSuggestions(prev => ({ ...prev, [stopId]: predictions }));
+        setShowStopSuggestions(prev => ({ ...prev, [stopId]: predictions.length > 0 }));
+      }
+    } catch (err) { }
   };
 
   const updateStop = (id: string, value: string) => {
     setStops(stops.map(s => s.id === id ? { ...s, value } : s));
+    if (stopDebounceRefs.current[id]) clearTimeout(stopDebounceRefs.current[id] as NodeJS.Timeout);
+    stopDebounceRefs.current[id] = setTimeout(() => searchStopPlaces(value, id), 300);
   };
 
   const geocodePlace = async (place: string): Promise<[number, number] | null> => {
@@ -451,14 +476,37 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
 
           {/* Additional Stops */}
           {stops.map(stop => (
-             <div key={stop.id} className="flex gap-2 items-center w-full pl-0 sm:pl-8">
+             <div key={stop.id} className="relative flex gap-2 items-center w-full pl-0 sm:pl-8">
                 <input 
                   value={stop.value} 
                   onChange={(e) => updateStop(stop.id, e.target.value)} 
+                  onFocus={() => {
+                      if (stopSuggestions[stop.id]?.length) {
+                          setShowStopSuggestions(prev => ({...prev, [stop.id]: true}));
+                      }
+                  }}
                   placeholder="Add stop (e.g., Kullu)" 
                   className="flex-1 min-w-0 bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 outline-none focus:border-purple-500 transition-colors" 
                   autoComplete="off"
                 />
+
+                {showStopSuggestions[stop.id] && stopSuggestions[stop.id]?.length > 0 && (
+                  <div className="absolute top-11 left-0 sm:left-8 right-10 z-50 bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl overflow-hidden max-h-[200px] overflow-y-auto">
+                    {stopSuggestions[stop.id].map((s: any) => (
+                      <button 
+                        key={s.place_id} type="button"
+                        onClick={() => { 
+                          setStops(stops.map(st => st.id === stop.id ? { ...st, value: s.description } : st));
+                          setShowStopSuggestions(prev => ({ ...prev, [stop.id]: false })); 
+                        }}
+                        className="w-full text-left px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white border-b border-zinc-800/50 last:border-0"
+                      >
+                        {s.description}
+                      </button>
+                    ))}
+                  </div>
+                )}
+
                 <button 
                   onClick={() => handleRemoveStop(stop.id)} 
                   className="p-2 shrink-0 text-red-400 hover:bg-red-500/20 rounded-full transition-colors"
