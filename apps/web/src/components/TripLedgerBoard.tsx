@@ -364,7 +364,7 @@ export default function TripLedgerBoard({ tripId, expenses, settlements = [], bu
                                             ))}
                                         </Pie>
                                         <Tooltip 
-                                            formatter={(value: number) => `₹${value.toLocaleString()}`}
+                                            formatter={(value: any) => `₹${Number(value || 0).toLocaleString()}`}
                                             contentStyle={{ backgroundColor: '#18181b', borderColor: '#27272a', borderRadius: '8px', color: '#fff' }}
                                             itemStyle={{ color: '#fff' }}
                                         />
