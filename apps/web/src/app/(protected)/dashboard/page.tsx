@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Loader2, Plus, MapPin, Calendar, Users, User, Heart, Sparkles, MoreVertical, Edit2, Trash2, CheckCircle2 } from "lucide-react";
+import { Loader2, Plus, MapPin, Calendar, Users, User, Heart, Sparkles, MoreVertical, Edit2, Trash2, CheckCircle2, LogIn, Link2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import dynamic from "next/dynamic";
@@ -76,6 +76,11 @@ export default function DashboardPage() {
     const [isSearching, setIsSearching] = useState(false);
     const autocompleteRef = useRef<HTMLDivElement>(null);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Join trip state
+    const [joinInput, setJoinInput] = useState("");
+    const [isJoiningTrip, setIsJoiningTrip] = useState(false);
+    const [joinMsg, setJoinMsg] = useState("");
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
     const getToken = () => localStorage.getItem("token");
@@ -277,6 +282,40 @@ export default function DashboardPage() {
     const upcomingTrips = trips.filter(t => t.status !== "COMPLETED");
     const completedTrips = trips.filter(t => t.status === "COMPLETED");
 
+    // Join Trip Handler
+    const handleJoinTrip = async () => {
+        if (!joinInput.trim()) return;
+        setIsJoiningTrip(true);
+        setJoinMsg("");
+        try {
+            // Extract tripId from input — support full URLs and plain IDs
+            let tripId = joinInput.trim();
+            const urlMatch = tripId.match(/\/join\/([a-f0-9-]+)/i) || tripId.match(/\/trips\/([a-f0-9-]+)/i);
+            if (urlMatch) tripId = urlMatch[1];
+
+            const token = getToken();
+            const res = await fetch(`${apiUrl}/trips/${tripId}/join`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            });
+            const data = await res.json();
+            if (data.alreadyMember) {
+                setJoinMsg("You're already a member. Redirecting...");
+                setTimeout(() => { window.location.href = `/dashboard/trips/${tripId}`; }, 1000);
+            } else if (data.success) {
+                setJoinMsg("Joined successfully! Redirecting...");
+                await fetchTrips();
+                setTimeout(() => { window.location.href = `/dashboard/trips/${tripId}`; }, 1000);
+            } else {
+                setJoinMsg(data.message || "Failed to join trip.");
+            }
+        } catch {
+            setJoinMsg("Invalid trip ID or link.");
+        } finally {
+            setIsJoiningTrip(false);
+        }
+    };
+
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -316,6 +355,29 @@ export default function DashboardPage() {
                         </h1>
                         <p className="text-zinc-400 mt-2">Manage your upcoming collaborative expeditions.</p>
                     </div>
+
+                    {/* Join Trip Quick Input */}
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <div className="relative flex-1 sm:flex-none">
+                            <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+                            <input
+                                value={joinInput}
+                                onChange={(e) => { setJoinInput(e.target.value); setJoinMsg(""); }}
+                                onKeyDown={(e) => e.key === "Enter" && handleJoinTrip()}
+                                placeholder="Paste trip link or ID to join"
+                                className="w-full sm:w-64 h-10 pl-9 pr-3 bg-zinc-900 border border-zinc-800 rounded-xl text-sm text-white placeholder:text-zinc-600 focus:ring-1 focus:ring-orange-500/50 outline-none"
+                            />
+                        </div>
+                        <button
+                            onClick={handleJoinTrip}
+                            disabled={isJoiningTrip || !joinInput.trim()}
+                            className="h-10 px-4 bg-zinc-800 hover:bg-zinc-700 disabled:opacity-40 text-white rounded-xl text-sm font-medium flex items-center gap-1.5 transition-colors whitespace-nowrap"
+                        >
+                            {isJoiningTrip ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogIn className="w-4 h-4" />}
+                            Join
+                        </button>
+                    </div>
+                    {joinMsg && <p className={`text-xs mt-1 ${joinMsg.includes('success') || joinMsg.includes('already') ? 'text-emerald-400' : 'text-red-400'}`}>{joinMsg}</p>}
 
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogTrigger render={

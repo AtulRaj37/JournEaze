@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Loader2, Navigation, MapPin, Clock, Route, X, ArrowUpDown, Plus } from "lucide-react";
+import { Loader2, Navigation, MapPin, Clock, Route, X, ArrowUpDown, Plus, Car, Footprints } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Unique emoji + color per category so no two look alike
@@ -34,6 +34,7 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
   const [to, setTo] = useState(destination);
   const [stops, setStops] = useState<{ id: string; value: string }[]>([]);
   const [isRouting, setIsRouting] = useState(false);
+  const [travelMode, setTravelMode] = useState<"driving" | "walking">("driving");
   const [routeInfo, setRouteInfo] = useState<{ distance: string; duration: string } | null>(null);
   const [activeNearby, setActiveNearby] = useState<Set<string>>(new Set());
   const [loadingNearby, setLoadingNearby] = useState<string | null>(null);
@@ -230,7 +231,7 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
       const coordsString = allPoints.map(c => `${c[1]},${c[0]}`).join(";");
 
       const routeRes = await fetch(
-        `https://router.project-osrm.org/route/v1/driving/${coordsString}?overview=full&geometries=geojson`
+        `https://router.project-osrm.org/route/v1/${travelMode}/${coordsString}?overview=full&geometries=geojson`
       );
       const routeData = await routeRes.json();
 
@@ -467,7 +468,6 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
              </div>
           ))}
 
-          {/* Action Buttons */}
           <div className="flex justify-between items-center sm:justify-start gap-2 mt-2 pl-0 sm:pl-8">
             <Button 
               variant="outline" 
@@ -477,6 +477,23 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
             >
               <Plus className="w-3 h-3 mr-1" /> Add Stop
             </Button>
+            
+            <div className="flex items-center bg-zinc-950 border border-zinc-800 rounded-md p-1 h-9 mx-2">
+              <button 
+                onClick={() => setTravelMode('driving')} 
+                title="Driving"
+                className={`p-1.5 rounded-md transition-colors ${travelMode === 'driving' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
+              >
+                <Car className="w-4 h-4" />
+              </button>
+              <button 
+                onClick={() => setTravelMode('walking')} 
+                title="Walking"
+                className={`p-1.5 rounded-md transition-colors ${travelMode === 'walking' ? 'bg-zinc-800 text-white shadow-sm' : 'text-zinc-500 hover:text-zinc-300'}`}
+              >
+                <Footprints className="w-4 h-4" />
+              </button>
+            </div>
             
             <Button
               onClick={handleRoute}

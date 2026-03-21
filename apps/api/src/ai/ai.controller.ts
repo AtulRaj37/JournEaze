@@ -39,4 +39,12 @@ export class AiController {
     const extras = extraPlaces ? extraPlaces.split(',').map(p => p.trim()).filter(Boolean) : undefined;
     return this.aiService.generateExplorePlaces(destination || 'Unknown', extras);
   }
+
+  @Post('chat')
+  async chat(@CurrentUser() user: User, @Body() dto: { tripId: string, messages: any[] }) {
+    if (!dto.tripId || !dto.messages || !Array.isArray(dto.messages)) {
+      throw new Error('tripId and messages array are required');
+    }
+    return this.aiService.chatWithCopilot(dto.tripId, user.id, dto.messages);
+  }
 }

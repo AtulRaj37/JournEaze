@@ -55,17 +55,8 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-4 pt-3">
-      <div
-        className="mx-auto max-w-7xl rounded-2xl flex items-center justify-between px-5 h-14"
-        style={{
-          background: "rgba(9, 9, 11, 0.80)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          boxShadow: "0 4px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)",
-        }}
-      >
+    <header className="sticky top-0 z-[100] w-full border-b border-white/5 bg-zinc-950/80 backdrop-blur-xl">
+      <div className="mx-auto max-w-7xl flex items-center justify-between px-6 h-16">
         {/* ─── Logo ─── */}
         <Link href="/dashboard" className="flex items-center gap-2 flex-shrink-0">
           <motion.div

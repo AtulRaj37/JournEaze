@@ -71,7 +71,7 @@ const QUOTES = [
   { text: "Expense splits saved our friendship 😂", name: "Vikram T.", x: "4%", y: "65%" },
   { text: "Like Notion + Google Maps for travel.", name: "Rhea P.", x: "32%", y: "78%" },
 ];
-const DEST_TAGS = ["Goa", "Manali", "Ladakh", "Jaipur", "Paris", "Tokyo", "Dubai", "Bali", "Rishikesh", "Santorini", "Kerala", "Iceland"];
+
 
 // ── Premium Full-Width Sticky Nav ──
 function SNav() {
@@ -132,23 +132,6 @@ function SNav() {
   );
 }
 
-// ── Destination fade tags (replaces marquee) ──
-function DestTags() {
-  const r = useRef(null); const v = useInView(r, { once: true, margin: "0px" });
-  return (
-    <div ref={r} className="py-6 px-6 flex flex-wrap justify-center gap-2.5">
-      {DEST_TAGS.map((tag, i) => (
-        <motion.span key={tag}
-          initial={{ opacity: 0, y: 10, scale: 0.9 }}
-          animate={v ? { opacity: 1, y: 0, scale: 1 } : {}}
-          transition={{ delay: i * 0.07, duration: 0.4, ease: "easeOut" }}
-          className="px-4 py-1.5 rounded-full text-xs font-semibold border border-zinc-700/60 bg-zinc-900/50 text-zinc-400 hover:border-orange-500/40 hover:text-orange-300 hover:bg-orange-500/5 transition-all cursor-default select-none">
-          {tag}
-        </motion.span>
-      ))}
-    </div>
-  );
-}
 
 // ── Hero parallax bg ──
 // ── Hero parallax bg (2-layer depth) ──
@@ -375,8 +358,7 @@ export default function LandingPage() {
         </motion.div>
       </section>
 
-      {/* ── MARQUEE ── */}
-      <DestTags />
+
 
       {/* ── HOW IT WORKS ── */}
       <section id="how-it-works" className="py-16 px-6 relative z-10">

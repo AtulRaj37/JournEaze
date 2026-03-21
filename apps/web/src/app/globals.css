@@ -181,3 +181,31 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 122, 26, 0.55);
 }
+
+@utility glass-panel {
+  background-color: rgba(24, 24, 27, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+@utility glass-card {
+  background-color: rgba(24, 24, 27, 0.4);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
+
+@utility text-gradient-orange {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to bottom right, var(--color-orange-400), var(--color-amber-600));
+}
+
+@utility text-gradient-emerald {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(to bottom right, var(--color-emerald-400), var(--color-teal-600));
+}

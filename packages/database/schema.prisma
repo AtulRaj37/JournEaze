@@ -82,6 +82,7 @@ model Trip {
   aiPackingList Json?
   aiTravelTips  Json?
   aiCustomPrompt String?
+  explorePlaces  Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

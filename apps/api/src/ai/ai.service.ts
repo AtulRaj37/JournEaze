@@ -290,19 +290,17 @@ export class AiService {
     const cached = await this.prisma.aiDestinationCache.findUnique({ where: { destination: key } });
     if (cached?.explorePlaces) return cached.explorePlaces;
 
-    // Build the destination context — include extra itinerary destinations if provided
+    // Build the destination context
     const allDests = [destination];
     if (extraPlaces?.length) allDests.push(...extraPlaces.filter(p => p.toLowerCase() !== destination.toLowerCase()));
-    const destContext = allDests.length > 1
-      ? `${destination} and nearby areas including ${allDests.slice(1).join(', ')}`
-      : destination;
+    const destContext = allDests.length > 1 ? `${destination} and nearby areas including ${allDests.slice(1).join(', ')}` : destination;
 
     const prompt = `
       Act as a top-tier travel guide for ${destContext}. Generate a comprehensive list of 18 must-visit places and experiences across ALL these areas.
       Each place MUST have a "category" from EXACTLY these options: "Waterfall", "Mountain", "Temple", "Valley", "Lake", "Adventure", "Cultural", "Historical", "Market", "Nature", "Viewpoint", "Festival", "Hot Spring", "Museum", "Park".
       For each place provide: name, category, description (2-3 sentences), bestTimeToVisit (a short string like "Morning", "All Day", "October-March"), estimatedDuration (like "2-3 hours", "Half Day", "Full Day"), and nearestCity (the nearest town/city from the list: ${allDests.join(', ')}).
       Distribute places across ALL the destinations mentioned, not just the main one.
-      Output ONLY a JSON object with a "places" array.
+      Output ONLY a JSON object with a "places" array of objects.
     `;
 
     try {
@@ -320,6 +318,48 @@ export class AiService {
     } catch (error: any) {
       console.error('Groq Error (Explore):', error?.message);
       return [];
+    }
+  }
+
+  // ─── Chat Copilot ─────────────────────────────────────────────────
+  async chatWithCopilot(tripId: string, userId: string, messages: any[]) {
+    const trip = await this.getTripDetails(tripId, userId);
+    
+    const systemPrompt = `
+      You are the JournEaze AI Travel Copilot. You are an expert travel assistant.
+      The user is planning a trip to: ${trip.destinationCity || trip.destination}.
+      Start Date: ${trip.startDate ? trip.startDate.toDateString() : 'Unknown'}
+      End Date: ${trip.endDate ? trip.endDate.toDateString() : 'Unknown'}
+      Budget: ${trip.budget ? '₹' + trip.budget : 'Unknown'}
+      Members count: ${trip.members?.length || 1}
+
+      Provide helpful, personalized, concise, and accurate travel advice.
+      Keep your responses formatted cleanly in Markdown.
+      If a user asks to auto-fix or generate an itinerary directly in the chat, politely inform them to use the "Generate Itinerary" button on the Planner tab, but you can certainly offer suggestions or rough outlines here.
+    `;
+
+    try {
+      const groqMessages = [
+        { role: 'system', content: systemPrompt },
+        ...messages.map(m => ({
+          role: m.role === 'user' ? 'user' : 'assistant',
+          content: m.content
+        }))
+      ];
+
+      const completion = await this.groq.chat.completions.create({
+        messages: groqMessages as any,
+        model: 'llama-3.3-70b-versatile',
+        temperature: 0.7,
+      });
+
+      return {
+        role: 'assistant',
+        content: completion.choices[0]?.message?.content || "I'm sorry, I couldn't formulate a response."
+      };
+    } catch (error: any) {
+      console.error('Groq Error (Chat):', error?.message);
+      throw new InternalServerErrorException('Failed to talk to AI Copilot.');
     }
   }
 }

@@ -25,7 +25,7 @@ export class ImagesController {
     }
 
     try {
-      const query = encodeURIComponent(`${city} travel landscape`);
+      const query = encodeURIComponent(`${city} famous landmark tourism`);
       const res = await fetch(
         `https://api.unsplash.com/photos/random?query=${query}&orientation=landscape`,
         { headers: { Authorization: `Client-ID ${this.unsplashKey}` } },
@@ -86,7 +86,7 @@ export class ImagesController {
 
       // If no photo found for the specific query, fallback to searching just the destination!
       if (!photo && destination) {
-        const destQuery = encodeURIComponent(`${destination} travel landscape`);
+        const destQuery = encodeURIComponent(`${destination} famous landmark tourism`);
         res = await fetch(
           `https://api.unsplash.com/search/photos?query=${destQuery}&per_page=1&orientation=landscape`,
           { headers: { Authorization: `Client-ID ${this.unsplashKey}` } }

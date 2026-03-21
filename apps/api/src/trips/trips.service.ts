@@ -57,6 +57,7 @@ export class TripsService {
         },
         days: { include: { activities: true }, orderBy: { dayNumber: 'asc' } },
         expenses: { include: { payer: { select: { name: true } }, splits: true }, orderBy: { date: 'desc' } },
+        settlements: { include: { payer: { select: { name: true } }, receiver: { select: { name: true } } } },
         notes: { include: { user: { select: { id: true, name: true, image: true } } }, orderBy: { createdAt: 'desc' } },
         _count: { select: { members: true } },
       },
@@ -233,5 +234,53 @@ export class TripsService {
     });
 
     return { success: true, message: 'Member removed successfully' };
+  }
+
+  // --- PUBLIC JOIN BY LINK ---
+
+  async getPreview(tripId: string) {
+    const trip = await this.prisma.trip.findUnique({
+      where: { id: tripId },
+      select: {
+        id: true,
+        title: true,
+        destination: true,
+        destinationCity: true,
+        coverImage: true,
+        startDate: true,
+        endDate: true,
+        travelType: true,
+        _count: { select: { members: true } },
+      },
+    });
+    if (!trip) throw new NotFoundException('Trip not found');
+    return trip;
+  }
+
+  async joinByLink(tripId: string, userId: string) {
+    const trip = await this.prisma.trip.findUnique({ where: { id: tripId } });
+    if (!trip) throw new NotFoundException('Trip not found');
+
+    const existing = await this.prisma.tripMember.findUnique({
+      where: { tripId_userId: { tripId, userId } },
+    });
+    if (existing) {
+      return { alreadyMember: true, message: 'You are already a member of this trip' };
+    }
+
+    const member = await this.prisma.tripMember.create({
+      data: { tripId, userId, role: 'EDITOR' },
+    });
+
+    await this.prisma.activityLog.create({
+      data: {
+        tripId,
+        userId,
+        action: 'JOINED_VIA_LINK',
+        details: JSON.stringify({ joinedAt: new Date().toISOString() }),
+      },
+    });
+
+    return { success: true, member };
   }
 }

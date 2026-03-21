@@ -145,6 +145,9 @@ export class PlacesController {
     }
   }
 
+  // In-memory cache for Overpass API to prevent 429 errors
+  private nearbyCache: Map<string, { data: any, expiresAt: number }> = new Map();
+
   // ─── Nearby POI Search (Overpass API proxy) ──────────────────────
   @Get('nearby')
   async nearbySearch(
@@ -154,6 +157,13 @@ export class PlacesController {
     @Query('destination') destination: string,
     @Query('waypoints') waypointsStr?: string,
   ) {
+    // Generate a cache key
+    const cacheKey = `${type}-${lat}-${lng}-${destination}-${waypointsStr || ''}`;
+    const cached = this.nearbyCache.get(cacheKey);
+    if (cached && Date.now() < cached.expiresAt) {
+      return cached.data;
+    }
+
     // Map user-friendly type names to OSM tags
     const osmTagMap: Record<string, string> = {
       restaurant: 'amenity=restaurant',
@@ -202,7 +212,7 @@ export class PlacesController {
         try {
           const geoRes = await fetch(
             `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destination || 'Manali')}&limit=1`,
-            { headers: { 'User-Agent': 'JournEaze/1.0', 'Accept-Language': 'en' } },
+            { headers: { 'User-Agent': 'JournEazeApp/1.0 (contact@journeaze.com)', 'Accept-Language': 'en' } },
           );
           const geoData = await geoRes.json();
           if (geoData?.[0]) {
@@ -224,30 +234,51 @@ export class PlacesController {
       `;
     }
 
-    try {
-      const res = await fetch('https://overpass-api.de/api/interpreter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `data=${encodeURIComponent(overpassQuery)}`,
-      });
+    // List of backup overpass API instances to avoid 429
+    const overpassEndpoints = [
+      'https://overpass-api.de/api/interpreter',
+      'https://lz4.overpass-api.de/api/interpreter',
+      'https://z.overpass-api.de/api/interpreter',
+      'https://overpass.kumi.systems/api/interpreter'
+    ];
 
-      if (!res.ok) {
-        console.error('Overpass API error:', res.status);
-        return { places: [] };
+    for (const endpoint of overpassEndpoints) {
+      try {
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent': 'JournEazeApp/1.0 (contact@journeaze.com)'
+          },
+          body: `data=${encodeURIComponent(overpassQuery)}`,
+        });
+
+        if (!res.ok) {
+          console.warn(`[Overpass API] Failed at ${endpoint} with status ${res.status}`);
+          continue; // Try next instance
+        }
+
+        const data = await res.json();
+        const places = (data.elements || []).map((el: any) => ({
+          lat: el.lat,
+          lng: el.lon,
+          name: el.tags?.name || `${type} (unnamed)`,
+          type: type,
+        }));
+
+        const result = { places };
+        // Cache result for 12 hours (43200000 ms)
+        this.nearbyCache.set(cacheKey, { data: result, expiresAt: Date.now() + 43200000 });
+        
+        return result;
+      } catch (error) {
+        console.warn(`[Overpass API] Error at ${endpoint}:`, error);
+        continue; // Try next instance
       }
-
-      const data = await res.json();
-      const places = (data.elements || []).map((el: any) => ({
-        lat: el.lat,
-        lng: el.lon,
-        name: el.tags?.name || `${type} (unnamed)`,
-        type: type,
-      }));
-
-      return { places };
-    } catch (error) {
-      console.error('Overpass fetch error:', error);
-      return { places: [] };
     }
+
+    // If all fail, return empty list instead of crashing
+    console.error('[Overpass API] All instances failed.');
+    return { places: [] };
   }
 }

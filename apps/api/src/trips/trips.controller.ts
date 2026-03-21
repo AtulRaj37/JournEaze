@@ -10,6 +10,18 @@ import type { User } from '@journeaze/database';
 export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 
+  // --- PUBLIC JOIN ROUTES (auth required, but no membership check) ---
+
+  @Get(':id/preview')
+  getPreview(@Param('id') id: string) {
+    return this.tripsService.getPreview(id);
+  }
+
+  @Post(':id/join')
+  joinTrip(@Param('id') tripId: string, @CurrentUser() user: User) {
+    return this.tripsService.joinByLink(tripId, user.id);
+  }
+
   @Post()
   create(@CurrentUser() user: User, @Body() createTripDto: CreateTripDto) {
     return this.tripsService.create(user.id, createTripDto);
