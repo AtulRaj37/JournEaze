@@ -428,7 +428,7 @@ export default function TripDetailsPage() {
     const heroImage = trip.coverImage || "";
 
     return (
-        <div className="min-h-screen bg-zinc-950 text-white selection:bg-zinc-800 pb-20">
+        <div ref={targetRef} className="min-h-screen bg-zinc-950 text-white selection:bg-zinc-800 pb-20">
             {/* ═══ Hero Section ═══ */}
             <div className="relative h-[45vh] w-full min-h-[380px]">
                 {/* Cover Image Background */}

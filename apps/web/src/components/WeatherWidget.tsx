@@ -9,23 +9,16 @@ interface WeatherWidgetProps {
     destinationName: string;
 }
 
-export default function WeatherWidget({ latitude, longitude, destinationName }: WeatherWidgetProps) {
+export default function WeatherWidget({ latitude, longitude, destinationName }: WeatherWidgetProps): React.JSX.Element | null {
     const [weather, setWeather] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!latitude || !longitude) {
-            setLoading(false);
-            return;
-        }
-
-        const fetchWeather = async () => {
+        const fetchForecast = async (lat: number, lng: number) => {
             try {
-                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`);
+                const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`);
                 const data = await res.json();
-                if (data.daily) {
-                    setWeather(data.daily);
-                }
+                if (data.daily) setWeather(data.daily);
             } catch (err) {
                 console.error("Weather fetch error", err);
             } finally {
@@ -33,10 +26,33 @@ export default function WeatherWidget({ latitude, longitude, destinationName }: 
             }
         };
 
-        fetchWeather();
-    }, [latitude, longitude]);
+        if (!latitude || !longitude) {
+            if (!destinationName) {
+                setLoading(false);
+                return;
+            }
+            // Fallback Geocoding
+            const fetchGeo = async () => {
+                try {
+                    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(destinationName)}&count=1&language=en&format=json`);
+                    const geoData = await geoRes.json();
+                    if (geoData.results && geoData.results.length > 0) {
+                        fetchForecast(geoData.results[0].latitude, geoData.results[0].longitude);
+                    } else {
+                        setLoading(false);
+                    }
+                } catch (e) {
+                    setLoading(false);
+                }
+            };
+            fetchGeo();
+            return;
+        }
 
-    if (!latitude || !longitude) return null;
+        fetchForecast(latitude, longitude);
+    }, [latitude, longitude, destinationName]);
+
+    if (!loading && !weather) return null;
 
     const getWeatherIcon = (code: number) => {
         if (code === 0) return <Sun className="w-8 h-8 text-yellow-500 drop-shadow-lg" />;

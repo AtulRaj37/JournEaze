@@ -187,9 +187,9 @@ export default function TripItineraryBoard({ initialItinerary, tripId, onUpdate 
                                                             <div {...provided.dragHandleProps} className="text-zinc-600 hover:text-white cursor-grab active:cursor-grabbing p-1">
                                                                 <GripVertical className="w-4 h-4" />
                                                             </div>
-                                                            <div className="w-8 h-8 rounded-full bg-zinc-800/80 border border-zinc-700 text-purple-400 flex items-center justify-center flex-shrink-0 mt-2">
+                                                            <a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(act.locationName || act.title || "")}`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-zinc-800/80 hover:bg-zinc-700 hover:scale-110 border border-zinc-700 text-purple-400 hover:text-purple-300 flex items-center justify-center flex-shrink-0 mt-2 transition-all shadow-md">
                                                                 <Icon className="w-4 h-4" />
-                                                            </div>
+                                                            </a>
                                                         </div>
 
                                                         {/* Content */}
