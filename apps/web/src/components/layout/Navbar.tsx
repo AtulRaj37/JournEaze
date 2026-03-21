@@ -4,8 +4,10 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
-import { LayoutDashboard, Map, Plus, LogOut, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { LayoutDashboard, Map, Plus, LogOut, Menu, X, User as UserIcon, Settings } from "lucide-react";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -16,6 +18,14 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [user, setUser] = useState<{name: string, email: string, image?: string} | null>(null);
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("user");
+      if (stored) setUser(JSON.parse(stored));
+    } catch (e) {}
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -101,14 +111,33 @@ export default function Navbar() {
 
         {/* ─── Right actions ─── */}
         <div className="flex items-center gap-1">
-          <motion.button
-            whileHover={{ scale: 1.07, backgroundColor: "rgba(255,255,255,0.06)" }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleLogout}
-            className="hidden md:flex items-center justify-center w-9 h-9 rounded-xl text-zinc-400 hover:text-white transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-          </motion.button>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="hidden md:flex items-center justify-center rounded-xl p-1 hover:bg-white/5 transition-colors outline-none cursor-pointer">
+              <Avatar className="w-8 h-8 rounded-lg border border-white/10 bg-zinc-900 shadow-sm">
+                <AvatarImage src={user?.image} />
+                <AvatarFallback className="bg-zinc-800 text-xs text-white rounded-lg font-medium">{user?.name?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 bg-zinc-950 border border-white/10 text-white rounded-xl shadow-2xl p-2 z-[100] mt-2">
+              <DropdownMenuLabel className="font-normal p-2">
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium leading-none text-white">{user?.name || "Explorer"}</p>
+                  <p className="text-xs leading-none text-zinc-400">{user?.email}</p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-white/10 my-1" />
+              <DropdownMenuItem className="p-2 gap-2 rounded-lg cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 focus:text-white text-zinc-300">
+                <UserIcon className="w-4 h-4 text-zinc-400" /> <span className="flex-1">Profile</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem className="p-2 gap-2 rounded-lg cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 focus:text-white text-zinc-300">
+                <Settings className="w-4 h-4 text-zinc-400" /> <span className="flex-1">Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator className="bg-white/10 my-1" />
+              <DropdownMenuItem onClick={handleLogout} className="p-2 gap-2 rounded-lg cursor-pointer hover:bg-red-500/20 focus:bg-red-500/20 focus:text-red-400 text-red-500 transition-colors">
+                <LogOut className="w-4 h-4" /> <span className="flex-1">Log out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           <button
             className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl text-zinc-400 hover:text-white"

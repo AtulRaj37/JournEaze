@@ -6,6 +6,10 @@ export class RegisterDto {
     email!: string;
 
     @IsString()
+    @IsNotEmpty()
+    username!: string;
+
+    @IsString()
     @MinLength(6)
     @IsNotEmpty()
     password!: string;
@@ -16,9 +20,9 @@ export class RegisterDto {
 }
 
 export class LoginDto {
-    @IsEmail()
+    @IsString()
     @IsNotEmpty()
-    email!: string;
+    identifier!: string;
 
     @IsString()
     @IsNotEmpty()
