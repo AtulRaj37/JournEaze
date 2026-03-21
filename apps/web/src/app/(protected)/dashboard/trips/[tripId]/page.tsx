@@ -49,7 +49,19 @@ export default function TripDetailsPage() {
     const [trip, setTrip] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const { toPDF, targetRef } = usePDF({ filename: `${trip?.title || 'trip'}-itinerary.pdf` });
+    const { toPDF, targetRef } = usePDF({ 
+        filename: `${trip?.title || 'trip'}-itinerary.pdf`,
+        overrides: { canvas: { useCORS: true, allowTaint: true } }
+    });
+
+    const handlePrintPDF = async () => {
+        try {
+            await toPDF();
+        } catch (error: any) {
+            console.error("PDF Export failed:", error);
+            alert("Failed to export PDF: " + error.message);
+        }
+    };
 
     const handleWhatsAppShare = () => {
         if (!trip) return;
@@ -454,7 +466,7 @@ export default function TripDetailsPage() {
                             <Download className="w-4 h-4 mr-2" /> Export Trip
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800 text-zinc-100">
-                            <DropdownMenuItem onClick={() => toPDF()} className="hover:bg-zinc-800 cursor-pointer flex items-center gap-2">
+                            <DropdownMenuItem onClick={handlePrintPDF} className="hover:bg-zinc-800 cursor-pointer flex items-center gap-2">
                                 <FileText className="w-4 h-4 text-rose-400" /> Save as PDF
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={handleWhatsAppShare} className="hover:bg-zinc-800 cursor-pointer flex items-center gap-2">
