@@ -11,7 +11,8 @@ const withPWA = withPWAInit({
     disableDevLogs: true,
   },
 });
-const nextConfig: NextConfig = {
+const nextConfig: any = {
+  turbopack: {},
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
