@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Eye, EyeOff, Mail, ArrowLeft, Chrome } from "lucide-react";
+import { Loader2, Eye, EyeOff, Mail, ArrowLeft, ArrowRight, Compass } from "lucide-react";
+
 const GoogleIcon = () => (
     <svg viewBox="0 0 24 24" className="w-5 h-5 mr-3">
         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -47,10 +47,8 @@ export default function LoginPage() {
 
             const data = await res.json();
             localStorage.setItem("token", data.accessToken);
-            // Optionally, save user data locally
             localStorage.setItem("user", JSON.stringify(data.user));
             
-            // Redirect to dashboard
             router.push("/dashboard");
         } catch (err: any) {
             setError(err.message);
@@ -60,73 +58,145 @@ export default function LoginPage() {
     };
 
     return (
-        <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-zinc-950 p-4 selection:bg-zinc-800 text-white">
-            {/* Background elements */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-30"></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-white/5 rounded-full blur-[120px] pointer-events-none"></div>
+        <main className="relative flex min-h-screen bg-zinc-950 text-white selection:bg-purple-500/30">
+            {/* Left Side: Premium Image Cover */}
+            <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+                <div className="absolute inset-0 bg-zinc-950/20 z-10"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent z-10 opacity-80"></div>
+                <motion.img 
+                    initial={{ scale: 1.05 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 1.5, ease: "easeOut" }}
+                    src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" 
+                    className="absolute inset-0 w-full h-full object-cover" 
+                    alt="Scenic travel destination"
+                />
+                
+                {/* Floating UI Elements on Image */}
+                <div className="relative z-20 flex flex-col justify-between p-12 h-full w-full">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20 shadow-2xl">
+                            <Compass className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="font-bold text-2xl tracking-tight text-white drop-shadow-md">JournEaze</span>
+                    </div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="z-10 w-full max-w-md"
-            >
-                <Card className="border-white/10 bg-zinc-900/60 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden">
-                    <form onSubmit={handleLogin}>
-                        <CardHeader className="space-y-3 pb-6 border-b border-white/5 relative">
+                    <div className="max-w-md pb-12">
+                        <motion.h1 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.2, duration: 0.7 }}
+                            className="text-4xl md:text-5xl font-bold tracking-tight mb-5 leading-tight drop-shadow-lg"
+                        >
+                            Return to your next great adventure.
+                        </motion.h1>
+                        <motion.p 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4, duration: 0.7 }}
+                            className="text-lg text-zinc-300 font-medium drop-shadow-md"
+                        >
+                            Plan, map, and organize your trips seamlessly with intelligent AI.
+                        </motion.p>
+                    </div>
+                </div>
+            </div>
+
+            {/* Right Side: Login Form */}
+            <div className="flex w-full lg:w-1/2 min-h-screen items-center justify-center p-6 sm:p-12 relative overflow-hidden">
+                {/* Subtle background glow for the right panel */}
+                <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+                <div className="w-full max-w-[400px] z-10">
+                    <motion.div
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.5, ease: "easeOut" }}
+                        className="flex flex-col space-y-8"
+                    >
+                        <div className="space-y-2">
                             {authMethod === "email" && (
-                                <button type="button" onClick={() => setAuthMethod("initial")} className="absolute left-6 top-6 text-zinc-400 hover:text-white transition-colors">
-                                    <ArrowLeft className="w-5 h-5" />
+                                <button 
+                                    type="button" 
+                                    onClick={() => setAuthMethod("initial")} 
+                                    className="flex items-center text-sm font-medium text-zinc-400 hover:text-white transition-colors mb-6 group"
+                                >
+                                    <ArrowLeft className="w-4 h-4 mr-2 transition-transform group-hover:-translate-x-1" />
+                                    Back
                                 </button>
                             )}
-                            <CardTitle className="text-3xl font-bold tracking-tight text-center text-white">Welcome back</CardTitle>
-                            <CardDescription className="text-zinc-400 text-center text-base">
-                                {authMethod === "initial" ? "Log in to access your journeys." : "Enter your credentials to continue."}
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="pt-6 relative">
-                            {error && (
-                                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="p-3 text-sm text-red-400 bg-red-950/50 border border-red-900/50 rounded-lg text-center">
-                                    {error}
-                                </motion.div>
-                            )}
-                            <AnimatePresence mode="popLayout">
+                            <h2 className="text-3xl font-bold tracking-tight text-white">Welcome back</h2>
+                            <p className="text-zinc-400">
+                                {authMethod === "initial" ? "Log in to your account to continue." : "Enter your email and password to sign in."}
+                            </p>
+                        </div>
+
+                        {error && (
+                            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="p-3 text-sm text-red-400 bg-red-950/30 border border-red-900/50 rounded-lg text-center backdrop-blur-sm">
+                                {error}
+                            </motion.div>
+                        )}
+
+                        <form onSubmit={handleLogin} className="mt-8">
+                            <AnimatePresence mode="wait">
                                 {authMethod === "initial" ? (
-                                    <motion.div key="initial" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4">
-                                        <Button type="button" className="w-full h-12 bg-white hover:bg-zinc-200 text-zinc-900 border-none rounded-xl font-semibold transition-all flex items-center justify-center shadow-md dark:bg-white dark:hover:bg-zinc-200 dark:text-zinc-900" onClick={() => {
-                                            const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-                                            window.location.href = `${apiUrl}/auth/google`;
-                                        }}>
+                                    <motion.div 
+                                        key="initial" 
+                                        initial={{ opacity: 0, filter: "blur(4px)" }} 
+                                        animate={{ opacity: 1, filter: "blur(0px)" }} 
+                                        exit={{ opacity: 0, filter: "blur(4px)" }} 
+                                        transition={{ duration: 0.3 }}
+                                        className="space-y-4"
+                                    >
+                                        <Button 
+                                            type="button" 
+                                            className="w-full h-12 bg-white hover:bg-zinc-200 text-zinc-900 rounded-xl font-semibold transition-all flex items-center justify-center cursor-pointer" 
+                                            onClick={() => {
+                                                const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+                                                window.location.href = `${apiUrl}/auth/google`;
+                                            }}
+                                        >
                                             <GoogleIcon /> Continue with Google
                                         </Button>
                                         
-                                        <div className="relative flex items-center justify-center my-6">
-                                            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-white/10"></div></div>
-                                            <span className="relative bg-[#09090b] px-3 flex items-center text-sm text-zinc-500 shadow-[0_0_20px_#09090b]">or</span>
+                                        <div className="relative flex items-center justify-center py-4">
+                                            <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-zinc-800"></div></div>
+                                            <span className="relative bg-zinc-950 px-4 text-xs font-medium text-zinc-500 uppercase tracking-widest">Or continue with</span>
                                         </div>
 
-                                        <Button type="button" className="w-full h-12 bg-zinc-800 text-white hover:bg-zinc-700 rounded-xl font-medium transition-all border border-zinc-700" onClick={() => setAuthMethod("email")}>
-                                            <Mail className="mr-2 h-5 w-5" /> Continue with Email
+                                        <Button 
+                                            type="button" 
+                                            className="w-full h-12 bg-zinc-900/50 hover:bg-zinc-800 text-white border border-zinc-800 rounded-xl font-medium transition-all group" 
+                                            onClick={() => setAuthMethod("email")}
+                                        >
+                                            <Mail className="mr-2 h-5 w-5 text-zinc-400 group-hover:text-white transition-colors" /> Continue with Email
                                         </Button>
                                     </motion.div>
                                 ) : (
-                                    <motion.div key="email" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-5">
+                                    <motion.div 
+                                        key="email" 
+                                        initial={{ opacity: 0, filter: "blur(4px)" }} 
+                                        animate={{ opacity: 1, filter: "blur(0px)" }} 
+                                        exit={{ opacity: 0, filter: "blur(4px)" }} 
+                                        transition={{ duration: 0.3 }}
+                                        className="space-y-5"
+                                    >
                                         <div className="space-y-2">
-                                            <Label htmlFor="identifier" className="text-zinc-300">Email or Username</Label>
+                                            <Label htmlFor="identifier" className="text-sm font-medium text-zinc-300">Email or Username</Label>
                                             <Input 
                                                 id="identifier" 
                                                 type="text" 
                                                 required
-                                                placeholder="explorer@example.com or @explorer" 
-                                                className="h-12 bg-zinc-950/50 border-white/10 text-white placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-white/30 focus-visible:border-white/30 transition-all rounded-xl"
+                                                placeholder="explorer@example.com" 
+                                                className="h-12 bg-zinc-900/50 border-zinc-800 focus:border-purple-500/50 text-white placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-purple-500/50 transition-all rounded-xl"
                                                 value={identifier}
                                                 onChange={(e) => setIdentifier(e.target.value)}
                                             />
                                         </div>
                                         <div className="space-y-2">
                                             <div className="flex items-center justify-between">
-                                                <Label htmlFor="password" className="text-zinc-300">Password</Label>
-                                                <Link href="#" className="text-xs text-zinc-400 hover:text-white transition-colors">Forgot password?</Link>
+                                                <Label htmlFor="password" className="text-sm font-medium text-zinc-300">Password</Label>
+                                                <Link href="#" className="text-xs font-medium text-purple-400 hover:text-purple-300 transition-colors">Forgot password?</Link>
                                             </div>
                                             <div className="relative">
                                                 <Input 
@@ -134,41 +204,46 @@ export default function LoginPage() {
                                                     type={showPassword ? "text" : "password"} 
                                                     required
                                                     placeholder="••••••••"
-                                                    className="h-12 bg-zinc-950/50 border-white/10 text-white placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-white/30 focus-visible:border-white/30 transition-all rounded-xl" 
+                                                    className="h-12 bg-zinc-900/50 border-zinc-800 focus:border-purple-500/50 text-white placeholder:text-zinc-600 focus-visible:ring-1 focus-visible:ring-purple-500/50 transition-all rounded-xl pr-10" 
                                                     value={password}
                                                     onChange={(e) => setPassword(e.target.value)}
                                                 />
                                                 <button
                                                     type="button"
                                                     onClick={() => setShowPassword(!showPassword)}
-                                                    className="absolute right-0 top-0 h-12 px-3 flex items-center justify-center text-zinc-500 hover:text-zinc-300 transition-colors"
+                                                    className="absolute right-0 top-0 h-12 w-12 flex items-center justify-center text-zinc-500 hover:text-zinc-300 transition-colors"
                                                 >
-                                                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                                                 </button>
                                             </div>
                                         </div>
                                         <Button 
                                             type="submit" 
                                             disabled={isLoading}
-                                            className="w-full h-12 bg-white text-black hover:bg-zinc-200 rounded-xl font-medium shadow-[0_0_15px_rgba(255,255,255,0.1)] transition-all mt-6"
+                                            className="w-full h-12 bg-purple-600 hover:bg-purple-500 text-white rounded-xl font-medium shadow-[0_0_20px_rgba(147,51,234,0.3)] transition-all mt-6 group"
                                         >
-                                            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Sign in to JournEaze"}
+                                            {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : (
+                                                <span className="flex items-center justify-center">
+                                                    Sign in to JournEaze <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                                                </span>
+                                            )}
                                         </Button>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
-                        </CardContent>
-                        <CardFooter className="flex flex-col space-y-5 pt-2 pb-8">
-                            <p className="text-sm text-center text-zinc-400 mt-2">
+                        </form>
+
+                        <div className="text-center">
+                            <p className="text-sm text-zinc-400">
                                 Don't have an account?{" "}
-                                <Link href="/register" className="text-white hover:text-zinc-300 font-medium underline underline-offset-4 transition-colors">
-                                    Sign up
+                                <Link href="/register" className="text-white hover:text-purple-400 font-medium transition-colors">
+                                    Sign up now
                                 </Link>
                             </p>
-                        </CardFooter>
-                    </form>
-                </Card>
-            </motion.div>
+                        </div>
+                    </motion.div>
+                </div>
+            </div>
         </main>
     );
 }
