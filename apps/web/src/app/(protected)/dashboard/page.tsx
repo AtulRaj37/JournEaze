@@ -522,9 +522,9 @@ export default function DashboardPage() {
                                 </div>
 
                                 <DialogFooter className="pt-4">
-                                    <Button type="submit" disabled={isCreating || isFetchingImage} className="w-full bg-white text-black hover:bg-zinc-200 h-12 rounded-xl font-semibold text-base">
+                                    <Button type="submit" disabled={isCreating || !title || !destination || isFetchingImage} className="w-full bg-white text-black hover:bg-zinc-200 h-12 rounded-xl font-bold text-base transition-all hover:scale-[1.02] shadow-lg shadow-white/10 active:scale-95">
                                         {(isCreating || isFetchingImage) ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Sparkles className="mr-2 h-4 w-4" />}
-                                        {isCreating ? (editingTripId ? "Saving..." : "Creating...") : isFetchingImage ? "Preparing Destination..." : (editingTripId ? "Save Changes" : "Blast Off 🚀")}
+                                        {isCreating ? (editingTripId ? "Saving..." : "Creating...") : isFetchingImage ? "Preparing Destination..." : (editingTripId ? "Save Changes" : "Let's Go 🚀")}
                                     </Button>
                                 </DialogFooter>
                             </form>
