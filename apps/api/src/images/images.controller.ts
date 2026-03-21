@@ -26,10 +26,18 @@ export class ImagesController {
 
     try {
       const query = encodeURIComponent(`${city} famous landmark tourism`);
-      const res = await fetch(
+      let res = await fetch(
         `https://api.unsplash.com/photos/random?query=${query}&orientation=landscape`,
         { headers: { Authorization: `Client-ID ${this.unsplashKey}` } },
       );
+
+      // If specific search fails, try just the city name
+      if (!res.ok) {
+        res = await fetch(
+          `https://api.unsplash.com/photos/random?query=${encodeURIComponent(city)}&orientation=landscape`,
+          { headers: { Authorization: `Client-ID ${this.unsplashKey}` } },
+        );
+      }
 
       if (!res.ok) {
         console.error('Unsplash API error:', res.status, await res.text());

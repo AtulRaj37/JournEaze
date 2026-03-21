@@ -22,8 +22,8 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     ): Promise<any> {
         const { emails, displayName, photos } = profile;
         const user = {
-            email: emails[0].value,
-            name: displayName,
+            email: emails?.[0]?.value || `${profile.id}@google.oauth`,
+            name: displayName || 'Google User',
             image: photos?.[0]?.value || null,
         };
         done(null, user);
