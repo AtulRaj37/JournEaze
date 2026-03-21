@@ -256,27 +256,23 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
       const L = await import("leaflet");
       const allPlaces: any[] = [];
 
-      // Route-aware sequential fetch (avoids Overpass 429 Too Many Requests)
+      // Route-aware single fetch (FAST, ONE REQUEST)
       if (routeWaypointsRef.current && routeWaypointsRef.current.length > 1) {
         const waypoints = routeWaypointsRef.current;
-        const seen = new Set<string>();
-
-        // Fetch sequentially instead of Promise.all to respect rate limits
-        for (const wp of waypoints) {
-          const params = new URLSearchParams({ type, destination, lat: String(wp[0]), lng: String(wp[1]) });
-          try {
-            const res = await fetch(`${apiUrl}/places/nearby?${params}`);
-            if (res.ok) {
-              const data = await res.json();
-              (data.places || []).forEach((p: any) => {
-                const key = `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`;
-                if (!seen.has(key)) { seen.add(key); allPlaces.push(p); }
-              });
-            }
-            // Small delay to prevent 429
-            await new Promise(r => setTimeout(r, 200));
-          } catch (e) { console.error(e); }
-        }
+        const waypointsStr = waypoints.map(w => `${w[0]},${w[1]}`).join('|');
+        const params = new URLSearchParams({ type, destination, waypoints: waypointsStr });
+        
+        try {
+          const res = await fetch(`${apiUrl}/places/nearby?${params}`);
+          if (res.ok) {
+            const data = await res.json();
+            const seen = new Set<string>();
+            (data.places || []).forEach((p: any) => {
+              const key = `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`;
+              if (!seen.has(key)) { seen.add(key); allPlaces.push(p); }
+            });
+          }
+        } catch (e) { console.error(e); }
       } else {
         // No route — search around destination
         const params = new URLSearchParams({ type, destination });

@@ -152,6 +152,7 @@ export class PlacesController {
     @Query('lat') lat: string,
     @Query('lng') lng: string,
     @Query('destination') destination: string,
+    @Query('waypoints') waypointsStr?: string,
   ) {
     // Map user-friendly type names to OSM tags
     const osmTagMap: Record<string, string> = {
@@ -170,35 +171,53 @@ export class PlacesController {
     const tag = osmTagMap[(type || '').toLowerCase()] || `amenity=${(type || 'restaurant').toLowerCase()}`;
     const [tagKey, tagVal] = tag.split('=');
 
-    let searchLat = parseFloat(lat);
-    let searchLng = parseFloat(lng);
+    let overpassQuery = '';
 
-    // If no valid coords, geocode the destination
-    if (!searchLat || !searchLng || isNaN(searchLat) || isNaN(searchLng)) {
-      try {
-        const geoRes = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destination || 'Manali')}&limit=1`,
-          { headers: { 'User-Agent': 'JournEaze/1.0', 'Accept-Language': 'en' } },
+    // If multiple waypoints, do a union query to get POIs along the entire route in ONE request
+    if (waypointsStr) {
+      const waypoints = waypointsStr.split('|').map(w => w.split(',').map(Number));
+      // Cap at 15 waypoints to avoid over-taxing Overpass API
+      const wpToUse = waypoints.slice(0, 15);
+      
+      const statements = wpToUse.map(wp => `node["${tagKey}"="${tagVal}"](around:2500,${wp[0]},${wp[1]});`).join('\\n      ');
+      
+      overpassQuery = `
+        [out:json][timeout:25];
+        (
+          ${statements}
         );
-        const geoData = await geoRes.json();
-        if (geoData?.[0]) {
-          searchLat = parseFloat(geoData[0].lat);
-          searchLng = parseFloat(geoData[0].lon);
-        } else {
+        out body 50;
+      `;
+    } else {
+      let searchLat = parseFloat(lat);
+      let searchLng = parseFloat(lng);
+
+      // If no valid coords, geocode the destination
+      if (!searchLat || !searchLng || isNaN(searchLat) || isNaN(searchLng)) {
+        try {
+          const geoRes = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destination || 'Manali')}&limit=1`,
+            { headers: { 'User-Agent': 'JournEaze/1.0', 'Accept-Language': 'en' } },
+          );
+          const geoData = await geoRes.json();
+          if (geoData?.[0]) {
+            searchLat = parseFloat(geoData[0].lat);
+            searchLng = parseFloat(geoData[0].lon);
+          } else {
+            return { places: [] };
+          }
+        } catch {
           return { places: [] };
         }
-      } catch {
-        return { places: [] };
       }
-    }
 
-    // Query Overpass API for POIs within 5km radius
-    const radius = 5000;
-    const overpassQuery = `
-      [out:json][timeout:10];
-      node["${tagKey}"="${tagVal}"](around:${radius},${searchLat},${searchLng});
-      out body 10;
-    `;
+      // Single point search (5km radius)
+      overpassQuery = `
+        [out:json][timeout:25];
+        node["${tagKey}"="${tagVal}"](around:5000,${searchLat},${searchLng});
+        out body 30;
+      `;
+    }
 
     try {
       const res = await fetch('https://overpass-api.de/api/interpreter', {
