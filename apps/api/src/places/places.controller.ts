@@ -176,10 +176,15 @@ export class PlacesController {
     // If multiple waypoints, do a union query to get POIs along the entire route in ONE request
     if (waypointsStr) {
       const waypoints = waypointsStr.split('|').map(w => w.split(',').map(Number));
+      const validWaypoints = waypoints.filter(wp => !isNaN(wp[0]) && !isNaN(wp[1]));
       // Cap at 15 waypoints to avoid over-taxing Overpass API
-      const wpToUse = waypoints.slice(0, 15);
+      const wpToUse = validWaypoints.slice(0, 15);
       
-      const statements = wpToUse.map(wp => `node["${tagKey}"="${tagVal}"](around:2500,${wp[0]},${wp[1]});`).join('\\n      ');
+      if (wpToUse.length === 0) {
+        return { places: [] };
+      }
+      
+      const statements = wpToUse.map(wp => `node["${tagKey}"="${tagVal}"](around:2500,${wp[0]},${wp[1]});`).join('\n      ');
       
       overpassQuery = `
         [out:json][timeout:25];

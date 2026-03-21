@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { Loader2, Navigation, MapPin, Clock, Route, X } from "lucide-react";
+import { Loader2, Navigation, MapPin, Clock, Route, X, ArrowUpDown, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 // Unique emoji + color per category so no two look alike
@@ -27,10 +27,12 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
   const routeControlRef = useRef<any>(null);
   const nearbyMarkersRef = useRef<Record<string, any[]>>({});
   const routeWaypointsRef = useRef<[number, number][] | null>(null);
+  const routeMarkersRef = useRef<any[]>([]);
 
   const [isLoaded, setIsLoaded] = useState(false);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState(destination);
+  const [stops, setStops] = useState<{ id: string; value: string }[]>([]);
   const [isRouting, setIsRouting] = useState(false);
   const [routeInfo, setRouteInfo] = useState<{ distance: string; duration: string } | null>(null);
   const [activeNearby, setActiveNearby] = useState<Set<string>>(new Set());
@@ -151,10 +153,26 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
     toDebounceRef.current = setTimeout(() => searchPlaces(value, "to"), 300);
   };
 
+  const handleSwap = () => {
+    const temp = from;
+    setFrom(to);
+    setTo(temp);
+  };
+
+  const handleAddStop = () => {
+    setStops([...stops, { id: crypto.randomUUID(), value: "" }]);
+  };
+
+  const handleRemoveStop = (id: string) => {
+    setStops(stops.filter(s => s.id !== id));
+  };
+
+  const updateStop = (id: string, value: string) => {
+    setStops(stops.map(s => s.id === id ? { ...s, value } : s));
+  };
+
   const geocodePlace = async (place: string): Promise<[number, number] | null> => {
     try {
-      // If the user selected an autocomplete result, they might already have an exact description
-      // But Nominatim is still a good generic fall-back 
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(place)}&limit=1`,
         { headers: { "Accept-Language": "en" } }
@@ -183,6 +201,11 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
         map.removeControl(routeControlRef.current);
         routeControlRef.current = null;
       }
+      
+      if (routeMarkersRef.current.length > 0) {
+        routeMarkersRef.current.forEach(m => map.removeLayer(m));
+        routeMarkersRef.current = [];
+      }
 
       const fromCoords = from.trim()
         ? await geocodePlace(from)
@@ -190,13 +213,24 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
       const toCoords = await geocodePlace(to || destination);
 
       if (!fromCoords || !toCoords) {
-        alert("Could not find one of the locations. Please be more specific.");
+        alert("Could not find origin or destination. Please be more specific.");
         setIsRouting(false);
         return;
       }
 
+      const stopCoordsList: [number, number][] = [];
+      for (const stop of stops) {
+        if (stop.value.trim()) {
+           const sc = await geocodePlace(stop.value);
+           if (sc) stopCoordsList.push(sc);
+        }
+      }
+
+      const allPoints = [fromCoords, ...stopCoordsList, toCoords];
+      const coordsString = allPoints.map(c => `${c[1]},${c[0]}`).join(";");
+
       const routeRes = await fetch(
-        `https://router.project-osrm.org/route/v1/driving/${fromCoords[1]},${fromCoords[0]};${toCoords[1]},${toCoords[0]}?overview=full&geometries=geojson`
+        `https://router.project-osrm.org/route/v1/driving/${coordsString}?overview=full&geometries=geojson`
       );
       const routeData = await routeRes.json();
 
@@ -208,7 +242,6 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
         setRouteInfo({ distance: `${distKm} km`, duration: durationHr });
 
         const coords: [number, number][] = route.geometry.coordinates.map((c: [number, number]) => [c[1], c[0]]);
-        if (routeControlRef.current) map.removeLayer(routeControlRef.current);
         const polyline = L.polyline(coords, { color: "#6366f1", weight: 5, opacity: 0.8 }).addTo(map);
         routeControlRef.current = polyline;
 
@@ -219,8 +252,17 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
         if (waypoints[waypoints.length - 1] !== coords[coords.length - 1]) waypoints.push(coords[coords.length - 1]);
         routeWaypointsRef.current = waypoints;
 
-        L.marker(fromCoords).addTo(map).bindPopup(`<strong>Start:</strong> ${from || destination}`);
-        L.marker(toCoords).addTo(map).bindPopup(`<strong>End:</strong> ${to}`).openPopup();
+        // Add markers
+        routeMarkersRef.current.push(
+          L.marker(fromCoords).addTo(map).bindPopup(`<strong>Start:</strong> ${from || (destination ? "Trip Start" : "Location")}`)
+        );
+        routeMarkersRef.current.push(
+          L.marker(toCoords).addTo(map).bindPopup(`<strong>End:</strong> ${to}`).openPopup()
+        );
+        stopCoordsList.forEach((sc, i) => {
+          routeMarkersRef.current.push(L.marker(sc).addTo(map).bindPopup(`<strong>Stop ${i+1}</strong>`));
+        });
+
         map.fitBounds(polyline.getBounds(), { padding: [40, 40] });
       }
     } catch (error) {
@@ -331,6 +373,9 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
     }
   };
 
+  const waypointsParam = stops.filter(s => s.value.trim()).map(s => encodeURIComponent(s.value)).join('|');
+  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodeURIComponent(from || (latitude && longitude ? `${latitude},${longitude}` : ""))}&destination=${encodeURIComponent(to || destination)}${waypointsParam ? `&waypoints=${waypointsParam}` : ""}`;
+
   return (
     <div className="w-full flex flex-col gap-4">
       {/* Route Planner */}
@@ -338,70 +383,114 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
         <h3 className="text-white font-semibold flex items-center gap-2 mb-3">
           <Route className="w-4 h-4 text-purple-400" /> Route Planner
         </h3>
-        <div className="flex flex-col sm:flex-row gap-2 mb-3">
-          
-          {/* Autocomplete From */}
-          <div className="relative flex-1" ref={fromContainerRef}>
-            <input
-              value={from}
-              onChange={(e) => handleFromChange(e.target.value)}
-              onFocus={() => fromSuggestions.length > 0 && setShowFromSuggestions(true)}
-              placeholder="From (leave blank to use your location)"
-              className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 outline-none focus:border-purple-500 transition-colors"
-            />
-            {isSearchingFrom && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-zinc-500" />}
-            {showFromSuggestions && fromSuggestions.length > 0 && (
-              <div className="absolute top-11 left-0 right-0 z-50 bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl overflow-hidden max-h-[200px] overflow-y-auto">
-                {fromSuggestions.map((s: any) => (
-                  <button 
-                    key={s.place_id} type="button"
-                    onClick={() => { setFrom(s.description); setShowFromSuggestions(false); }}
-                    className="w-full text-left px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white border-b border-zinc-800/50 last:border-0"
-                  >
-                    {s.description}
-                  </button>
-                ))}
-              </div>
-            )}
+        
+        <div className="flex flex-col gap-2 mb-3">
+          {/* Inputs Row */}
+          <div className="flex flex-col sm:flex-row gap-2 items-center w-full">
+            {/* Autocomplete From */}
+            <div className="relative flex-1 w-full" ref={fromContainerRef}>
+              <input
+                value={from}
+                onChange={(e) => handleFromChange(e.target.value)}
+                onFocus={() => fromSuggestions.length > 0 && setShowFromSuggestions(true)}
+                placeholder="From (leave blank to use your location)"
+                className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 outline-none focus:border-purple-500 transition-colors"
+                autoComplete="off"
+              />
+              {isSearchingFrom && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-zinc-500" />}
+              {showFromSuggestions && fromSuggestions.length > 0 && (
+                <div className="absolute top-11 left-0 right-0 z-50 bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl overflow-hidden max-h-[200px] overflow-y-auto">
+                  {fromSuggestions.map((s: any) => (
+                    <button 
+                      key={s.place_id} type="button"
+                      onClick={() => { setFrom(s.description); setShowFromSuggestions(false); }}
+                      className="w-full text-left px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white border-b border-zinc-800/50 last:border-0"
+                    >
+                      {s.description}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button 
+              onClick={handleSwap} 
+              title="Swap Routes" 
+              className="p-2 sm:p-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-full transition-colors text-zinc-400 shrink-0"
+            >
+              <ArrowUpDown className="w-4 h-4" />
+            </button>
+
+            {/* Autocomplete To */}
+            <div className="relative flex-1 w-full" ref={toContainerRef}>
+              <input
+                value={to}
+                onChange={(e) => handleToChange(e.target.value)}
+                onFocus={() => toSuggestions.length > 0 && setShowToSuggestions(true)}
+                placeholder="To"
+                className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 outline-none focus:border-purple-500 transition-colors"
+                autoComplete="off"
+              />
+              {isSearchingTo && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-zinc-500" />}
+              {showToSuggestions && toSuggestions.length > 0 && (
+                <div className="absolute top-11 left-0 right-0 z-50 bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl overflow-hidden max-h-[200px] overflow-y-auto">
+                  {toSuggestions.map((s: any) => (
+                    <button 
+                      key={s.place_id} type="button"
+                      onClick={() => { setTo(s.description); setShowToSuggestions(false); }}
+                      className="w-full text-left px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white border-b border-zinc-800/50 last:border-0"
+                    >
+                      {s.description}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
-          {/* Autocomplete To */}
-          <div className="relative flex-1" ref={toContainerRef}>
-            <input
-              value={to}
-              onChange={(e) => handleToChange(e.target.value)}
-              onFocus={() => toSuggestions.length > 0 && setShowToSuggestions(true)}
-              placeholder="To"
-              className="w-full bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 outline-none focus:border-purple-500 transition-colors"
-            />
-            {isSearchingTo && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-zinc-500" />}
-            {showToSuggestions && toSuggestions.length > 0 && (
-              <div className="absolute top-11 left-0 right-0 z-50 bg-zinc-900 border border-zinc-700 rounded-lg shadow-2xl overflow-hidden max-h-[200px] overflow-y-auto">
-                {toSuggestions.map((s: any) => (
-                  <button 
-                    key={s.place_id} type="button"
-                    onClick={() => { setTo(s.description); setShowToSuggestions(false); }}
-                    className="w-full text-left px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-white border-b border-zinc-800/50 last:border-0"
-                  >
-                    {s.description}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          {/* Additional Stops */}
+          {stops.map(stop => (
+             <div key={stop.id} className="flex gap-2 items-center w-full pl-0 sm:pl-8">
+                <input 
+                  value={stop.value} 
+                  onChange={(e) => updateStop(stop.id, e.target.value)} 
+                  placeholder="Add stop (e.g., Kullu)" 
+                  className="flex-1 min-w-0 bg-zinc-950 border border-zinc-700 rounded-lg px-3 py-2 text-sm text-white placeholder-zinc-500 outline-none focus:border-purple-500 transition-colors" 
+                  autoComplete="off"
+                />
+                <button 
+                  onClick={() => handleRemoveStop(stop.id)} 
+                  className="p-2 shrink-0 text-red-400 hover:bg-red-500/20 rounded-full transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+             </div>
+          ))}
 
-          <Button
-            onClick={handleRoute}
-            disabled={isRouting || !isLoaded}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-4 h-10 text-sm whitespace-nowrap"
-          >
-            {isRouting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Navigation className="w-4 h-4 mr-1" />}
-            Get Route
-          </Button>
+          {/* Action Buttons */}
+          <div className="flex justify-between items-center sm:justify-start gap-2 mt-2 pl-0 sm:pl-8">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleAddStop} 
+              className="text-xs h-9 border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+            >
+              <Plus className="w-3 h-3 mr-1" /> Add Stop
+            </Button>
+            
+            <Button
+              onClick={handleRoute}
+              disabled={isRouting || !isLoaded}
+              className="bg-purple-600 hover:bg-purple-700 text-white px-5 h-9 text-sm whitespace-nowrap"
+            >
+              {isRouting ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : <Navigation className="w-4 h-4 mr-1" />}
+              Get Route
+            </Button>
+          </div>
         </div>
 
         {/* Nearby Toggle Buttons (Multi-Select) */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-zinc-800/50">
           <span className="text-xs text-zinc-500">Nearby:</span>
           {NEARBY_CATEGORIES.map((cat) => {
             const isActive = activeNearby.has(cat.type);
@@ -429,7 +518,7 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
 
         {/* Route Info */}
         {routeInfo && (
-          <div className="mt-3 flex gap-4 bg-zinc-800/50 border border-zinc-700 rounded-xl p-3">
+          <div className="mt-4 flex gap-4 bg-zinc-800/50 border border-zinc-700 rounded-xl p-3">
             <div className="flex items-center gap-2 text-emerald-400">
               <MapPin className="w-4 h-4" />
               <span className="text-sm font-medium">{routeInfo.distance}</span>
@@ -456,15 +545,17 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
       </div>
 
       {/* Open externally */}
-      <a
-        href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(destination)}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex self-start items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white rounded-lg text-sm transition-colors"
-      >
-        <MapPin className="w-4 h-4 text-emerald-400" />
-        Open in Google Maps
-      </a>
+      <div className="flex flex-wrap gap-2">
+        <a
+          href={googleMapsUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white rounded-lg text-sm transition-colors"
+        >
+          <MapPin className="w-4 h-4 text-emerald-400" />
+          Open/Save in Google Maps
+        </a>
+      </div>
     </div>
   );
 }
