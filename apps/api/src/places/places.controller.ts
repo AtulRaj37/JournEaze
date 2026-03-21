@@ -111,27 +111,29 @@ export class PlacesController {
     }
 
     try {
-      // Use Mappls place detail (eLoc)
-      const url = `https://atlas.mappls.com/api/places/json?eloc=${encodeURIComponent(placeId)}`;
-      const res = await fetch(url, {
-        headers: { 'Authorization': `bearer ${token}` },
-      });
+      const isEloc = /^[a-zA-Z0-9]{6}$/.test(placeId);
+      const url = isEloc 
+        ? `https://atlas.mappls.com/api/places/json?eloc=${encodeURIComponent(placeId)}`
+        : `https://atlas.mappls.com/api/places/geocode?address=${encodeURIComponent(placeId)}`;
+
+      const res = await fetch(url, { headers: { 'Authorization': `bearer ${token}` } });
 
       if (!res.ok) {
-        console.error('Mappls eLoc error:', res.status);
+        console.error(`Mappls error for ${placeId}:`, res.status, await res.text());
         return { lat: null, lng: null, city: '', country: '' };
       }
 
       const data = await res.json();
-      console.log("eLoc API:", JSON.stringify(data));
-      const copResults = data.copResults;
+      console.log("Mappls API response:", JSON.stringify(data));
+      
+      const copResults = Array.isArray(data.copResults) ? data.copResults[0] : data.copResults;
 
       if (copResults) {
         return {
           lat: copResults.latitude ? parseFloat(copResults.latitude) : null,
           lng: copResults.longitude ? parseFloat(copResults.longitude) : null,
-          city: copResults.city || copResults.district || '',
-          country: 'India', // Mappls is India-specific
+          city: copResults.city || copResults.district || placeId,
+          country: 'India',
           formattedAddress: copResults.formattedAddress || placeId,
         };
       }
@@ -140,6 +142,88 @@ export class PlacesController {
     } catch (error) {
       console.error('Mappls place details error:', error);
       return { lat: null, lng: null, city: '', country: '' };
+    }
+  }
+
+  // ─── Nearby POI Search (Overpass API proxy) ──────────────────────
+  @Get('nearby')
+  async nearbySearch(
+    @Query('type') type: string,
+    @Query('lat') lat: string,
+    @Query('lng') lng: string,
+    @Query('destination') destination: string,
+  ) {
+    // Map user-friendly type names to OSM tags
+    const osmTagMap: Record<string, string> = {
+      restaurant: 'amenity=restaurant',
+      hotel: 'tourism=hotel',
+      atm: 'amenity=atm',
+      hospital: 'amenity=hospital',
+      airport: 'aeroway=aerodrome',
+      petrol: 'amenity=fuel',
+      pharmacy: 'amenity=pharmacy',
+      cafe: 'amenity=cafe',
+      bus: 'amenity=bus_station',
+      train: 'railway=station',
+    };
+
+    const tag = osmTagMap[(type || '').toLowerCase()] || `amenity=${(type || 'restaurant').toLowerCase()}`;
+    const [tagKey, tagVal] = tag.split('=');
+
+    let searchLat = parseFloat(lat);
+    let searchLng = parseFloat(lng);
+
+    // If no valid coords, geocode the destination
+    if (!searchLat || !searchLng || isNaN(searchLat) || isNaN(searchLng)) {
+      try {
+        const geoRes = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destination || 'Manali')}&limit=1`,
+          { headers: { 'User-Agent': 'JournEaze/1.0', 'Accept-Language': 'en' } },
+        );
+        const geoData = await geoRes.json();
+        if (geoData?.[0]) {
+          searchLat = parseFloat(geoData[0].lat);
+          searchLng = parseFloat(geoData[0].lon);
+        } else {
+          return { places: [] };
+        }
+      } catch {
+        return { places: [] };
+      }
+    }
+
+    // Query Overpass API for POIs within 5km radius
+    const radius = 5000;
+    const overpassQuery = `
+      [out:json][timeout:10];
+      node["${tagKey}"="${tagVal}"](around:${radius},${searchLat},${searchLng});
+      out body 10;
+    `;
+
+    try {
+      const res = await fetch('https://overpass-api.de/api/interpreter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `data=${encodeURIComponent(overpassQuery)}`,
+      });
+
+      if (!res.ok) {
+        console.error('Overpass API error:', res.status);
+        return { places: [] };
+      }
+
+      const data = await res.json();
+      const places = (data.elements || []).map((el: any) => ({
+        lat: el.lat,
+        lng: el.lon,
+        name: el.tags?.name || `${type} (unnamed)`,
+        type: type,
+      }));
+
+      return { places };
+    } catch (error) {
+      console.error('Overpass fetch error:', error);
+      return { places: [] };
     }
   }
 }

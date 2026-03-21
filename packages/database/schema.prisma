@@ -78,6 +78,10 @@ model Trip {
   budget      Float?
   currency    String?    @default("INR")
   coverImage  String?
+  aiItinerary   Json?
+  aiPackingList Json?
+  aiTravelTips  Json?
+  aiCustomPrompt String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -368,6 +372,7 @@ model AiDestinationCache {
   destination String   @unique   // normalised lowercase key
   overview    Json?              // result of generateDestinationOverview
   highlights  Json?              // result of generateDestinationHighlights
+  explorePlaces Json?            // categorized explore places
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }

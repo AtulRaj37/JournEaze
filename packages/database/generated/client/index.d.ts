@@ -3942,6 +3942,7 @@ export namespace Prisma {
     budget: number | null
     currency: string | null
     coverImage: string | null
+    aiCustomPrompt: string | null
     createdAt: Date | null
     updatedAt: Date | null
     creatorId: string | null
@@ -3963,6 +3964,7 @@ export namespace Prisma {
     budget: number | null
     currency: string | null
     coverImage: string | null
+    aiCustomPrompt: string | null
     createdAt: Date | null
     updatedAt: Date | null
     creatorId: string | null
@@ -3984,6 +3986,10 @@ export namespace Prisma {
     budget: number
     currency: number
     coverImage: number
+    aiItinerary: number
+    aiPackingList: number
+    aiTravelTips: number
+    aiCustomPrompt: number
     createdAt: number
     updatedAt: number
     creatorId: number
@@ -4019,6 +4025,7 @@ export namespace Prisma {
     budget?: true
     currency?: true
     coverImage?: true
+    aiCustomPrompt?: true
     createdAt?: true
     updatedAt?: true
     creatorId?: true
@@ -4040,6 +4047,7 @@ export namespace Prisma {
     budget?: true
     currency?: true
     coverImage?: true
+    aiCustomPrompt?: true
     createdAt?: true
     updatedAt?: true
     creatorId?: true
@@ -4061,6 +4069,10 @@ export namespace Prisma {
     budget?: true
     currency?: true
     coverImage?: true
+    aiItinerary?: true
+    aiPackingList?: true
+    aiTravelTips?: true
+    aiCustomPrompt?: true
     createdAt?: true
     updatedAt?: true
     creatorId?: true
@@ -4169,6 +4181,10 @@ export namespace Prisma {
     budget: number | null
     currency: string | null
     coverImage: string | null
+    aiItinerary: JsonValue | null
+    aiPackingList: JsonValue | null
+    aiTravelTips: JsonValue | null
+    aiCustomPrompt: string | null
     createdAt: Date
     updatedAt: Date
     creatorId: string
@@ -4209,6 +4225,10 @@ export namespace Prisma {
     budget?: boolean
     currency?: boolean
     coverImage?: boolean
+    aiItinerary?: boolean
+    aiPackingList?: boolean
+    aiTravelTips?: boolean
+    aiCustomPrompt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creatorId?: boolean
@@ -4241,6 +4261,10 @@ export namespace Prisma {
     budget?: boolean
     currency?: boolean
     coverImage?: boolean
+    aiItinerary?: boolean
+    aiPackingList?: boolean
+    aiTravelTips?: boolean
+    aiCustomPrompt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creatorId?: boolean
@@ -4263,6 +4287,10 @@ export namespace Prisma {
     budget?: boolean
     currency?: boolean
     coverImage?: boolean
+    aiItinerary?: boolean
+    aiPackingList?: boolean
+    aiTravelTips?: boolean
+    aiCustomPrompt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creatorId?: boolean
@@ -4315,6 +4343,10 @@ export namespace Prisma {
       budget: number | null
       currency: string | null
       coverImage: string | null
+      aiItinerary: Prisma.JsonValue | null
+      aiPackingList: Prisma.JsonValue | null
+      aiTravelTips: Prisma.JsonValue | null
+      aiCustomPrompt: string | null
       createdAt: Date
       updatedAt: Date
       creatorId: string
@@ -4736,6 +4768,10 @@ export namespace Prisma {
     readonly budget: FieldRef<"Trip", 'Float'>
     readonly currency: FieldRef<"Trip", 'String'>
     readonly coverImage: FieldRef<"Trip", 'String'>
+    readonly aiItinerary: FieldRef<"Trip", 'Json'>
+    readonly aiPackingList: FieldRef<"Trip", 'Json'>
+    readonly aiTravelTips: FieldRef<"Trip", 'Json'>
+    readonly aiCustomPrompt: FieldRef<"Trip", 'String'>
     readonly createdAt: FieldRef<"Trip", 'DateTime'>
     readonly updatedAt: FieldRef<"Trip", 'DateTime'>
     readonly creatorId: FieldRef<"Trip", 'String'>
@@ -18925,6 +18961,7 @@ export namespace Prisma {
     destination: number
     overview: number
     highlights: number
+    explorePlaces: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -18950,6 +18987,7 @@ export namespace Prisma {
     destination?: true
     overview?: true
     highlights?: true
+    explorePlaces?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -19032,6 +19070,7 @@ export namespace Prisma {
     destination: string
     overview: JsonValue | null
     highlights: JsonValue | null
+    explorePlaces: JsonValue | null
     createdAt: Date
     updatedAt: Date
     _count: AiDestinationCacheCountAggregateOutputType | null
@@ -19058,6 +19097,7 @@ export namespace Prisma {
     destination?: boolean
     overview?: boolean
     highlights?: boolean
+    explorePlaces?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["aiDestinationCache"]>
@@ -19067,6 +19107,7 @@ export namespace Prisma {
     destination?: boolean
     overview?: boolean
     highlights?: boolean
+    explorePlaces?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["aiDestinationCache"]>
@@ -19076,6 +19117,7 @@ export namespace Prisma {
     destination?: boolean
     overview?: boolean
     highlights?: boolean
+    explorePlaces?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
@@ -19089,6 +19131,7 @@ export namespace Prisma {
       destination: string
       overview: Prisma.JsonValue | null
       highlights: Prisma.JsonValue | null
+      explorePlaces: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["aiDestinationCache"]>
@@ -19488,6 +19531,7 @@ export namespace Prisma {
     readonly destination: FieldRef<"AiDestinationCache", 'String'>
     readonly overview: FieldRef<"AiDestinationCache", 'Json'>
     readonly highlights: FieldRef<"AiDestinationCache", 'Json'>
+    readonly explorePlaces: FieldRef<"AiDestinationCache", 'Json'>
     readonly createdAt: FieldRef<"AiDestinationCache", 'DateTime'>
     readonly updatedAt: FieldRef<"AiDestinationCache", 'DateTime'>
   }
@@ -19823,6 +19867,10 @@ export namespace Prisma {
     budget: 'budget',
     currency: 'currency',
     coverImage: 'coverImage',
+    aiItinerary: 'aiItinerary',
+    aiPackingList: 'aiPackingList',
+    aiTravelTips: 'aiTravelTips',
+    aiCustomPrompt: 'aiCustomPrompt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     creatorId: 'creatorId'
@@ -20006,6 +20054,7 @@ export namespace Prisma {
     destination: 'destination',
     overview: 'overview',
     highlights: 'highlights',
+    explorePlaces: 'explorePlaces',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -20144,6 +20193,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Json'
+   */
+  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+  /**
    * Reference to a field of type 'MemberRole'
    */
   export type EnumMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MemberRole'>
@@ -20175,13 +20231,6 @@ export namespace Prisma {
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
-
-
-  /**
-   * Reference to a field of type 'Json'
-   */
-  export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
     
   /**
    * Deep Input Types
@@ -20315,6 +20364,10 @@ export namespace Prisma {
     budget?: FloatNullableFilter<"Trip"> | number | null
     currency?: StringNullableFilter<"Trip"> | string | null
     coverImage?: StringNullableFilter<"Trip"> | string | null
+    aiItinerary?: JsonNullableFilter<"Trip">
+    aiPackingList?: JsonNullableFilter<"Trip">
+    aiTravelTips?: JsonNullableFilter<"Trip">
+    aiCustomPrompt?: StringNullableFilter<"Trip"> | string | null
     createdAt?: DateTimeFilter<"Trip"> | Date | string
     updatedAt?: DateTimeFilter<"Trip"> | Date | string
     creatorId?: StringFilter<"Trip"> | string
@@ -20346,6 +20399,10 @@ export namespace Prisma {
     budget?: SortOrderInput | SortOrder
     currency?: SortOrderInput | SortOrder
     coverImage?: SortOrderInput | SortOrder
+    aiItinerary?: SortOrderInput | SortOrder
+    aiPackingList?: SortOrderInput | SortOrder
+    aiTravelTips?: SortOrderInput | SortOrder
+    aiCustomPrompt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -20380,6 +20437,10 @@ export namespace Prisma {
     budget?: FloatNullableFilter<"Trip"> | number | null
     currency?: StringNullableFilter<"Trip"> | string | null
     coverImage?: StringNullableFilter<"Trip"> | string | null
+    aiItinerary?: JsonNullableFilter<"Trip">
+    aiPackingList?: JsonNullableFilter<"Trip">
+    aiTravelTips?: JsonNullableFilter<"Trip">
+    aiCustomPrompt?: StringNullableFilter<"Trip"> | string | null
     createdAt?: DateTimeFilter<"Trip"> | Date | string
     updatedAt?: DateTimeFilter<"Trip"> | Date | string
     creatorId?: StringFilter<"Trip"> | string
@@ -20411,6 +20472,10 @@ export namespace Prisma {
     budget?: SortOrderInput | SortOrder
     currency?: SortOrderInput | SortOrder
     coverImage?: SortOrderInput | SortOrder
+    aiItinerary?: SortOrderInput | SortOrder
+    aiPackingList?: SortOrderInput | SortOrder
+    aiTravelTips?: SortOrderInput | SortOrder
+    aiCustomPrompt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -20440,6 +20505,10 @@ export namespace Prisma {
     budget?: FloatNullableWithAggregatesFilter<"Trip"> | number | null
     currency?: StringNullableWithAggregatesFilter<"Trip"> | string | null
     coverImage?: StringNullableWithAggregatesFilter<"Trip"> | string | null
+    aiItinerary?: JsonNullableWithAggregatesFilter<"Trip">
+    aiPackingList?: JsonNullableWithAggregatesFilter<"Trip">
+    aiTravelTips?: JsonNullableWithAggregatesFilter<"Trip">
+    aiCustomPrompt?: StringNullableWithAggregatesFilter<"Trip"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Trip"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Trip"> | Date | string
     creatorId?: StringWithAggregatesFilter<"Trip"> | string
@@ -21365,6 +21434,7 @@ export namespace Prisma {
     destination?: StringFilter<"AiDestinationCache"> | string
     overview?: JsonNullableFilter<"AiDestinationCache">
     highlights?: JsonNullableFilter<"AiDestinationCache">
+    explorePlaces?: JsonNullableFilter<"AiDestinationCache">
     createdAt?: DateTimeFilter<"AiDestinationCache"> | Date | string
     updatedAt?: DateTimeFilter<"AiDestinationCache"> | Date | string
   }
@@ -21374,6 +21444,7 @@ export namespace Prisma {
     destination?: SortOrder
     overview?: SortOrderInput | SortOrder
     highlights?: SortOrderInput | SortOrder
+    explorePlaces?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -21386,6 +21457,7 @@ export namespace Prisma {
     NOT?: AiDestinationCacheWhereInput | AiDestinationCacheWhereInput[]
     overview?: JsonNullableFilter<"AiDestinationCache">
     highlights?: JsonNullableFilter<"AiDestinationCache">
+    explorePlaces?: JsonNullableFilter<"AiDestinationCache">
     createdAt?: DateTimeFilter<"AiDestinationCache"> | Date | string
     updatedAt?: DateTimeFilter<"AiDestinationCache"> | Date | string
   }, "id" | "destination">
@@ -21395,6 +21467,7 @@ export namespace Prisma {
     destination?: SortOrder
     overview?: SortOrderInput | SortOrder
     highlights?: SortOrderInput | SortOrder
+    explorePlaces?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: AiDestinationCacheCountOrderByAggregateInput
@@ -21410,6 +21483,7 @@ export namespace Prisma {
     destination?: StringWithAggregatesFilter<"AiDestinationCache"> | string
     overview?: JsonNullableWithAggregatesFilter<"AiDestinationCache">
     highlights?: JsonNullableWithAggregatesFilter<"AiDestinationCache">
+    explorePlaces?: JsonNullableWithAggregatesFilter<"AiDestinationCache">
     createdAt?: DateTimeWithAggregatesFilter<"AiDestinationCache"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"AiDestinationCache"> | Date | string
   }
@@ -21562,6 +21636,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -21592,6 +21670,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -21622,6 +21704,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -21652,6 +21738,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -21682,6 +21772,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -21703,6 +21797,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21723,6 +21821,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -22624,6 +22726,7 @@ export namespace Prisma {
     destination: string
     overview?: NullableJsonNullValueInput | InputJsonValue
     highlights?: NullableJsonNullValueInput | InputJsonValue
+    explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -22633,6 +22736,7 @@ export namespace Prisma {
     destination: string
     overview?: NullableJsonNullValueInput | InputJsonValue
     highlights?: NullableJsonNullValueInput | InputJsonValue
+    explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -22642,6 +22746,7 @@ export namespace Prisma {
     destination?: StringFieldUpdateOperationsInput | string
     overview?: NullableJsonNullValueInput | InputJsonValue
     highlights?: NullableJsonNullValueInput | InputJsonValue
+    explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22651,6 +22756,7 @@ export namespace Prisma {
     destination?: StringFieldUpdateOperationsInput | string
     overview?: NullableJsonNullValueInput | InputJsonValue
     highlights?: NullableJsonNullValueInput | InputJsonValue
+    explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22660,6 +22766,7 @@ export namespace Prisma {
     destination: string
     overview?: NullableJsonNullValueInput | InputJsonValue
     highlights?: NullableJsonNullValueInput | InputJsonValue
+    explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -22669,6 +22776,7 @@ export namespace Prisma {
     destination?: StringFieldUpdateOperationsInput | string
     overview?: NullableJsonNullValueInput | InputJsonValue
     highlights?: NullableJsonNullValueInput | InputJsonValue
+    explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22678,6 +22786,7 @@ export namespace Prisma {
     destination?: StringFieldUpdateOperationsInput | string
     overview?: NullableJsonNullValueInput | InputJsonValue
     highlights?: NullableJsonNullValueInput | InputJsonValue
+    explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22965,6 +23074,28 @@ export namespace Prisma {
     notIn?: $Enums.TravelType[] | ListEnumTravelTypeFieldRefInput<$PrismaModel> | null
     not?: NestedEnumTravelTypeNullableFilter<$PrismaModel> | $Enums.TravelType | null
   }
+  export type JsonNullableFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type UserRelationFilter = {
     is?: UserWhereInput
@@ -22997,6 +23128,10 @@ export namespace Prisma {
     budget?: SortOrder
     currency?: SortOrder
     coverImage?: SortOrder
+    aiItinerary?: SortOrder
+    aiPackingList?: SortOrder
+    aiTravelTips?: SortOrder
+    aiCustomPrompt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -23024,6 +23159,7 @@ export namespace Prisma {
     budget?: SortOrder
     currency?: SortOrder
     coverImage?: SortOrder
+    aiCustomPrompt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -23045,6 +23181,7 @@ export namespace Prisma {
     budget?: SortOrder
     currency?: SortOrder
     coverImage?: SortOrder
+    aiCustomPrompt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -23090,6 +23227,31 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedEnumTravelTypeNullableFilter<$PrismaModel>
     _max?: NestedEnumTravelTypeNullableFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type EnumMemberRoleFilter<$PrismaModel = never> = {
@@ -23710,34 +23872,13 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
-  export type JsonNullableFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type AiDestinationCacheCountOrderByAggregateInput = {
     id?: SortOrder
     destination?: SortOrder
     overview?: SortOrder
     highlights?: SortOrder
+    explorePlaces?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -23754,31 +23895,6 @@ export namespace Prisma {
     destination?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type TripCreateNestedManyWithoutCreatorInput = {
@@ -25485,6 +25601,28 @@ export namespace Prisma {
     _min?: NestedEnumTravelTypeNullableFilter<$PrismaModel>
     _max?: NestedEnumTravelTypeNullableFilter<$PrismaModel>
   }
+  export type NestedJsonNullableFilter<$PrismaModel = never> = 
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
 
   export type NestedEnumMemberRoleFilter<$PrismaModel = never> = {
     equals?: $Enums.MemberRole | EnumMemberRoleFieldRefInput<$PrismaModel>
@@ -25583,28 +25721,6 @@ export namespace Prisma {
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
   }
-  export type NestedJsonNullableFilter<$PrismaModel = never> = 
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type TripCreateWithoutCreatorInput = {
     id?: string
@@ -25622,6 +25738,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: TripMemberCreateNestedManyWithoutTripInput
@@ -25651,6 +25771,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: TripMemberUncheckedCreateNestedManyWithoutTripInput
@@ -26009,6 +26133,10 @@ export namespace Prisma {
     budget?: FloatNullableFilter<"Trip"> | number | null
     currency?: StringNullableFilter<"Trip"> | string | null
     coverImage?: StringNullableFilter<"Trip"> | string | null
+    aiItinerary?: JsonNullableFilter<"Trip">
+    aiPackingList?: JsonNullableFilter<"Trip">
+    aiTravelTips?: JsonNullableFilter<"Trip">
+    aiCustomPrompt?: StringNullableFilter<"Trip"> | string | null
     createdAt?: DateTimeFilter<"Trip"> | Date | string
     updatedAt?: DateTimeFilter<"Trip"> | Date | string
     creatorId?: StringFilter<"Trip"> | string
@@ -26835,6 +26963,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -26864,6 +26996,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -26960,6 +27096,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -26989,6 +27129,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -27075,6 +27219,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -27104,6 +27252,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -27187,6 +27339,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -27216,6 +27372,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -27323,6 +27483,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -27352,6 +27516,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -27470,6 +27638,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -27499,6 +27671,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -27671,6 +27847,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -27700,6 +27880,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -27847,6 +28031,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -27876,6 +28064,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -28019,6 +28211,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -28048,6 +28244,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -28144,6 +28344,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -28173,6 +28377,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -28259,6 +28467,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -28288,6 +28500,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -28428,6 +28644,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -28457,6 +28677,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -28882,6 +29106,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -28911,6 +29139,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -29007,6 +29239,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -29036,6 +29272,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -29173,6 +29413,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -29202,6 +29446,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -29304,6 +29552,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -29333,6 +29585,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -29470,6 +29726,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -29499,6 +29759,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -29595,6 +29859,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -29624,6 +29892,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -29710,6 +29982,10 @@ export namespace Prisma {
     budget?: number | null
     currency?: string | null
     coverImage?: string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -29822,6 +30098,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: TripMemberUpdateManyWithoutTripNestedInput
@@ -29851,6 +30131,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: TripMemberUncheckedUpdateManyWithoutTripNestedInput
@@ -29880,6 +30164,10 @@ export namespace Prisma {
     budget?: NullableFloatFieldUpdateOperationsInput | number | null
     currency?: NullableStringFieldUpdateOperationsInput | string | null
     coverImage?: NullableStringFieldUpdateOperationsInput | string | null
+    aiItinerary?: NullableJsonNullValueInput | InputJsonValue
+    aiPackingList?: NullableJsonNullValueInput | InputJsonValue
+    aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
+    aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

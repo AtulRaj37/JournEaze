@@ -150,6 +150,10 @@ exports.Prisma.TripScalarFieldEnum = {
   budget: 'budget',
   currency: 'currency',
   coverImage: 'coverImage',
+  aiItinerary: 'aiItinerary',
+  aiPackingList: 'aiPackingList',
+  aiTravelTips: 'aiTravelTips',
+  aiCustomPrompt: 'aiCustomPrompt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   creatorId: 'creatorId'
@@ -288,6 +292,7 @@ exports.Prisma.AiDestinationCacheScalarFieldEnum = {
   destination: 'destination',
   overview: 'overview',
   highlights: 'highlights',
+  explorePlaces: 'explorePlaces',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

@@ -11,7 +11,7 @@ import {
     MapPin, Calendar, Users, Sparkles, Receipt, PlaneTakeoff, Loader2, ArrowLeft, CheckCircle2,
     StickyNote, Map as MapIcon, Plus, Trash2, Globe, Clock, Languages, Banknote, ThermometerSun, Bus,
     Info, FileText, UserPlus, ImageIcon, Paperclip, X, Edit2, Save, Download, UploadCloud,
-    Link2, Copy, Hash, Mail, QrCode, Check
+    Link2, Copy, Hash, Mail, QrCode, Check, Utensils, Bed, ExternalLink, Camera, Compass
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -91,6 +91,12 @@ export default function TripDetailsPage() {
     const [overviewTab, setOverviewTab] = useState<"overview" | "info">("overview");
     const [highlights, setHighlights] = useState<any>(null);
 
+    // Explore Tab State
+    const [explorePlaces, setExplorePlaces] = useState<any[]>([]);
+    const [isLoadingExplore, setIsLoadingExplore] = useState(false);
+    const [exploreCategory, setExploreCategory] = useState<string>("All");
+    const [selectedPlaces, setSelectedPlaces] = useState<Set<number>>(new Set());
+
     const getToken = () => localStorage.getItem("token");
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
@@ -104,6 +110,11 @@ export default function TripDetailsPage() {
                 setTrip(data);
                 setNotes(data.notes || []);
                 setExpenses(data.expenses || []);
+                
+                // Hydrate React AI States directly from DB Cache to save tokens!
+                if (data.aiItinerary) setAiItinerary(data.aiItinerary);
+                if (data.aiPackingList) setAiPackingList(data.aiPackingList);
+                if (data.aiTravelTips) setAiTips(data.aiTravelTips);
             } else {
                 router.push("/dashboard");
             }
@@ -119,21 +130,39 @@ export default function TripDetailsPage() {
     const [aiInsightsLoaded, setAiInsightsLoaded] = useState(false);
     const [isLoadingInsights, setIsLoadingInsights] = useState(false);
 
+    const [customPrompt, setCustomPrompt] = useState("");
+
+    // Auto-load AI Destination Insights when trip data is available
+    useEffect(() => {
+        if (trip?.destination && !aiInsightsLoaded) {
+            fetchAiInsights();
+        }
+        // Restore cached custom prompt
+        if (trip?.aiCustomPrompt && !customPrompt) {
+            setCustomPrompt(trip.aiCustomPrompt);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [trip?.destination]);
+
     const fetchAiInsights = async () => {
         if (!trip?.destination || aiInsightsLoaded) return;
         setIsLoadingInsights(true);
         try {
-            const dest = encodeURIComponent(trip.destination);
+            const dest = encodeURIComponent(trip.destinationCity || trip.destination);
             const headers = { Authorization: `Bearer ${getToken()}` };
-            const [overviewRes, highlightsRes] = await Promise.all([
-                fetch(`${apiUrl}/ai/destination-overview?destination=${dest}`, { headers }),
-                fetch(`${apiUrl}/ai/destination-highlights?destination=${encodeURIComponent(trip.destinationCity || trip.destination)}`, { headers }),
-            ]);
-            if (overviewRes.ok) setOverview(await overviewRes.json());
-            if (highlightsRes.ok) setHighlights(await highlightsRes.json());
+            
+            const res = await fetch(`${apiUrl}/ai/destination-info?destination=${dest}`, { headers });
+            if (res.ok) {
+                const data = await res.json();
+                setOverview(data.overview);
+                setHighlights(data.highlights);
+            }
             setAiInsightsLoaded(true);
-        } catch (e) { console.error(e); }
-        finally { setIsLoadingInsights(false); }
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setIsLoadingInsights(false);
+        }
     };
 
     // ─── AI Handler ─────────────────────────────────────────────────
@@ -143,10 +172,15 @@ export default function TripDetailsPage() {
             if (type === 'packing-list') setIsGeneratingPacking(true);
             if (type === 'travel-tips') setIsGeneratingTips(true);
 
+            const bodyPayload: any = { tripId };
+            if (type === 'itinerary' && customPrompt.trim() !== '') {
+                bodyPayload.customPrompt = customPrompt.trim();
+            }
+
             const res = await fetch(`${apiUrl}/ai/${type === 'itinerary' ? 'generate-itinerary' : type}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
-                body: JSON.stringify({ tripId }),
+                body: JSON.stringify(bodyPayload),
             });
 
             if (!res.ok) throw new Error(`Failed to generate ${type}`);
@@ -445,6 +479,9 @@ export default function TripDetailsPage() {
                         <TabsTrigger value="ai" className="rounded-xl px-6 py-3 data-[state=active]:bg-purple-900/40 data-[state=active]:text-purple-300 text-zinc-400">
                             <Sparkles className="w-4 h-4 mr-2" /> Ask AI
                         </TabsTrigger>
+                        <TabsTrigger value="explore" className="rounded-xl px-6 py-3 data-[state=active]:bg-emerald-900/40 data-[state=active]:text-emerald-300 text-zinc-400">
+                            <Compass className="w-4 h-4 mr-2" /> Explore
+                        </TabsTrigger>
                     </TabsList>
 
                     {/* ═══ PLANNER TAB ═══ */}
@@ -566,31 +603,92 @@ export default function TripDetailsPage() {
                                         <p className="text-zinc-400 text-sm mt-1">Plan your routes, hotels, and sights.</p>
                                     </CardHeader>
                                     <CardContent className="p-8">
+                                        <div className="mb-8 p-5 bg-zinc-900/80 border border-zinc-800 rounded-2xl">
+                                            <label className="block text-sm font-semibold text-zinc-200 mb-2">Customize your plan</label>
+                                            <div className="flex flex-col sm:flex-row gap-3">
+                                                <Input 
+                                                    value={customPrompt} 
+                                                    onChange={(e) => setCustomPrompt(e.target.value)} 
+                                                    placeholder="E.g. I arrive at 10 AM, prefer vegan food, and want a relaxed pace."
+                                                    className="bg-zinc-950 border-zinc-800 text-white flex-1"
+                                                />
+                                                <Button 
+                                                    onClick={() => handleGenerateAi('itinerary')} 
+                                                    disabled={isGeneratingItinerary}
+                                                    className="bg-purple-600 hover:bg-purple-500 text-white font-semibold whitespace-nowrap"
+                                                >
+                                                    {isGeneratingItinerary ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                                    ) : (
+                                                        <Sparkles className="w-4 h-4 mr-2" />
+                                                    )}
+                                                    {aiItinerary ? "Regenerate Itinerary" : "Generate Itinerary"}
+                                                </Button>
+                                            </div>
+                                        </div>
+
                                         {aiItinerary ? (
-                                            <div className="space-y-8">
+                                            <div className="space-y-12">
                                                 {aiItinerary.map((day: any, idx: number) => (
-                                                    <div key={idx} className="relative pl-8 border-l-2 border-zinc-800 pt-4">
-                                                        <div className="absolute -left-[11px] top-4 w-5 h-5 rounded-full bg-zinc-800 border-2 border-zinc-900 flex items-center justify-center">
-                                                            <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                                                    <div key={idx} className="relative pl-4 sm:pl-8 border-l-2 border-zinc-800/50 pt-2 pb-6">
+                                                        <div className="absolute -left-[11px] top-4 w-5 h-5 rounded-full bg-zinc-900 border-2 border-zinc-700 flex items-center justify-center">
+                                                            <div className="w-2 h-2 rounded-full bg-purple-500"></div>
                                                         </div>
-                                                        <h3 className="text-xl font-bold text-white mb-4">Day {day.day || day.dayNumber || idx + 1}</h3>
-                                                        <div className="space-y-4">
-                                                            {(day.activities || []).map((act: any, i: number) => (
-                                                                <Card key={i} className="bg-zinc-900/80 border-zinc-800">
-                                                                    <CardContent className="p-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-                                                                        <div>
-                                                                            {act.time && <span className="text-xs text-purple-400 font-mono">{act.time}</span>}
-                                                                            <h4 className="font-semibold text-zinc-200">{act.title || act.description}</h4>
-                                                                            {act.description && act.title && <p className="text-sm text-zinc-400 mt-1">{act.description}</p>}
-                                                                        </div>
-                                                                        {act.costEstimate !== undefined && (
-                                                                            <div className="text-emerald-400 font-mono text-sm border border-emerald-900 bg-emerald-950/30 px-3 py-1 rounded-full whitespace-nowrap">
-                                                                                ₹{act.costEstimate}
+                                                        <h3 className="text-2xl font-bold text-white mb-6">
+                                                            Day {day.dayNumber || idx + 1} {day.theme ? `- ${day.theme}` : ''}
+                                                        </h3>
+                                                        <div className="space-y-6">
+                                                            {(day.activities || []).map((act: any, i: number) => {
+                                                                const Icon = act.type === 'food' ? Utensils : act.type === 'hotel' ? Bed : act.type === 'travel' ? Bus : MapPin;
+                                                                return (
+                                                                    <div key={i} className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl p-5 hover:bg-zinc-800/40 transition-colors">
+                                                                        {act.time && <p className="text-xs font-medium text-zinc-500 mb-3">{act.time}</p>}
+                                                                        <div className="flex gap-4 items-start">
+                                                                            <div className="w-8 h-8 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center flex-shrink-0 mt-1">
+                                                                                <Icon className="w-4 h-4" />
                                                                             </div>
-                                                                        )}
-                                                                    </CardContent>
-                                                                </Card>
-                                                            ))}
+                                                                            <div className="flex-1">
+                                                                                <div className="flex justify-between items-start gap-4">
+                                                                                    <div>
+                                                                                        <h4 className="text-lg font-semibold text-zinc-100">{act.title || act.description}</h4>
+                                                                                        {act.description && act.title && <p className="text-sm text-zinc-400 mt-2 leading-relaxed">{act.description}</p>}
+                                                                                    </div>
+                                                                                    {act.needsImage && (
+                                                                                        <div className="hidden sm:block w-24 h-16 rounded-lg bg-zinc-800 overflow-hidden flex-shrink-0 border border-zinc-700/50">
+                                                                                            <img src={`${apiUrl}/images/search?query=${encodeURIComponent(`${act.locationName || act.title} ${trip.destinationCity || trip.destination}`)}&destination=${encodeURIComponent(trip.destinationCity || trip.destination)}`} alt={act.title} className="w-full h-full object-cover opacity-70" />
+                                                                                        </div>
+                                                                                    )}
+                                                                                </div>
+                                                                                <div className="mt-4 flex items-center justify-end">
+                                                                                    {act.costEstimate !== undefined && act.costEstimate > 0 && (
+                                                                                        <span className="text-xs font-mono text-zinc-500">Est. ₹{act.costEstimate}</span>
+                                                                                    )}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                );
+                                                            })}
+                                                            
+                                                            <div className="bg-zinc-900/40 border border-zinc-800/60 rounded-2xl p-5 flex items-center justify-between group hover:border-purple-500/30 transition-colors mt-6">
+                                                                <div className="flex gap-4 items-center">
+                                                                    <div className="w-8 h-8 rounded-full bg-purple-600/20 text-purple-400 flex items-center justify-center flex-shrink-0">
+                                                                        <Bed className="w-4 h-4" />
+                                                                    </div>
+                                                                    <div>
+                                                                        <h4 className="text-base font-semibold text-zinc-100">Find hotels in {trip.destinationCity || trip.destination}</h4>
+                                                                        <p className="text-xs text-zinc-500 mt-1">Settle into a comfortable hotel to ensure a restful night's sleep.</p>
+                                                                    </div>
+                                                                </div>
+                                                                <a 
+                                                                    href={`https://www.booking.com/searchresults.html?ss=${encodeURIComponent(trip.destinationCity || trip.destination)}`}
+                                                                    target="_blank" 
+                                                                    rel="noopener noreferrer"
+                                                                    className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold py-2 px-4 rounded-lg flex items-center transition-colors"
+                                                                >
+                                                                    Find hotels <ExternalLink className="w-3 h-3 ml-1.5" />
+                                                                </a>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -604,6 +702,66 @@ export default function TripDetailsPage() {
                                                 <p className="text-zinc-500 max-w-sm">No activities yet. Use the <strong>Ask AI</strong> tab to generate a day-by-day itinerary.</p>
                                             </div>
                                         )}
+                                    </CardContent>
+                                </Card>
+                                {/* Quick Bookings */}
+                                <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl">
+                                    <CardHeader className="border-b border-zinc-800/50 pb-4">
+                                        <CardTitle className="text-xl text-white flex items-center gap-2">
+                                            <PlaneTakeoff className="w-5 h-5 text-blue-400" /> Quick Bookings
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="p-6">
+                                        {(() => {
+                                            const sDate = trip.startDate ? new Date(trip.startDate).toISOString().split('T')[0] : '';
+                                            const eDate = trip.endDate ? new Date(trip.endDate).toISOString().split('T')[0] : '';
+                                            const destQuery = encodeURIComponent(trip.destinationCity || trip.destination);
+                                            const bookingLink = `https://www.booking.com/searchresults.html?ss=${destQuery}${sDate ? `&checkin=${sDate}` : ''}${eDate ? `&checkout=${eDate}` : ''}`;
+                                            const flightsLink = `https://www.google.com/travel/flights?q=Flights+to+${destQuery}`;
+                                            const transitLink = `https://www.makemytrip.com/`;
+                                            const toursLink = `https://www.viator.com/searchResults/all?text=${destQuery}`;
+
+                                            return (
+                                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                                    <a href={flightsLink} target="_blank" rel="noopener noreferrer" className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 p-4 rounded-xl bg-zinc-800/30 border border-zinc-700/50 hover:bg-zinc-800 hover:border-blue-500/50 transition-all group">
+                                                        <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform flex-shrink-0">
+                                                            <PlaneTakeoff className="w-5 h-5" />
+                                                        </div>
+                                                        <div>
+                                                            <h5 className="text-sm font-semibold text-zinc-100 group-hover:text-blue-400 transition-colors">Flights</h5>
+                                                            <p className="hidden sm:block text-xs text-zinc-500 line-clamp-1">Google Flights</p>
+                                                        </div>
+                                                    </a>
+                                                    <a href={bookingLink} target="_blank" rel="noopener noreferrer" className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 p-4 rounded-xl bg-zinc-800/30 border border-zinc-700/50 hover:bg-zinc-800 hover:border-purple-500/50 transition-all group">
+                                                        <div className="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform flex-shrink-0">
+                                                            <Bed className="w-5 h-5" />
+                                                        </div>
+                                                        <div>
+                                                            <h5 className="text-sm font-semibold text-zinc-100 group-hover:text-purple-400 transition-colors">Hotels</h5>
+                                                            <p className="hidden sm:block text-xs text-zinc-500 line-clamp-1">Booking.com</p>
+                                                        </div>
+                                                    </a>
+                                                    <a href={transitLink} target="_blank" rel="noopener noreferrer" className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 p-4 rounded-xl bg-zinc-800/30 border border-zinc-700/50 hover:bg-zinc-800 hover:border-emerald-500/50 transition-all group">
+                                                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform flex-shrink-0">
+                                                            <Bus className="w-5 h-5" />
+                                                        </div>
+                                                        <div>
+                                                            <h5 className="text-sm font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors">Transit</h5>
+                                                            <p className="hidden sm:block text-xs text-zinc-500 line-clamp-1">MakeMyTrip</p>
+                                                        </div>
+                                                    </a>
+                                                    <a href={toursLink} target="_blank" rel="noopener noreferrer" className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 p-4 rounded-xl bg-zinc-800/30 border border-zinc-700/50 hover:bg-zinc-800 hover:border-orange-500/50 transition-all group">
+                                                        <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 group-hover:scale-110 transition-transform flex-shrink-0">
+                                                            <Camera className="w-5 h-5" />
+                                                        </div>
+                                                        <div>
+                                                            <h5 className="text-sm font-semibold text-zinc-100 group-hover:text-orange-400 transition-colors">Activities</h5>
+                                                            <p className="hidden sm:block text-xs text-zinc-500 line-clamp-1">Viator Tours</p>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            );
+                                        })()}
                                     </CardContent>
                                 </Card>
 
@@ -621,7 +779,7 @@ export default function TripDetailsPage() {
                                                     <div key={i} className="group rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900/60 hover:border-zinc-600 transition-colors">
                                                         <div className="h-32 bg-zinc-800 relative overflow-hidden">
                                                             <img
-                                                                src={`https://source.unsplash.com/400x200/?${encodeURIComponent(place.name + ' ' + (trip.destinationCity || trip.destination))}`}
+                                                                src={`${apiUrl}/images/search?query=${encodeURIComponent(place.name + ' ' + (trip.destinationCity || trip.destination))}&destination=${encodeURIComponent(trip.destinationCity || trip.destination)}`}
                                                                 alt={place.name}
                                                                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
                                                                 onError={(e) => { (e.target as HTMLImageElement).src = `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=60&w=400&auto=format`; }}
@@ -1131,6 +1289,217 @@ export default function TripDetailsPage() {
                         </div>
                     </TabsContent>
 
+                    {/* ═══ EXPLORE TAB ═══ */}
+                    <TabsContent value="explore" className="mt-0 outline-none">
+                        <div className="space-y-6">
+                            {/* Hero + Generate */}
+                            <div className="relative rounded-2xl overflow-hidden h-56 md:h-72">
+                                <img
+                                    src={`${apiUrl}/images/search?query=${encodeURIComponent((trip.destinationCity || trip.destination) + ' scenic landscape')}&destination=${encodeURIComponent(trip.destination)}`}
+                                    alt={trip.destination}
+                                    className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                                <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                                    <div>
+                                        <h2 className="text-2xl md:text-3xl font-extrabold text-white mb-1">Places to Visit in {trip.destinationCity || trip.destination}</h2>
+                                        <p className="text-zinc-300 text-sm">Discover must-see sights, experiences & hidden gems — powered by AI</p>
+                                    </div>
+                                    {explorePlaces.length === 0 && (
+                                        <Button
+                                            onClick={async () => {
+                                                setIsLoadingExplore(true);
+                                                try {
+                                                    const dest = encodeURIComponent(trip.destinationCity || trip.destination);
+                                                    let url = `${apiUrl}/ai/explore-places?destination=${dest}`;
+                                                    if (trip.aiCustomPrompt) {
+                                                        url += `&extraPlaces=${encodeURIComponent(trip.aiCustomPrompt)}`;
+                                                    }
+                                                    const res = await fetch(url, { headers: { Authorization: `Bearer ${getToken()}` } });
+                                                    if (res.ok) { const data = await res.json(); setExplorePlaces(Array.isArray(data) ? data : data.places || []); }
+                                                } catch (e) { console.error(e); }
+                                                finally { setIsLoadingExplore(false); }
+                                            }}
+                                            disabled={isLoadingExplore}
+                                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-semibold whitespace-nowrap"
+                                        >
+                                            {isLoadingExplore ? <><Loader2 className="w-4 h-4 animate-spin mr-2" />Discovering...</> : <><Sparkles className="w-4 h-4 mr-2" />Discover Places</>}
+                                        </Button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Loading Skeleton */}
+                            {isLoadingExplore && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                                    {Array.from({ length: 6 }).map((_, i) => (
+                                        <div key={i} className="bg-zinc-900/60 border border-zinc-800 rounded-xl overflow-hidden animate-pulse">
+                                            <div className="h-44 bg-zinc-800" />
+                                            <div className="p-4 space-y-2">
+                                                <div className="h-4 bg-zinc-800 rounded w-3/4" />
+                                                <div className="h-3 bg-zinc-800/60 rounded w-full" />
+                                                <div className="h-3 bg-zinc-800/60 rounded w-2/3" />
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Category Filter Chips */}
+                            {explorePlaces.length > 0 && (
+                                <>
+                                    <div>
+                                        <h3 className="text-lg font-semibold text-white mb-3">Explore popular experiences</h3>
+                                        <p className="text-xs text-zinc-500 mb-4">Filter by category to find exactly what you're looking for</p>
+                                        <div className="flex flex-wrap gap-2">
+                                            {["All", ...Array.from(new Set(explorePlaces.map((p: any) => p.category)))].map((cat: string) => {
+                                                const count = cat === "All" ? explorePlaces.length : explorePlaces.filter((p: any) => p.category === cat).length;
+                                                return (
+                                                    <button
+                                                        key={cat}
+                                                        onClick={() => setExploreCategory(cat)}
+                                                        className={`px-4 py-2 rounded-full text-sm font-medium border transition-all duration-200 ${
+                                                            exploreCategory === cat
+                                                                ? 'bg-emerald-600 border-emerald-500 text-white shadow-lg shadow-emerald-900/20'
+                                                                : 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:border-zinc-600'
+                                                        }`}
+                                                    >
+                                                        {cat} ({count})
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    {/* Place Cards Grid */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                                        {explorePlaces
+                                            .filter((p: any) => exploreCategory === "All" || p.category === exploreCategory)
+                                            .map((place: any, i: number) => {
+                                                const globalIdx = explorePlaces.indexOf(place);
+                                                const isSelected = selectedPlaces.has(globalIdx);
+                                                return (
+                                                    <motion.div
+                                                        key={globalIdx}
+                                                        initial={{ opacity: 0, y: 20 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        transition={{ delay: i * 0.05 }}
+                                                        className={`group relative bg-zinc-900/60 border rounded-xl overflow-hidden cursor-pointer transition-all duration-200 ${
+                                                            isSelected ? 'border-emerald-500 ring-1 ring-emerald-500/30 shadow-lg shadow-emerald-900/20' : 'border-zinc-800 hover:border-zinc-600'
+                                                        }`}
+                                                        onClick={() => {
+                                                            setSelectedPlaces(prev => {
+                                                                const next = new Set(prev);
+                                                                next.has(globalIdx) ? next.delete(globalIdx) : next.add(globalIdx);
+                                                                return next;
+                                                            });
+                                                        }}
+                                                    >
+                                                        {/* Image */}
+                                                        <div className="relative h-44 overflow-hidden">
+                                                            <img
+                                                                src={`${apiUrl}/images/search?query=${encodeURIComponent(place.name + ' ' + (trip.destinationCity || trip.destination))}&destination=${encodeURIComponent(trip.destination)}`}
+                                                                alt={place.name}
+                                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                            />
+                                                            {/* Selection checkmark */}
+                                                            <div className={`absolute top-3 left-3 w-7 h-7 rounded-full flex items-center justify-center transition-all ${
+                                                                isSelected ? 'bg-emerald-500 text-white' : 'bg-black/40 backdrop-blur-sm text-white/60 border border-white/20'
+                                                            }`}>
+                                                                {isSelected ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                                                            </div>
+                                                            {/* Category badge */}
+                                                            <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-white text-xs px-2.5 py-1 rounded-full">
+                                                                {place.category}
+                                                            </div>
+                                                        </div>
+
+                                                        {/* Content */}
+                                                        <div className="p-4">
+                                                            <h4 className="font-semibold text-white text-sm mb-1 group-hover:text-emerald-400 transition-colors">{place.name}</h4>
+                                                            <p className="text-xs text-zinc-400 leading-relaxed line-clamp-2 mb-3">{place.description}</p>
+                                                            <div className="flex items-center justify-between">
+                                                                <div className="flex items-center gap-3 text-xs text-zinc-500">
+                                                                    {place.bestTimeToVisit && (
+                                                                        <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{place.bestTimeToVisit}</span>
+                                                                    )}
+                                                                    {place.estimatedDuration && (
+                                                                        <span className="flex items-center gap-1"><Calendar className="w-3 h-3" />{place.estimatedDuration}</span>
+                                                                    )}
+                                                                </div>
+                                                                <a
+                                                                    href={`https://www.google.com/maps/search/${encodeURIComponent(place.name + ', ' + trip.destination)}`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    onClick={(e) => e.stopPropagation()}
+                                                                    className="text-xs text-emerald-400 hover:text-emerald-300 flex items-center gap-1"
+                                                                >
+                                                                    <MapPin className="w-3 h-3" /> Map
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                );
+                                            })}
+                                    </div>
+
+                                    {/* Selected Places Banner */}
+                                    {selectedPlaces.size > 0 && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="sticky bottom-4 bg-emerald-600/90 backdrop-blur-xl border border-emerald-500/50 rounded-2xl p-4 flex items-center justify-between shadow-xl shadow-emerald-900/30"
+                                        >
+                                            <div className="flex items-center gap-3">
+                                                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                                                    <Check className="w-5 h-5 text-white" />
+                                                </div>
+                                                <div>
+                                                    <p className="text-white font-semibold text-sm">{selectedPlaces.size} place{selectedPlaces.size > 1 ? 's' : ''} selected</p>
+                                                    <p className="text-emerald-100 text-xs">Click cards to add or remove from your interests</p>
+                                                </div>
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        const names = Array.from(selectedPlaces).map(idx => explorePlaces[idx]?.name).filter(Boolean).join(', ');
+                                                        window.open(`https://www.google.com/maps/dir/${Array.from(selectedPlaces).map(idx => encodeURIComponent(explorePlaces[idx]?.name + ', ' + trip.destination)).join('/')}`, '_blank');
+                                                    }}
+                                                    className="bg-white/20 hover:bg-white/30 text-white border-0 text-xs"
+                                                >
+                                                    <MapPin className="w-3.5 h-3.5 mr-1" /> View All on Map
+                                                </Button>
+                                                <Button size="sm" onClick={() => setSelectedPlaces(new Set())} className="bg-white/10 hover:bg-white/20 text-white/80 border-0 text-xs">
+                                                    <X className="w-3.5 h-3.5 mr-1" /> Clear
+                                                </Button>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </>
+                            )}
+
+                            {/* Quick External Links */}
+                            <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl">
+                                <CardContent className="p-5">
+                                    <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wider mb-3">Explore More</h3>
+                                    <div className="flex flex-wrap gap-2">
+                                        {[
+                                            { label: 'TripAdvisor', url: `https://www.tripadvisor.com/Search?q=${encodeURIComponent(trip.destinationCity || trip.destination)}`, icon: <ExternalLink className="w-3.5 h-3.5" /> },
+                                            { label: 'Google Maps', url: `https://www.google.com/maps/place/${encodeURIComponent(trip.destinationCity || trip.destination)}`, icon: <MapPin className="w-3.5 h-3.5" /> },
+                                            { label: 'Wikipedia', url: `https://en.wikipedia.org/wiki/${encodeURIComponent(trip.destinationCity || trip.destination)}`, icon: <Globe className="w-3.5 h-3.5" /> },
+                                            { label: 'Instagram', url: `https://www.instagram.com/explore/tags/${encodeURIComponent((trip.destinationCity || trip.destination).toLowerCase().replace(/\s+/g, ''))}`, icon: <Camera className="w-3.5 h-3.5" /> },
+                                        ].map(link => (
+                                            <a key={link.label} href={link.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 px-3 py-1.5 rounded-full text-xs transition-colors">
+                                                {link.icon} {link.label}
+                                            </a>
+                                        ))}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </TabsContent>
+
                     {/* ═══ ASK AI TAB ═══ */}
                     <TabsContent value="ai" className="mt-0 outline-none">
                         <Card className="bg-gradient-to-br from-purple-950/40 to-indigo-950/40 border-purple-900/30 backdrop-blur-xl">
@@ -1164,8 +1533,12 @@ export default function TripDetailsPage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                                 {aiPackingList && (
                                     <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl">
-                                        <CardHeader className="border-b border-zinc-800/50">
+                                        <CardHeader className="border-b border-zinc-800/50 flex flex-row items-center justify-between py-4">
                                             <CardTitle className="text-xl text-white flex items-center"><Sparkles className="w-4 h-4 mr-2 text-purple-400" /> AI Packing List</CardTitle>
+                                            <Button size="sm" variant="outline" className="h-8 bg-zinc-800/50 text-xs text-zinc-300 border-zinc-700 hover:bg-zinc-700 hover:text-white" onClick={() => handleGenerateAi('packing-list')} disabled={isGeneratingPacking}>
+                                                {isGeneratingPacking ? <Loader2 className="w-3 h-3 animate-spin mr-1.5" /> : null}
+                                                Regenerate
+                                            </Button>
                                         </CardHeader>
                                         <CardContent className="p-6">
                                             <div className="space-y-6">
@@ -1188,8 +1561,12 @@ export default function TripDetailsPage() {
                                 )}
                                 {aiTips && (
                                     <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl">
-                                        <CardHeader className="border-b border-zinc-800/50">
+                                        <CardHeader className="border-b border-zinc-800/50 flex flex-row items-center justify-between py-4">
                                             <CardTitle className="text-xl text-white flex items-center"><Sparkles className="w-4 h-4 mr-2 text-purple-400" /> Survival Tips</CardTitle>
+                                            <Button size="sm" variant="outline" className="h-8 bg-zinc-800/50 text-xs text-zinc-300 border-zinc-700 hover:bg-zinc-700 hover:text-white" onClick={() => handleGenerateAi('travel-tips')} disabled={isGeneratingTips}>
+                                                {isGeneratingTips ? <Loader2 className="w-3 h-3 animate-spin mr-1.5" /> : null}
+                                                Regenerate
+                                            </Button>
                                         </CardHeader>
                                         <CardContent className="p-6">
                                             <div className="space-y-4 text-zinc-300 text-sm whitespace-pre-wrap leading-relaxed">

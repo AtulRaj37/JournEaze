@@ -13,7 +13,7 @@ export class AiController {
 
   @Post('generate-itinerary')
   generateItinerary(@CurrentUser() user: User, @Body() dto: GenerateItineraryDto) {
-    return this.aiService.generateItinerary(dto.tripId, user.id);
+    return this.aiService.generateItinerary(dto.tripId, user.id, dto.customPrompt);
   }
 
   @Post('packing-list')
@@ -26,13 +26,17 @@ export class AiController {
     return this.aiService.generateTravelTips(dto.tripId, user.id);
   }
 
-  @Get('destination-overview')
-  getDestinationOverview(@Query('destination') destination: string) {
-    return this.aiService.generateDestinationOverview(destination || 'Unknown');
+  @Get('destination-info')
+  getDestinationInfo(@Query('destination') destination: string) {
+    return this.aiService.generateDestinationInfo(destination || 'Unknown');
   }
 
-  @Get('destination-highlights')
-  getDestinationHighlights(@Query('destination') destination: string) {
-    return this.aiService.generateDestinationHighlights(destination || 'Unknown');
+  @Get('explore-places')
+  getExplorePlaces(
+    @Query('destination') destination: string,
+    @Query('extraPlaces') extraPlaces?: string,
+  ) {
+    const extras = extraPlaces ? extraPlaces.split(',').map(p => p.trim()).filter(Boolean) : undefined;
+    return this.aiService.generateExplorePlaces(destination || 'Unknown', extras);
   }
 }

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { LayoutDashboard, Map, Plus, LogOut, Menu, X, User as UserIcon, Settings } from "lucide-react";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const NAV_LINKS = [
@@ -18,17 +18,39 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [user, setUser] = useState<{name: string, email: string, image?: string} | null>(null);
+  const [user, setUser] = useState<{name: string, email: string, username?: string, image?: string} | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
+    // First try localStorage for instant load
     try {
       const stored = localStorage.getItem("user");
       if (stored) setUser(JSON.parse(stored));
-    } catch (e) {}
+    } catch {}
+
+    // Then fetch fresh data from API
+    const token = localStorage.getItem("token");
+    if (token) {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+      fetch(`${apiUrl}/users/profile`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data) {
+            setUser({ name: data.name, email: data.email, username: data.username, image: data.image });
+            // Keep localStorage in sync
+            localStorage.setItem("user", JSON.stringify({ name: data.name, email: data.email, username: data.username, image: data.image }));
+          }
+        })
+        .catch(() => {});
+    }
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     router.push("/login");
   };
 
@@ -62,7 +84,7 @@ export default function Navbar() {
             />
           </motion.div>
 
-          {/* Brand text — reliable styled HTML instead of image */}
+          {/* Brand text */}
           <span className="text-lg font-bold tracking-tight text-white hidden sm:inline">
             Journ<span style={{ color: "#ff7a1a" }}>Eaze</span>
           </span>
@@ -111,33 +133,37 @@ export default function Navbar() {
 
         {/* ─── Right actions ─── */}
         <div className="flex items-center gap-1">
-          <DropdownMenu>
-            <DropdownMenuTrigger className="hidden md:flex items-center justify-center rounded-xl p-1 hover:bg-white/5 transition-colors outline-none cursor-pointer">
-              <Avatar className="w-8 h-8 rounded-lg border border-white/10 bg-zinc-900 shadow-sm">
-                <AvatarImage src={user?.image} />
-                <AvatarFallback className="bg-zinc-800 text-xs text-white rounded-lg font-medium">{user?.name?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
-              </Avatar>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-zinc-950 border border-white/10 text-white rounded-xl shadow-2xl p-2 z-[100] mt-2">
-              <DropdownMenuLabel className="font-normal p-2">
-                <div className="flex flex-col space-y-1">
-                  <p className="text-sm font-medium leading-none text-white">{user?.name || "Explorer"}</p>
-                  <p className="text-xs leading-none text-zinc-400">{user?.email}</p>
-                </div>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-white/10 my-1" />
-              <DropdownMenuItem className="p-2 gap-2 rounded-lg cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 focus:text-white text-zinc-300">
-                <UserIcon className="w-4 h-4 text-zinc-400" /> <span className="flex-1">Profile</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="p-2 gap-2 rounded-lg cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 focus:text-white text-zinc-300">
-                <Settings className="w-4 h-4 text-zinc-400" /> <span className="flex-1">Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator className="bg-white/10 my-1" />
-              <DropdownMenuItem onClick={handleLogout} className="p-2 gap-2 rounded-lg cursor-pointer hover:bg-red-500/20 focus:bg-red-500/20 focus:text-red-400 text-red-500 transition-colors">
-                <LogOut className="w-4 h-4" /> <span className="flex-1">Log out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {mounted && (
+            <DropdownMenu>
+              <DropdownMenuTrigger className="hidden md:flex items-center justify-center rounded-xl p-1 hover:bg-white/5 transition-colors outline-none cursor-pointer">
+                <Avatar className="w-8 h-8 rounded-lg border border-white/10 bg-zinc-900 shadow-sm">
+                  <AvatarImage src={user?.image} />
+                  <AvatarFallback className="bg-zinc-800 text-xs text-white rounded-lg font-medium">{user?.name?.charAt(0)?.toUpperCase() || "U"}</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-zinc-950 border border-white/10 text-white rounded-xl shadow-2xl p-2 z-[100] mt-2">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel className="font-normal p-2">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none text-white">{user?.name || "Explorer"}</p>
+                      <p className="text-xs leading-none text-zinc-400">{user?.email || ""}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator className="bg-white/10 my-1" />
+                <DropdownMenuItem onClick={() => router.push("/dashboard/profile")} className="p-2 gap-2 rounded-lg cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 focus:text-white text-zinc-300">
+                  <UserIcon className="w-4 h-4 text-zinc-400" /> <span className="flex-1">Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => router.push("/dashboard/settings")} className="p-2 gap-2 rounded-lg cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 focus:text-white text-zinc-300">
+                  <Settings className="w-4 h-4 text-zinc-400" /> <span className="flex-1">Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-white/10 my-1" />
+                <DropdownMenuItem onClick={handleLogout} className="p-2 gap-2 rounded-lg cursor-pointer hover:bg-red-500/20 focus:bg-red-500/20 focus:text-red-400 text-red-500 transition-colors">
+                  <LogOut className="w-4 h-4" /> <span className="flex-1">Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           <button
             className="md:hidden flex items-center justify-center w-9 h-9 rounded-xl text-zinc-400 hover:text-white"
@@ -161,6 +187,22 @@ export default function Navbar() {
             border: "1px solid rgba(255,255,255,0.08)",
           }}
         >
+          {/* User info at top of mobile menu */}
+          {user && (
+            <div className="flex items-center gap-3 px-4 py-3 border-b border-zinc-800 mb-1">
+              <Avatar className="w-10 h-10 rounded-lg border border-white/10">
+                <AvatarImage src={user.image} />
+                <AvatarFallback className="bg-zinc-800 text-white text-sm rounded-lg font-medium">
+                  {user.name?.charAt(0)?.toUpperCase() || "U"}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-white truncate">{user.name || "Explorer"}</p>
+                <p className="text-xs text-zinc-400 truncate">{user.email}</p>
+              </div>
+            </div>
+          )}
+
           {NAV_LINKS.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
@@ -172,6 +214,22 @@ export default function Navbar() {
               {label}
             </Link>
           ))}
+          <Link
+            href="/dashboard/profile"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800/70 transition-colors"
+          >
+            <UserIcon className="w-4 h-4" />
+            Profile
+          </Link>
+          <Link
+            href="/dashboard/settings"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800/70 transition-colors"
+          >
+            <Settings className="w-4 h-4" />
+            Settings
+          </Link>
           <button
             onClick={handleLogout}
             className="flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-red-400 hover:bg-zinc-800/70 transition-colors"
