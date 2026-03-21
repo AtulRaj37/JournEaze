@@ -44,12 +44,12 @@ const INTL = [
   { name: "Rome", tag: "History", img: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=600&q=80" },
 ];
 const FEATS = [
-  { icon: Sparkles, title: "AI Itinerary Builder", desc: "Full day-by-day itinerary in seconds.", color: "#ff7a1a", items: ["Day 1 — Arrive, explore Old Town", "Day 2 — Sunrise hike", "Day 3 — Street food tour", "Day 4 — Museum & culture"] },
-  { icon: Route, title: "Smart Route Planning", desc: "Optimised multi-city routes on a live map.", color: "#a78bfa", items: ["Delhi → 3h", "Jaipur → 5h", "Udaipur → 7h", "Mumbai → 12h"] },
-  { icon: Users, title: "Collaborative Trips", desc: "Plan together in real-time with your crew.", color: "#34d399", items: ["Priya added 4 stops", "Arjun voted on hotel", "Sneha updated budget", "You joined the trip"] },
-  { icon: Wallet, title: "Expense Tracking", desc: "Split bills and track every spend.", color: "#60a5fa", items: ["Hotels  ₹24,000", "Food    ₹8,500", "Travel  ₹12,000", "Activities ₹6,200"] },
-  { icon: BookOpen, title: "Travel Notes", desc: "Log memories and tips inside your trip.", color: "#f472b6", items: ["📍 Best biryani spot", "🏨 Check-in at 3pm", "🎒 Don't forget SPF", "💡 Book tickets early"] },
-  { icon: Globe, title: "Destination Insights", desc: "AI briefs on culture, weather & transport.", color: "#fbbf24", items: ["Best time: Oct–Mar", "Currency: JPY ¥", "Language: Japanese", "Transport: JR Pass"] },
+  { icon: Sparkles, title: "Deep AI Itineraries", desc: "Segmented day-by-day planning with accurate cost estimates.", color: "#ff7a1a", items: ["Morning / Afternoon / Evening", "Precise pricing & travel times", "Regenerate specific days", "Smart location grouping"] },
+  { icon: Compass, title: "Smart 'Explore' Engine", desc: "Automatically discover hidden gems and trending locations.", color: "#34d399", items: ["Filter by Food, Adventure, etc.", "One-click itinerary inject", "Auto-curated regional covers", "Integrated Booking references"] },
+  { icon: Globe, title: "Live 7-Day Weather", desc: "Never be caught off guard. Live meteorological data.", color: "#fbbf24", items: ["Auto-geocoding fallback", "Daily High & Low temps", "Precipitation probability", "Real-time updates"] },
+  { icon: Zap, title: "Offline PWA Mode", desc: "Access your itineraries in Airplanes or remote areas without 4G.", color: "#f472b6", items: ["Install as native app", "Offline itinerary viewing", "Cached trip data", "No connection required"] },
+  { icon: Route, title: "Premium PDF Exporter", desc: "Save and share your perfect trip with one click.", color: "#a78bfa", items: ["Gorgeous print-ready PDFs", "WhatsApp direct sharing", "Copy-paste trip links", "Collaborator invites"] },
+  { icon: Wallet, title: "Expense Tracking & Maps", desc: "Split bills, log memories, and view interactive maps.", color: "#60a5fa", items: ["Live split group ledgers", "Interactive Leaflet maps", "Dedicated Trip Notes tab", "Real-time cloud sync"] },
 ];
 const STORIES = [
   { title: "Dawn on the Ghats of Varanasi", place: "Varanasi, India", desc: "Priests chant as the Ganga wakes. Smoke, marigolds, bells — a living ritual that has never stopped.", img: "https://images.unsplash.com/photo-1561361058-c24cecae35ca?w=1400&q=85" },
@@ -326,7 +326,7 @@ export default function LandingPage() {
           </h1>
           <motion.p initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.6 }}
             className="text-lg md:text-xl text-zinc-300 max-w-2xl mx-auto leading-relaxed mb-10">
-            AI itinerary building, live collaborative maps and smart expense tracking — in one workspace your whole crew loves.
+            Deep AI itineraries, rich offline PWAs, live weather forecasts, and smart expense tracking — all in one powerful workspace.
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.8 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4">
