@@ -181,7 +181,7 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
             {/* Hero + Generate */}
             <div className="relative rounded-2xl overflow-hidden h-56 md:h-72 shadow-2xl">
                 <img
-                    src={`${apiUrl}/images/search?query=${encodeURIComponent((trip.destinationCity || trip.destination) + ' scenic landscape')}&destination=${encodeURIComponent(trip.destination)}`}
+                    src={trip.coverImage || `${apiUrl}/images/search?query=${encodeURIComponent((trip.destinationCity || trip.destination) + ' famous landmark tourism')}&destination=${encodeURIComponent(trip.destination)}`}
                     alt={trip.destination}
                     className="w-full h-full object-cover"
                 />

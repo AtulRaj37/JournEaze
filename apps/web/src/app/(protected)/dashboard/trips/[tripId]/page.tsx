@@ -511,23 +511,23 @@ export default function TripDetailsPage() {
             {/* ═══ Dashboard Content ═══ */}
             <div ref={targetRef} className="max-w-7xl mx-auto px-4 sm:px-8 mt-8 bg-zinc-950 pb-10">
                 <Tabs defaultValue="planner" className="w-full">
-                    <TabsList className="bg-zinc-900 border border-zinc-800 p-1 rounded-2xl mb-8 flex w-full md:w-auto overflow-x-auto justify-start">
-                        <TabsTrigger value="planner" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400">
+                    <TabsList className="bg-zinc-900 border border-zinc-800 p-1 rounded-2xl mb-8 flex w-full md:w-auto overflow-x-auto justify-start flex-nowrap scrollbar-hide">
+                        <TabsTrigger value="planner" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400 whitespace-nowrap flex-shrink-0">
                             <PlaneTakeoff className="w-4 h-4 mr-2" /> Planner
                         </TabsTrigger>
-                        <TabsTrigger value="map" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400">
+                        <TabsTrigger value="map" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400 whitespace-nowrap flex-shrink-0">
                             <MapIcon className="w-4 h-4 mr-2" /> Map
                         </TabsTrigger>
-                        <TabsTrigger value="expenses" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400">
+                        <TabsTrigger value="expenses" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400 whitespace-nowrap flex-shrink-0">
                             <Receipt className="w-4 h-4 mr-2" /> Ledger
                         </TabsTrigger>
-                        <TabsTrigger value="notes" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400">
+                        <TabsTrigger value="notes" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400 whitespace-nowrap flex-shrink-0">
                             <StickyNote className="w-4 h-4 mr-2" /> Notes
                         </TabsTrigger>
-                        <TabsTrigger value="ai" className="rounded-xl px-6 py-3 data-[state=active]:bg-purple-900/40 data-[state=active]:text-purple-300 text-zinc-400">
+                        <TabsTrigger value="ai" className="rounded-xl px-6 py-3 data-[state=active]:bg-purple-900/40 data-[state=active]:text-purple-300 text-zinc-400 whitespace-nowrap flex-shrink-0">
                             <Sparkles className="w-4 h-4 mr-2" /> Ask AI
                         </TabsTrigger>
-                        <TabsTrigger value="explore" className="rounded-xl px-6 py-3 data-[state=active]:bg-emerald-900/40 data-[state=active]:text-emerald-300 text-zinc-400">
+                        <TabsTrigger value="explore" className="rounded-xl px-6 py-3 data-[state=active]:bg-emerald-900/40 data-[state=active]:text-emerald-300 text-zinc-400 whitespace-nowrap flex-shrink-0">
                             <Compass className="w-4 h-4 mr-2" /> Explore
                         </TabsTrigger>
                     </TabsList>
