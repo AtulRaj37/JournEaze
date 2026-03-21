@@ -22,6 +22,7 @@ import {
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
+import { usePDF } from "react-to-pdf";
 
 const TripMap = dynamic(() => import("@/components/TripMap"), { ssr: false, loading: () => <div className="w-full h-[600px] flex items-center justify-center bg-zinc-900 rounded-xl"><span className="text-zinc-500">Loading map...</span></div> });
 import TripItineraryBoard from "@/components/TripItineraryBoard";
@@ -29,6 +30,7 @@ import TripLedgerBoard from "@/components/TripLedgerBoard";
 import TripNotesBoard from "@/components/TripNotesBoard";
 import TripAIBoard from "@/components/TripAIBoard";
 import TripExploreBoard from "@/components/TripExploreBoard";
+import WeatherWidget from "@/components/WeatherWidget";
 
 // ─── Helpers ───────────────────────────────────────────────────────
 function getDayCount(start: string, end: string): number {
@@ -46,6 +48,29 @@ export default function TripDetailsPage() {
 
     const [trip, setTrip] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
+
+    const { toPDF, targetRef } = usePDF({ filename: `${trip?.title || 'trip'}-itinerary.pdf` });
+
+    const handleWhatsAppShare = () => {
+        if (!trip) return;
+        let txt = `🌍 *${trip.title}*\n📍 ${trip.destination}\n📅 ${fmtDate(trip.startDate)} - ${fmtDate(trip.endDate)}\n\n*Itinerary Highlights:*\n`;
+        if (trip.aiItinerary && Array.isArray(trip.aiItinerary)) {
+            trip.aiItinerary.slice(0, 3).forEach((day: any) => {
+                txt += `\nDay ${day.dayNumber}: ${day.theme}\n`;
+                day.activities?.slice(0, 2).forEach((act: any) => {
+                    txt += `- ${act.time}: ${act.title}\n`;
+                });
+            });
+            if (trip.aiItinerary.length > 3) txt += `\n...and ${trip.aiItinerary.length - 3} more days!\n`;
+        }
+        txt += `\n👉 View full trip on JournEaze: ${window.location.href}`;
+        window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, "_blank");
+    };
+
+    const handleCopyLink = () => {
+        navigator.clipboard.writeText(window.location.href);
+        alert("Trip link copied to clipboard!");
+    };
 
     // AI States
     const [isGeneratingItinerary, setIsGeneratingItinerary] = useState(false);
@@ -424,6 +449,23 @@ export default function TripDetailsPage() {
                 </div>
 
                 <div className="absolute top-6 right-6 z-20 flex gap-2">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 text-white hover:bg-white/20 backdrop-blur-md rounded-full px-4 h-10 border border-white/20">
+                            <Download className="w-4 h-4 mr-2" /> Export Trip
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="bg-zinc-900 border-zinc-800 text-zinc-100">
+                            <DropdownMenuItem onClick={() => toPDF()} className="hover:bg-zinc-800 cursor-pointer flex items-center gap-2">
+                                <FileText className="w-4 h-4 text-rose-400" /> Save as PDF
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleWhatsAppShare} className="hover:bg-zinc-800 cursor-pointer flex items-center gap-2">
+                                <Mail className="w-4 h-4 text-emerald-400" /> Share via WhatsApp
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleCopyLink} className="hover:bg-zinc-800 cursor-pointer flex items-center gap-2">
+                                <Link2 className="w-4 h-4 text-blue-400" /> Copy Trip Link
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
                     <input type="file" ref={coverImageRef} onChange={handleCustomCoverUpload} className="hidden" accept="image/*" />
                     <DropdownMenu>
                         <DropdownMenuTrigger disabled={isChangingCover} className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 text-white hover:bg-white/20 backdrop-blur-md rounded-full px-4 h-10">
@@ -467,7 +509,7 @@ export default function TripDetailsPage() {
             </div>
 
             {/* ═══ Dashboard Content ═══ */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-8 mt-8">
+            <div ref={targetRef} className="max-w-7xl mx-auto px-4 sm:px-8 mt-8 bg-zinc-950 pb-10">
                 <Tabs defaultValue="planner" className="w-full">
                     <TabsList className="bg-zinc-900 border border-zinc-800 p-1 rounded-2xl mb-8 flex w-full md:w-auto overflow-x-auto justify-start">
                         <TabsTrigger value="planner" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400">
@@ -540,6 +582,11 @@ export default function TripDetailsPage() {
                                             </div>
                                         ) : overviewTab === "overview" ? (
                                             <div className="space-y-4">
+                                                <WeatherWidget 
+                                                    latitude={trip.latitude} 
+                                                    longitude={trip.longitude} 
+                                                    destinationName={trip.destinationCity || trip.destination} 
+                                                />
                                                 <div>
                                                     <h3 className="text-lg font-bold text-white mb-2">Description</h3>
                                                     <p className="text-zinc-400 leading-relaxed">{overview?.description || `Discover the beauty of ${trip.destination}.`}</p>

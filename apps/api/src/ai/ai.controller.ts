@@ -21,6 +21,18 @@ export class AiController {
     return this.aiService.generatePackingList(dto.tripId, user.id);
   }
 
+  @Post('regenerate-day')
+  regenerateDay(@CurrentUser() user: User, @Body() dto: { tripId: string, dayIdx: number, feedback?: string }) {
+    if (dto.dayIdx === undefined) throw new Error('dayIdx is required');
+    return this.aiService.regenerateDay(dto.tripId, user.id, dto.dayIdx, dto.feedback);
+  }
+
+  @Post('optimize-day')
+  optimizeDay(@CurrentUser() user: User, @Body() dto: { tripId: string, dayIdx: number }) {
+    if (dto.dayIdx === undefined) throw new Error('dayIdx is required');
+    return this.aiService.optimizeDay(dto.tripId, user.id, dto.dayIdx);
+  }
+
   @Post('travel-tips')
   generateTravelTips(@CurrentUser() user: User, @Body() dto: GenerateItineraryDto) {
     return this.aiService.generateTravelTips(dto.tripId, user.id);

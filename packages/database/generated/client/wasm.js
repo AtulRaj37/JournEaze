@@ -155,6 +155,8 @@ exports.Prisma.TripScalarFieldEnum = {
   aiTravelTips: 'aiTravelTips',
   aiCustomPrompt: 'aiCustomPrompt',
   explorePlaces: 'explorePlaces',
+  mapPins: 'mapPins',
+  weatherCache: 'weatherCache',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   creatorId: 'creatorId'

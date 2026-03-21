@@ -60,10 +60,15 @@ export class AiService {
     const trip = await this.getTripDetails(tripId, userId);
 
     const basePrompt = `
-      Act as an expert travel planner. Plan a detailed daily itinerary for a trip to "${trip.destination}" from ${trip.startDate.toDateString()} to ${trip.endDate.toDateString()}.
+      Act as a high-end luxury travel concierge and local expert. Plan an incredibly deeply researched, detailed daily itinerary for a trip to "${trip.destination}" from ${trip.startDate.toDateString()} to ${trip.endDate.toDateString()}.
       It is CRITICAL that you generate exactly one itinerary day for EACH day of the trip. Do not skip any days.
       Budget parameter: ${trip.budget ? '₹' + trip.budget : 'Flexible'}.
       
+      REQUIREMENTS:
+      1. Each day MUST have at least 4-5 distinct activities (Morning, Afternoon, Evening).
+      2. Include exact estimated travel times between places, duration of the activity, and highly specific local tips (e.g. "Try the saffron tea at the stall near the exit").
+      3. Include realistic cost estimates for each activity.
+
       ${customPrompt ? `\nUSER SPECIFIC CUSTOMIZATION INSTRUCTIONS:\n${customPrompt}\nPlease strictly adhere to these instructions regarding times, themes, and pace.\n` : ''}
 
       Output ONLY a pure JSON object containing a "days" array. 
@@ -74,8 +79,11 @@ export class AiService {
       
       Each activity object MUST have:
       - "time": string (e.g., "8:00 AM")
+      - "timeSlot": string (Morning, Afternoon, or Evening)
+      - "duration": string (e.g., "2 hours")
+      - "travelTime": string (e.g., "15 mins walk from previous")
       - "title": string
-      - "description": string
+      - "description": string (At least 2-3 sentences. Highly descriptive, engaging, include local insider tips!)
       - "type": string (exactly one of: "activity", "food", "hotel", "travel")
       - "locationName": string
       - "costEstimate": number (in local currency, omit symbol)
@@ -105,6 +113,76 @@ export class AiService {
       }
       throw new InternalServerErrorException('Failed to generate itinerary. Please try again.');
     }
+  }
+
+  async regenerateDay(tripId: string, userId: string, dayIdx: number, feedback?: string) {
+    const trip = await this.getTripDetails(tripId, userId);
+    const existingItinerary = trip.aiItinerary as any[] || [];
+    if (!existingItinerary[dayIdx]) throw new NotFoundException('Day not found in itinerary');
+    
+    const dayData = existingItinerary[dayIdx];
+    
+    const prompt = `
+      Act as an expert travel planner. You are revising Day ${dayData.dayNumber} of a trip to ${trip.destination}.
+      The previous plan for this day was: ${JSON.stringify(dayData)}.
+      
+      USER FEEDBACK / REASON FOR REGENERATION: ${feedback || "The user wants a completely different vibe and fresh activities for this day."}
+      
+      Please generate a strictly new Day ${dayData.dayNumber} providing purely new activities that fit the user's feedback.
+      Output ONLY a pure JSON object representing the single day object (not an array).
+      The object MUST have:
+      - "dayNumber": ${dayData.dayNumber}
+      - "theme": string
+      - "activities": array (Each activity needs: "time", "timeSlot", "duration", "travelTime", "title", "description", "type", "locationName", "costEstimate", "needsImage").
+      It must have 4-5 activities with deep descriptions and local tips.
+    `;
+    
+    try {
+      const result = await this.generateContent(prompt);
+      const newDay = JSON.parse(result);
+      
+      existingItinerary[dayIdx] = newDay;
+      await this.prisma.trip.update({ where: { id: tripId }, data: { aiItinerary: existingItinerary } });
+      return { success: true, itinerary: existingItinerary };
+    } catch (e) {
+      console.error(e);
+      throw new InternalServerErrorException('Failed to regenerate day');
+    }
+  }
+
+  async optimizeDay(tripId: string, userId: string, dayIdx: number) {
+     const trip = await this.getTripDetails(tripId, userId);
+     const existingItinerary = trip.aiItinerary as any[] || [];
+     if (!existingItinerary[dayIdx]) throw new NotFoundException('Day not found in itinerary');
+     
+     const dayData = existingItinerary[dayIdx];
+     
+     const prompt = `
+       Act as an expert logistics and travel planner. You are optimizing Day ${dayData.dayNumber} of a trip to ${trip.destination}.
+       The current disjointed activities are: ${JSON.stringify(dayData.activities)}.
+       
+       Please strictly reorder and completely rethink the "time", "timeSlot", and "travelTime" for these EXACT SAME activities so that they make perfect geographical and logical sense.
+       Group nearby places together so the itinerary flows naturally without backtracking. Ensure lunch is around 1 PM and dinner around 7 PM. 
+       Do not delete any activities, just reorder and fix their times to flow beautifully.
+       
+       Output ONLY a pure JSON object representing the optimized day object.
+       The object MUST have:
+       - "dayNumber": ${dayData.dayNumber}
+       - "theme": "Optimized: " + "${dayData.theme || 'Day'}"
+       - "activities": array containing the exact same activities but smartly reordered with updated times and travel details.
+     `;
+     
+     try {
+       const result = await this.generateContent(prompt);
+       const optimizedDay = JSON.parse(result);
+       
+       existingItinerary[dayIdx] = optimizedDay;
+       await this.prisma.trip.update({ where: { id: tripId }, data: { aiItinerary: existingItinerary } });
+       return { success: true, itinerary: existingItinerary };
+     } catch (e) {
+       console.error(e);
+       throw new InternalServerErrorException('Failed to optimize day');
+     }
   }
 
   // ─── Packing List ─────────────────────────────────────────────────

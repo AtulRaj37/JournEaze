@@ -3991,6 +3991,8 @@ export namespace Prisma {
     aiTravelTips: number
     aiCustomPrompt: number
     explorePlaces: number
+    mapPins: number
+    weatherCache: number
     createdAt: number
     updatedAt: number
     creatorId: number
@@ -4075,6 +4077,8 @@ export namespace Prisma {
     aiTravelTips?: true
     aiCustomPrompt?: true
     explorePlaces?: true
+    mapPins?: true
+    weatherCache?: true
     createdAt?: true
     updatedAt?: true
     creatorId?: true
@@ -4188,6 +4192,8 @@ export namespace Prisma {
     aiTravelTips: JsonValue | null
     aiCustomPrompt: string | null
     explorePlaces: JsonValue | null
+    mapPins: JsonValue | null
+    weatherCache: JsonValue | null
     createdAt: Date
     updatedAt: Date
     creatorId: string
@@ -4233,6 +4239,8 @@ export namespace Prisma {
     aiTravelTips?: boolean
     aiCustomPrompt?: boolean
     explorePlaces?: boolean
+    mapPins?: boolean
+    weatherCache?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creatorId?: boolean
@@ -4270,6 +4278,8 @@ export namespace Prisma {
     aiTravelTips?: boolean
     aiCustomPrompt?: boolean
     explorePlaces?: boolean
+    mapPins?: boolean
+    weatherCache?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creatorId?: boolean
@@ -4297,6 +4307,8 @@ export namespace Prisma {
     aiTravelTips?: boolean
     aiCustomPrompt?: boolean
     explorePlaces?: boolean
+    mapPins?: boolean
+    weatherCache?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creatorId?: boolean
@@ -4354,6 +4366,8 @@ export namespace Prisma {
       aiTravelTips: Prisma.JsonValue | null
       aiCustomPrompt: string | null
       explorePlaces: Prisma.JsonValue | null
+      mapPins: Prisma.JsonValue | null
+      weatherCache: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
       creatorId: string
@@ -4780,6 +4794,8 @@ export namespace Prisma {
     readonly aiTravelTips: FieldRef<"Trip", 'Json'>
     readonly aiCustomPrompt: FieldRef<"Trip", 'String'>
     readonly explorePlaces: FieldRef<"Trip", 'Json'>
+    readonly mapPins: FieldRef<"Trip", 'Json'>
+    readonly weatherCache: FieldRef<"Trip", 'Json'>
     readonly createdAt: FieldRef<"Trip", 'DateTime'>
     readonly updatedAt: FieldRef<"Trip", 'DateTime'>
     readonly creatorId: FieldRef<"Trip", 'String'>
@@ -19880,6 +19896,8 @@ export namespace Prisma {
     aiTravelTips: 'aiTravelTips',
     aiCustomPrompt: 'aiCustomPrompt',
     explorePlaces: 'explorePlaces',
+    mapPins: 'mapPins',
+    weatherCache: 'weatherCache',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     creatorId: 'creatorId'
@@ -20378,6 +20396,8 @@ export namespace Prisma {
     aiTravelTips?: JsonNullableFilter<"Trip">
     aiCustomPrompt?: StringNullableFilter<"Trip"> | string | null
     explorePlaces?: JsonNullableFilter<"Trip">
+    mapPins?: JsonNullableFilter<"Trip">
+    weatherCache?: JsonNullableFilter<"Trip">
     createdAt?: DateTimeFilter<"Trip"> | Date | string
     updatedAt?: DateTimeFilter<"Trip"> | Date | string
     creatorId?: StringFilter<"Trip"> | string
@@ -20414,6 +20434,8 @@ export namespace Prisma {
     aiTravelTips?: SortOrderInput | SortOrder
     aiCustomPrompt?: SortOrderInput | SortOrder
     explorePlaces?: SortOrderInput | SortOrder
+    mapPins?: SortOrderInput | SortOrder
+    weatherCache?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -20453,6 +20475,8 @@ export namespace Prisma {
     aiTravelTips?: JsonNullableFilter<"Trip">
     aiCustomPrompt?: StringNullableFilter<"Trip"> | string | null
     explorePlaces?: JsonNullableFilter<"Trip">
+    mapPins?: JsonNullableFilter<"Trip">
+    weatherCache?: JsonNullableFilter<"Trip">
     createdAt?: DateTimeFilter<"Trip"> | Date | string
     updatedAt?: DateTimeFilter<"Trip"> | Date | string
     creatorId?: StringFilter<"Trip"> | string
@@ -20489,6 +20513,8 @@ export namespace Prisma {
     aiTravelTips?: SortOrderInput | SortOrder
     aiCustomPrompt?: SortOrderInput | SortOrder
     explorePlaces?: SortOrderInput | SortOrder
+    mapPins?: SortOrderInput | SortOrder
+    weatherCache?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -20523,6 +20549,8 @@ export namespace Prisma {
     aiTravelTips?: JsonNullableWithAggregatesFilter<"Trip">
     aiCustomPrompt?: StringNullableWithAggregatesFilter<"Trip"> | string | null
     explorePlaces?: JsonNullableWithAggregatesFilter<"Trip">
+    mapPins?: JsonNullableWithAggregatesFilter<"Trip">
+    weatherCache?: JsonNullableWithAggregatesFilter<"Trip">
     createdAt?: DateTimeWithAggregatesFilter<"Trip"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Trip"> | Date | string
     creatorId?: StringWithAggregatesFilter<"Trip"> | string
@@ -21655,6 +21683,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -21690,6 +21720,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -21725,6 +21757,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -21760,6 +21794,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -21795,6 +21831,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -21821,6 +21859,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21846,6 +21886,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -23154,6 +23196,8 @@ export namespace Prisma {
     aiTravelTips?: SortOrder
     aiCustomPrompt?: SortOrder
     explorePlaces?: SortOrder
+    mapPins?: SortOrder
+    weatherCache?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -25765,6 +25809,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: TripMemberCreateNestedManyWithoutTripInput
@@ -25799,6 +25845,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: TripMemberUncheckedCreateNestedManyWithoutTripInput
@@ -26162,6 +26210,8 @@ export namespace Prisma {
     aiTravelTips?: JsonNullableFilter<"Trip">
     aiCustomPrompt?: StringNullableFilter<"Trip"> | string | null
     explorePlaces?: JsonNullableFilter<"Trip">
+    mapPins?: JsonNullableFilter<"Trip">
+    weatherCache?: JsonNullableFilter<"Trip">
     createdAt?: DateTimeFilter<"Trip"> | Date | string
     updatedAt?: DateTimeFilter<"Trip"> | Date | string
     creatorId?: StringFilter<"Trip"> | string
@@ -26993,6 +27043,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -27027,6 +27079,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -27128,6 +27182,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -27162,6 +27218,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -27253,6 +27311,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -27287,6 +27347,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -27375,6 +27437,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -27409,6 +27473,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -27521,6 +27587,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -27555,6 +27623,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -27678,6 +27748,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -27712,6 +27784,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -27889,6 +27963,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -27923,6 +27999,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -28075,6 +28153,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -28109,6 +28189,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -28257,6 +28339,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -28291,6 +28375,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -28392,6 +28478,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -28426,6 +28514,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -28517,6 +28607,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -28551,6 +28643,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -28696,6 +28790,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -28730,6 +28826,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -29160,6 +29258,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -29194,6 +29294,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -29295,6 +29397,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -29329,6 +29433,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -29471,6 +29577,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -29505,6 +29613,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -29612,6 +29722,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -29646,6 +29758,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -29788,6 +29902,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -29822,6 +29938,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -29923,6 +30041,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -29957,6 +30077,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -30048,6 +30170,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -30165,6 +30289,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: TripMemberUpdateManyWithoutTripNestedInput
@@ -30199,6 +30325,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: TripMemberUncheckedUpdateManyWithoutTripNestedInput
@@ -30233,6 +30361,8 @@ export namespace Prisma {
     aiTravelTips?: NullableJsonNullValueInput | InputJsonValue
     aiCustomPrompt?: NullableStringFieldUpdateOperationsInput | string | null
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
+    mapPins?: NullableJsonNullValueInput | InputJsonValue
+    weatherCache?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

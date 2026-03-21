@@ -19,10 +19,11 @@ export const metadata: Metadata = {
   title: "JournEaze | Travel Smarter",
   description: "Plan together, travel smarter with JournEaze.",
   icons: {
-    icon: "/logo/only-logo.png",
-    shortcut: "/logo/only-logo.png",
-    apple: "/logo/only-logo.png",
+    icon: "/logo/only-logo.png?v=2",
+    shortcut: "/logo/only-logo.png?v=2",
+    apple: "/logo/only-logo.png?v=2",
   },
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({

@@ -83,6 +83,8 @@ model Trip {
   aiTravelTips  Json?
   aiCustomPrompt String?
   explorePlaces  Json?
+  mapPins        Json?
+  weatherCache   Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

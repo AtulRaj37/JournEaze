@@ -68,29 +68,49 @@ export default function TripItineraryBoard({ initialItinerary, tripId, onUpdate 
         if (onUpdate) onUpdate(newItin);
     };
 
-    const handleOptimizeDay = (dayIdx: number) => {
-        const newItin = [...itinerary];
-        // Basic optimization logic: sort by type to group locations or by cost
-        // Since we don't have lat/long readily available in activities array, we sort them 
-        // Hotel -> Activity -> Food -> Travel as a logical progression
-        const order: any = { 'hotel': 1, 'activity': 2, 'food': 3, 'travel': 4 };
-        newItin[dayIdx].activities.sort((a: any, b: any) => (order[a.type] || 5) - (order[b.type] || 5));
-        
-        // Re-assign timeSlots
-        newItin[dayIdx].activities.forEach((act: any, idx: number) => {
-            act.timeSlot = idx === 0 ? "Morning" : idx === newItin[dayIdx].activities.length - 1 ? "Evening" : "Afternoon";
-        });
+    const [isOptimizing, setIsOptimizing] = useState<number | null>(null);
+    const [isRegenerating, setIsRegenerating] = useState<number | null>(null);
 
-        setItinerary(newItin);
-        if (onUpdate) onUpdate(newItin);
+    const handleOptimizeDay = async (dayIdx: number) => {
+        if (!tripId) return;
+        setIsOptimizing(dayIdx);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/ai/optimize-day`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('journeaze_token')}` },
+                body: JSON.stringify({ tripId, dayIdx })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setItinerary(data.itinerary);
+                if (onUpdate) onUpdate(data.itinerary);
+            }
+        } catch (err) {
+            console.error("Failed to optimize day", err);
+        } finally {
+            setIsOptimizing(null);
+        }
     };
 
     const handleRegenerateDay = async (dayIdx: number) => {
-        // Mock regenerate for UX
-        const newItin = [...itinerary];
-        newItin[dayIdx].theme = "Newly AI Optimized Route ✨";
-        setItinerary(newItin);
-        if (onUpdate) onUpdate(newItin);
+        if (!tripId) return;
+        setIsRegenerating(dayIdx);
+        try {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/ai/regenerate-day`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('journeaze_token')}` },
+                body: JSON.stringify({ tripId, dayIdx })
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setItinerary(data.itinerary);
+                if (onUpdate) onUpdate(data.itinerary);
+            }
+        } catch (err) {
+            console.error("Failed to regenerate day", err);
+        } finally {
+            setIsRegenerating(null);
+        }
     };
 
     const addCustomActivity = (dayIdx: number) => {
@@ -139,11 +159,11 @@ export default function TripItineraryBoard({ initialItinerary, tripId, onUpdate 
                                 {day.theme && <p className="text-purple-400 font-medium text-sm mt-0.5">{day.theme}</p>}
                             </div>
                             <div className="flex gap-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                                <Button size="sm" variant="outline" className="h-8 bg-zinc-900 border-zinc-700 text-zinc-300 hover:text-white" onClick={() => handleOptimizeDay(dayIdx)}>
-                                    <Wand2 className="w-3.5 h-3.5 mr-1.5" /> Optimize
+                                <Button disabled={isOptimizing === dayIdx} size="sm" variant="outline" className="h-8 bg-zinc-900 border-zinc-700 text-zinc-300 hover:text-white" onClick={() => handleOptimizeDay(dayIdx)}>
+                                    <Wand2 className={`w-3.5 h-3.5 mr-1.5 ${isOptimizing === dayIdx ? 'animate-spin' : ''}`} /> {isOptimizing === dayIdx ? 'Optimizing...' : 'Optimize'}
                                 </Button>
-                                <Button size="sm" variant="outline" className="h-8 bg-zinc-900 border-zinc-700 text-zinc-300 hover:text-white" onClick={() => handleRegenerateDay(dayIdx)}>
-                                    <RefreshCw className="w-3.5 h-3.5 mr-1.5" /> Regenerate
+                                <Button disabled={isRegenerating === dayIdx} size="sm" variant="outline" className="h-8 bg-zinc-900 border-zinc-700 text-zinc-300 hover:text-white" onClick={() => handleRegenerateDay(dayIdx)}>
+                                    <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${isRegenerating === dayIdx ? 'animate-spin' : ''}`} /> {isRegenerating === dayIdx ? 'Regenerating...' : 'Regenerate'}
                                 </Button>
                             </div>
                         </div>
