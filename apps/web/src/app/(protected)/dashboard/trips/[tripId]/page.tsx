@@ -22,7 +22,6 @@ import {
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 import "leaflet/dist/leaflet.css";
-import { usePDF } from "react-to-pdf";
 
 const TripMap = dynamic(() => import("@/components/TripMap"), { ssr: false, loading: () => <div className="w-full h-[600px] flex items-center justify-center bg-zinc-900 rounded-xl"><span className="text-zinc-500">Loading map...</span></div> });
 import TripItineraryBoard from "@/components/TripItineraryBoard";
@@ -49,18 +48,8 @@ export default function TripDetailsPage() {
     const [trip, setTrip] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const { toPDF, targetRef } = usePDF({ 
-        filename: `${trip?.title || 'trip'}-itinerary.pdf`,
-        overrides: { canvas: { useCORS: true, allowTaint: true } }
-    });
-
-    const handlePrintPDF = async () => {
-        try {
-            await toPDF();
-        } catch (error: any) {
-            console.error("PDF Export failed:", error);
-            alert("Failed to export PDF: " + error.message);
-        }
+    const handlePrintPDF = () => {
+        setTimeout(() => window.print(), 100);
     };
 
     const handleWhatsAppShare = () => {
@@ -440,7 +429,7 @@ export default function TripDetailsPage() {
     const heroImage = trip.coverImage || "";
 
     return (
-        <div ref={targetRef} className="min-h-screen bg-zinc-950 text-white selection:bg-zinc-800 pb-20">
+        <div className="min-h-screen bg-zinc-950 text-white selection:bg-zinc-800 pb-20">
             {/* ═══ Hero Section ═══ */}
             <div className="relative h-[45vh] w-full min-h-[380px]">
                 {/* Cover Image Background */}
@@ -521,7 +510,7 @@ export default function TripDetailsPage() {
             </div>
 
             {/* ═══ Dashboard Content ═══ */}
-            <div ref={targetRef} className="max-w-7xl mx-auto px-4 sm:px-8 mt-8 bg-zinc-950 pb-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-8 mt-8 bg-zinc-950 pb-10">
                 <Tabs defaultValue="planner" className="w-full">
                     <TabsList className="bg-zinc-900 border border-zinc-800 p-1 rounded-2xl mb-8 flex w-full md:w-auto overflow-x-auto justify-start flex-nowrap scrollbar-hide">
                         <TabsTrigger value="planner" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400 whitespace-nowrap flex-shrink-0">
