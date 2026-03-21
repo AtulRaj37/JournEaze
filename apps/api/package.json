@@ -6,7 +6,6 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prebuild": "npx prisma db push --schema=../../packages/database/schema.prisma --accept-data-loss && npx prisma generate --schema=../../packages/database/schema.prisma",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
