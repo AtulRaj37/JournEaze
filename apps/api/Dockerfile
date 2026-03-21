@@ -60,5 +60,5 @@ COPY --from=builder /app/packages/database/migrations ./packages/database/migrat
 EXPOSE 3000
 ENV NODE_ENV=production
 WORKDIR /app
-# Run DB migrations via the workspace package script (uses installed prisma@5.22.0, no npx download)
-CMD ["sh", "-c", "pnpm --filter @journeaze/database run migrate:deploy && node /app/apps/api/dist/main.js"]
+# Run DB push via the workspace package script
+CMD ["sh", "-c", "pnpm --filter @journeaze/database exec prisma db push --accept-data-loss && node /app/apps/api/dist/main.js"]
