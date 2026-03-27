@@ -48,6 +48,96 @@ export class TripsService {
     });
   }
 
+  async getPublicTrips() {
+    return this.prisma.trip.findMany({
+      where: { isPublic: true },
+      include: {
+        creator: { select: { id: true, name: true, image: true, username: true } },
+        _count: { select: { days: true, members: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 50,
+    });
+  }
+
+  async forkTrip(tripId: string, userId: string) {
+    // 1. Fetch original trip with days and activities
+    const originalTrip = await this.prisma.trip.findUnique({
+      where: { id: tripId },
+      include: {
+        days: {
+          include: { activities: true },
+        },
+      },
+    });
+
+    if (!originalTrip) throw new NotFoundException('Template trip not found');
+    if (!originalTrip.isPublic) throw new ForbiddenException('This trip cannot be cloned as it is not public');
+
+    // 2. Clone the core trip (strip ids, creator, and personal data)
+    const newTrip = await this.prisma.trip.create({
+      data: {
+        title: `Fork of ${originalTrip.title}`,
+        description: originalTrip.description,
+        destination: originalTrip.destination,
+        destinationCity: originalTrip.destinationCity,
+        destinationCountry: originalTrip.destinationCountry,
+        latitude: originalTrip.latitude,
+        longitude: originalTrip.longitude,
+        startDate: originalTrip.startDate,
+        endDate: originalTrip.endDate,
+        travelType: originalTrip.travelType,
+        budget: originalTrip.budget,
+        currency: originalTrip.currency,
+        coverImage: originalTrip.coverImage,
+        aiItinerary: originalTrip.aiItinerary || [],
+        aiPackingList: originalTrip.aiPackingList || {},
+        aiTravelTips: originalTrip.aiTravelTips || [],
+        explorePlaces: originalTrip.explorePlaces || [],
+        mapPins: originalTrip.mapPins || [],
+        isPublic: false, // Don't make forks public by default
+        creatorId: userId,
+        members: {
+          create: { userId: userId, role: 'ADMIN' },
+        },
+        activityLogs: {
+          create: {
+            userId: userId,
+            action: 'FORKED_TRIP',
+            details: JSON.stringify({ originalTripId: originalTrip.id }),
+          },
+        },
+      },
+    });
+
+    // 3. Clone relational Itinerary properties (Days & Activities)
+    for (const day of originalTrip.days) {
+      await this.prisma.itineraryDay.create({
+        data: {
+          tripId: newTrip.id,
+          date: day.date,
+          dayNumber: day.dayNumber,
+          activities: {
+            create: day.activities.map(act => ({
+              title: act.title,
+              description: act.description,
+              startTime: act.startTime,
+              endTime: act.endTime,
+              latitude: act.latitude,
+              longitude: act.longitude,
+              locationName: act.locationName,
+              costEstimate: act.costEstimate,
+              orderIndex: act.orderIndex,
+              createdById: userId,
+            })),
+          },
+        },
+      });
+    }
+
+    return newTrip;
+  }
+
   async findOne(tripId: string, userId: string) {
     const trip = await this.prisma.trip.findUnique({
       where: { id: tripId },

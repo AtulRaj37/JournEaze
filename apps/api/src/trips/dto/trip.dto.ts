@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional, IsDateString, IsNumber, IsEnum } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsDateString, IsNumber, IsEnum, IsBoolean } from 'class-validator';
 
 enum TravelType {
   SOLO = 'SOLO',
@@ -117,6 +117,13 @@ export class UpdateTripDto {
   @IsString()
   @IsOptional()
   status?: 'PLANNING' | 'UPCOMING' | 'ONGOING' | 'COMPLETED';
+
+  @IsBoolean()
+  @IsOptional()
+  isPublic?: boolean;
+
+  @IsOptional()
+  aiPackingList?: Record<string, any>;
 }
 
 export class InviteMemberDto {

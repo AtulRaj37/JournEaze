@@ -77,7 +77,7 @@ export default function TripItineraryBoard({ initialItinerary, tripId, onUpdate 
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/ai/optimize-day`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('journeaze_token')}` },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
                 body: JSON.stringify({ tripId, dayIdx })
             });
             if (res.ok) {
@@ -98,7 +98,7 @@ export default function TripItineraryBoard({ initialItinerary, tripId, onUpdate 
         try {
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/ai/regenerate-day`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('journeaze_token')}` },
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('token')}` },
                 body: JSON.stringify({ tripId, dayIdx })
             });
             if (res.ok) {
@@ -180,7 +180,7 @@ export default function TripItineraryBoard({ initialItinerary, tripId, onUpdate 
                                                     <div 
                                                         ref={provided.innerRef}
                                                         {...provided.draggableProps}
-                                                        className={`bg-zinc-900/40 border ${act.completed ? 'border-emerald-500/30 bg-emerald-950/20 opacity-60' : 'border-zinc-800/60'} rounded-2xl p-4 flex gap-4 transition-all shadow-sm ${snapshot.isDragging ? 'shadow-2xl shadow-purple-500/20 border-purple-500/50 scale-[1.02] z-50 bg-zinc-800' : 'hover:bg-zinc-800/40 hover:border-zinc-700'}`}
+                                                        className={`bg-zinc-900/40 border ${act.completed ? 'border-orange-500/30 bg-orange-950/20 opacity-60' : 'border-zinc-800/60'} rounded-2xl p-4 flex gap-4 transition-all shadow-sm ${snapshot.isDragging ? 'shadow-2xl shadow-purple-500/20 border-purple-500/50 scale-[1.02] z-50 bg-zinc-800' : 'hover:bg-zinc-800/40 hover:border-zinc-700'}`}
                                                     >
                                                         {/* Drag Handle & TimeSlot */}
                                                         <div className="flex flex-col items-center justify-between py-1">
@@ -243,7 +243,7 @@ export default function TripItineraryBoard({ initialItinerary, tripId, onUpdate 
                                                             )}
                                                             
                                                             {act.costEstimate > 0 && (
-                                                                <div className="mt-3 inline-flex items-center text-[11px] font-mono text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-md">
+                                                                <div className="mt-3 inline-flex items-center text-[11px] font-mono text-orange-400 bg-orange-400/10 px-2 py-1 rounded-md">
                                                                     Est. ₹{act.costEstimate}
                                                                 </div>
                                                             )}
@@ -268,7 +268,7 @@ export default function TripItineraryBoard({ initialItinerary, tripId, onUpdate 
                                                         <div className="flex flex-col items-end justify-between py-1 border-l border-zinc-800/50 pl-4 w-24">
                                                             <button 
                                                                 onClick={() => toggleComplete(dayIdx, actIdx)}
-                                                                className={`p-1.5 rounded-md transition-colors ${act.completed ? 'text-emerald-400 bg-emerald-400/10' : 'text-zinc-500 hover:text-white hover:bg-zinc-800'}`}
+                                                                className={`p-1.5 rounded-md transition-colors ${act.completed ? 'text-orange-400 bg-orange-400/10' : 'text-zinc-500 hover:text-white hover:bg-zinc-800'}`}
                                                                 title={act.completed ? "Mark incomplete" : "Mark as completed"}
                                                             >
                                                                 {act.completed ? <CheckSquare className="w-5 h-5" /> : <Circle className="w-5 h-5" />}

@@ -160,7 +160,7 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                                 </div>
                                 <div className="w-px h-10 bg-white/10"></div>
                                 <div className="text-center">
-                                    <Wind className="w-5 h-5 mx-auto text-teal-400 mb-1" />
+                                    <Wind className="w-5 h-5 mx-auto text-amber-400 mb-1" />
                                     <p className="text-xs text-zinc-400">Wind</p>
                                     <p className="text-sm font-semibold text-white">{weather.current.wind_speed_10m} km/h</p>
                                 </div>
@@ -195,7 +195,7 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                         <Button
                             onClick={handleExplorePlacesGenerate}
                             disabled={isLoadingExplore}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 rounded-xl font-bold whitespace-nowrap shadow-lg shadow-emerald-500/20 text-md transition-all hover:scale-105"
+                            className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-6 rounded-xl font-bold whitespace-nowrap shadow-lg shadow-orange-500/20 text-md transition-all hover:scale-105"
                         >
                             {isLoadingExplore ? <><Loader2 className="w-5 h-5 animate-spin mr-2" />Mapping...</> : <><Sparkles className="w-5 h-5 mr-2" />Generate Guide</>}
                         </Button>
@@ -225,7 +225,7 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                     {/* Category Filter Chips */}
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                         <div>
-                            <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Compass className="w-5 h-5 text-emerald-400" /> Filter by Category</h3>
+                            <h3 className="text-xl font-bold text-white mb-2 flex items-center gap-2"><Compass className="w-5 h-5 text-orange-400" /> Filter by Category</h3>
                         </div>
                         <div className="flex flex-wrap gap-2">
                             {categories.map((cat: string) => {
@@ -236,7 +236,7 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                                         onClick={() => setExploreCategory(cat)}
                                         className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all duration-200 ${
                                             exploreCategory === cat
-                                                ? 'bg-emerald-600 border-emerald-500 text-white shadow-lg shadow-emerald-900/40'
+                                                ? 'bg-orange-600 border-orange-500 text-white shadow-lg shadow-orange-900/40'
                                                 : 'bg-zinc-900/50 border-zinc-800 text-zinc-400 hover:bg-zinc-800 hover:text-white'
                                         }`}
                                     >
@@ -260,11 +260,11 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                                         <h4 className="text-white font-bold truncate">{place.name}</h4>
                                         <p className="text-zinc-400 text-xs truncate line-clamp-1 mb-2">{place.description}</p>
                                         <div className="flex items-center gap-2">
-                                            <span className="text-xs bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full">{place.category}</span>
+                                            <span className="text-xs bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded-full">{place.category}</span>
                                             <span className="text-xs bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full flex items-center font-bold">★ 4.8</span>
                                         </div>
                                     </div>
-                                    <Button size="icon" variant="ghost" className="hover:bg-emerald-500/20 hover:text-emerald-400 shrink-0" onClick={() => setAddingPlace(place)}>
+                                    <Button size="icon" variant="ghost" className="hover:bg-orange-500/20 hover:text-orange-400 shrink-0" onClick={() => setAddingPlace(place)}>
                                         <PlusCircle className="w-5 h-5" />
                                     </Button>
                                 </div>
@@ -286,7 +286,7 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: i * 0.05 }}
                                         className={`group relative bg-zinc-900/80 backdrop-blur-md border rounded-2xl overflow-hidden transition-all duration-300 flex flex-col ${
-                                            isSelected ? 'border-emerald-500 shadow-[0_0_30px_-5px_rgba(16,185,129,0.3)]' : 'border-zinc-800/80 hover:border-zinc-600 hover:shadow-xl hover:-translate-y-1'
+                                            isSelected ? 'border-orange-500 shadow-[0_0_30px_-5px_rgba(16,185,129,0.3)]' : 'border-zinc-800/80 hover:border-zinc-600 hover:shadow-xl hover:-translate-y-1'
                                         }`}
                                     >
                                         {/* Image */}
@@ -307,7 +307,7 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                                             
                                             {/* Selection checkmark */}
                                             <div className={`absolute top-4 left-4 w-8 h-8 rounded-full flex items-center justify-center transition-all ${
-                                                isSelected ? 'bg-emerald-500 text-white scale-110' : 'bg-black/40 backdrop-blur-sm text-white/50 border border-white/20 group-hover:bg-white/10'
+                                                isSelected ? 'bg-orange-500 text-white scale-110' : 'bg-black/40 backdrop-blur-sm text-white/50 border border-white/20 group-hover:bg-white/10'
                                             }`}>
                                                 {isSelected ? <Check className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
                                             </div>
@@ -320,7 +320,7 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
 
                                         {/* Content */}
                                         <div className="p-5 flex-1 flex flex-col">
-                                            <h4 className="font-extrabold text-white text-base mb-2 group-hover:text-emerald-400 transition-colors line-clamp-1">{place.name}</h4>
+                                            <h4 className="font-extrabold text-white text-base mb-2 group-hover:text-orange-400 transition-colors line-clamp-1">{place.name}</h4>
                                             <p className="text-sm text-zinc-400 leading-relaxed line-clamp-2 mb-4 flex-1">{place.description}</p>
                                             
                                             <div className="flex flex-col gap-2 mb-4">
@@ -333,7 +333,7 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                                             </div>
 
                                             <div className="pt-4 border-t border-zinc-800/50 flex items-center justify-between mt-auto">
-                                                <Button size="sm" onClick={() => setAddingPlace(place)} className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 font-semibold h-8 text-xs">
+                                                <Button size="sm" onClick={() => setAddingPlace(place)} className="bg-orange-500/10 hover:bg-orange-500/20 text-orange-400 border border-orange-500/20 font-semibold h-8 text-xs">
                                                     <PlusCircle className="w-3.5 h-3.5 mr-1.5" /> Planner
                                                 </Button>
                                                 <a
@@ -359,7 +359,7 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                                 initial={{ opacity: 0, y: 50, scale: 0.95 }}
                                 animate={{ opacity: 1, y: 0, scale: 1 }}
                                 exit={{ opacity: 0, y: 50, scale: 0.95 }}
-                                className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-emerald-600/95 backdrop-blur-xl border border-emerald-400/50 rounded-2xl p-4 flex items-center justify-between shadow-2xl shadow-emerald-900/40 z-50 w-[90%] max-w-xl"
+                                className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-orange-600/95 backdrop-blur-xl border border-orange-400/50 rounded-2xl p-4 flex items-center justify-between shadow-2xl shadow-orange-900/40 z-50 w-[90%] max-w-xl"
                             >
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center shadow-inner">
@@ -367,7 +367,7 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                                     </div>
                                     <div>
                                         <p className="text-white font-bold text-base">{selectedPlaces.size} place{selectedPlaces.size > 1 ? 's' : ''} selected</p>
-                                        <p className="text-emerald-100 text-xs mt-0.5 opacity-90">Preview locations smoothly on Map</p>
+                                        <p className="text-orange-100 text-xs mt-0.5 opacity-90">Preview locations smoothly on Map</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-2">
@@ -377,11 +377,11 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                                             const names = Array.from(selectedPlaces).map(idx => explorePlaces[idx]?.name).filter(Boolean);
                                             window.open(`https://www.google.com/maps/dir/${names.map(n => encodeURIComponent(n + ', ' + trip.destination)).join('/')}`, '_blank');
                                         }}
-                                        className="bg-white text-emerald-900 hover:bg-zinc-100 font-bold px-4 shadow-md"
+                                        className="bg-white text-orange-900 hover:bg-zinc-100 font-bold px-4 shadow-md"
                                     >
                                         <MapPin className="w-4 h-4 mr-2" /> Navigate
                                     </Button>
-                                    <Button size="icon" variant="ghost" onClick={() => setSelectedPlaces(new Set())} className="text-emerald-100 hover:bg-emerald-700 hover:text-white">
+                                    <Button size="icon" variant="ghost" onClick={() => setSelectedPlaces(new Set())} className="text-orange-100 hover:bg-orange-700 hover:text-white">
                                         <X className="w-5 h-5" />
                                     </Button>
                                 </div>
@@ -421,14 +421,14 @@ export default function TripExploreBoard({ tripId, trip, explorePlaces, setExplo
                                                 <select
                                                     value={selectedDayIndex}
                                                     onChange={(e) => setSelectedDayIndex(parseInt(e.target.value))}
-                                                    className="w-full bg-zinc-950 border border-zinc-800 text-white rounded-xl h-11 px-3 text-sm focus:ring-1 focus:ring-emerald-500 outline-none"
+                                                    className="w-full bg-zinc-950 border border-zinc-800 text-white rounded-xl h-11 px-3 text-sm focus:ring-1 focus:ring-orange-500 outline-none"
                                                 >
                                                     {trip.aiItinerary.map((day: any, i: number) => (
                                                         <option key={i} value={i}>Day {day.dayNumber}: {day.theme}</option>
                                                     ))}
                                                 </select>
                                             </div>
-                                            <Button onClick={handleAddToItinerary} disabled={isSavingActivity} className="w-full h-11 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold">
+                                            <Button onClick={handleAddToItinerary} disabled={isSavingActivity} className="w-full h-11 bg-orange-600 hover:bg-orange-500 text-white rounded-xl font-bold">
                                                 {isSavingActivity ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-2" />} Add to Planner
                                             </Button>
                                         </div>

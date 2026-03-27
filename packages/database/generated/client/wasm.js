@@ -157,6 +157,7 @@ exports.Prisma.TripScalarFieldEnum = {
   explorePlaces: 'explorePlaces',
   mapPins: 'mapPins',
   weatherCache: 'weatherCache',
+  isPublic: 'isPublic',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   creatorId: 'creatorId'

@@ -158,7 +158,7 @@ export default function ProfilePage() {
                         </Card>
                         <Card className="bg-zinc-900/50 border-zinc-800 text-center py-5">
                             <CardContent className="p-0">
-                                <p className="text-3xl font-bold text-emerald-400">{tripStats.past}</p>
+                                <p className="text-3xl font-bold text-orange-400">{tripStats.past}</p>
                                 <p className="text-xs text-zinc-500 mt-1">Completed</p>
                             </CardContent>
                         </Card>

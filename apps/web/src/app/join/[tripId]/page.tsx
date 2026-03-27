@@ -83,7 +83,7 @@ export default function JoinTripPage() {
     if (isLoading) {
         return (
             <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
-                <Loader2 className="w-10 h-10 text-emerald-500 animate-spin" />
+                <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
             </div>
         );
     }
@@ -108,7 +108,7 @@ export default function JoinTripPage() {
     return (
         <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-4 relative overflow-hidden">
             {/* Background glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-emerald-500/10 blur-[120px] rounded-full pointer-events-none" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-orange-500/10 blur-[120px] rounded-full pointer-events-none" />
             <div className="absolute bottom-0 right-0 w-[400px] h-[300px] bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
 
             <motion.div 
@@ -130,27 +130,27 @@ export default function JoinTripPage() {
                     <div className="p-8">
                         {/* Invitation Badge */}
                         <div className="flex items-center gap-2 mb-6">
-                            <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                <Plane className="w-4 h-4 text-emerald-400" />
+                            <div className="w-8 h-8 rounded-full bg-orange-500/20 flex items-center justify-center">
+                                <Plane className="w-4 h-4 text-orange-400" />
                             </div>
-                            <span className="text-sm font-medium text-emerald-400">You&apos;re invited to join</span>
+                            <span className="text-sm font-medium text-orange-400">You&apos;re invited to join</span>
                         </div>
 
                         {/* Trip Info */}
                         <h1 className="text-3xl font-extrabold text-white mb-2">{trip?.title}</h1>
                         <div className="flex flex-wrap items-center gap-4 text-zinc-400 text-sm mb-8">
-                            <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-emerald-400" /> {trip?.destinationCity || trip?.destination}</span>
+                            <span className="flex items-center gap-1.5"><MapPin className="w-4 h-4 text-orange-400" /> {trip?.destinationCity || trip?.destination}</span>
                             <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4 text-amber-400" /> {fmtDate(trip?.startDate)} – {fmtDate(trip?.endDate)}</span>
                             <span className="flex items-center gap-1.5"><Users className="w-4 h-4 text-purple-400" /> {trip?._count?.members || 0} explorer{(trip?._count?.members || 0) !== 1 ? 's' : ''}</span>
                         </div>
 
                         {/* Status Messages */}
                         {success && (
-                            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center gap-3 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl mb-6">
-                                <CheckCircle className="w-6 h-6 text-emerald-400 shrink-0" />
+                            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex items-center gap-3 p-4 bg-orange-500/10 border border-orange-500/20 rounded-xl mb-6">
+                                <CheckCircle className="w-6 h-6 text-orange-400 shrink-0" />
                                 <div>
-                                    <p className="text-emerald-300 font-semibold text-sm">Successfully joined!</p>
-                                    <p className="text-emerald-200/60 text-xs">Redirecting to the trip dashboard...</p>
+                                    <p className="text-orange-300 font-semibold text-sm">Successfully joined!</p>
+                                    <p className="text-orange-200/60 text-xs">Redirecting to the trip dashboard...</p>
                                 </div>
                             </motion.div>
                         )}
@@ -177,7 +177,7 @@ export default function JoinTripPage() {
                                 <button
                                     onClick={handleJoin}
                                     disabled={isJoining}
-                                    className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] disabled:opacity-50 text-white rounded-2xl font-bold text-base flex items-center justify-center gap-2 transition-all shadow-lg shadow-emerald-500/20"
+                                    className="w-full h-14 bg-orange-600 hover:bg-orange-500 active:scale-[0.98] disabled:opacity-50 text-white rounded-2xl font-bold text-base flex items-center justify-center gap-2 transition-all shadow-lg shadow-orange-500/20"
                                 >
                                     {isJoining ? <Loader2 className="w-5 h-5 animate-spin" /> : <UserPlus className="w-5 h-5" />}
                                     {isJoining ? "Joining..." : "Join This Trip"}

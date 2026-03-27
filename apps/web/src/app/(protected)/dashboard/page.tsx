@@ -377,7 +377,7 @@ export default function DashboardPage() {
                             Join
                         </button>
                     </div>
-                    {joinMsg && <p className={`text-xs mt-1 ${joinMsg.includes('success') || joinMsg.includes('already') ? 'text-emerald-400' : 'text-red-400'}`}>{joinMsg}</p>}
+                    {joinMsg && <p className={`text-xs mt-1 ${joinMsg.includes('success') || joinMsg.includes('already') ? 'text-orange-400' : 'text-red-400'}`}>{joinMsg}</p>}
 
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogTrigger render={
@@ -496,7 +496,7 @@ export default function DashboardPage() {
                                                 onClick={() => setBudget(b.amount)}
                                                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
                                                     budget === b.amount
-                                                        ? "bg-emerald-600 text-white"
+                                                        ? "bg-orange-600 text-white"
                                                         : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
                                                 }`}
                                             >
@@ -625,7 +625,7 @@ function TripGrid({ trips, isDeleting, onComplete, onEdit, onDelete, isCompleted
                                         {trip._count?.members || trip.members?.length || 1} Explorer{(trip._count?.members || trip.members?.length || 1) > 1 ? "s" : ""}
                                     </div>
                                     {isCompletedTab && (
-                                        <div className="mt-2 flex items-center text-xs text-emerald-500 font-medium bg-emerald-500/10 w-fit px-2 py-1 rounded-md">
+                                        <div className="mt-2 flex items-center text-xs text-orange-500 font-medium bg-orange-500/10 w-fit px-2 py-1 rounded-md">
                                             <CheckCircle2 className="w-3 h-3 mr-1" /> Journey Completed
                                         </div>
                                     )}
@@ -647,7 +647,7 @@ function TripGrid({ trips, isDeleting, onComplete, onEdit, onDelete, isCompleted
                             )}
                             {!isCompletedTab && (
                                 <DropdownMenuItem onClick={(e) => { e.preventDefault(); onComplete(trip.id); }} className="cursor-pointer hover:bg-zinc-800 focus:bg-zinc-800 rounded-lg py-2.5">
-                                    <CheckCircle2 className="w-4 h-4 mr-2 text-emerald-400" /> Mark Completed
+                                    <CheckCircle2 className="w-4 h-4 mr-2 text-orange-400" /> Mark Completed
                                 </DropdownMenuItem>
                             )}
                             <DropdownMenuItem onClick={(e) => { e.preventDefault(); onDelete(trip.id); }} disabled={isDeleting === trip.id} className="cursor-pointer text-red-400 hover:bg-red-500/10 focus:bg-red-500/10 hover:text-red-400 focus:text-red-400 rounded-lg py-2.5">

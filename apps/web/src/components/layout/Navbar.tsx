@@ -5,13 +5,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { LayoutDashboard, Map, Plus, LogOut, Menu, X, User as UserIcon, Settings } from "lucide-react";
+import { LayoutDashboard, Map, Plus, LogOut, Menu, X, User as UserIcon, Settings, Globe } from "lucide-react";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const NAV_LINKS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dashboard/trips", label: "My Trips", icon: Map },
+  { href: "/discover", label: "Discover", icon: Globe },
 ];
 
 export default function Navbar() {

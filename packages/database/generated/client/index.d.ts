@@ -3943,6 +3943,7 @@ export namespace Prisma {
     currency: string | null
     coverImage: string | null
     aiCustomPrompt: string | null
+    isPublic: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     creatorId: string | null
@@ -3965,6 +3966,7 @@ export namespace Prisma {
     currency: string | null
     coverImage: string | null
     aiCustomPrompt: string | null
+    isPublic: boolean | null
     createdAt: Date | null
     updatedAt: Date | null
     creatorId: string | null
@@ -3993,6 +3995,7 @@ export namespace Prisma {
     explorePlaces: number
     mapPins: number
     weatherCache: number
+    isPublic: number
     createdAt: number
     updatedAt: number
     creatorId: number
@@ -4029,6 +4032,7 @@ export namespace Prisma {
     currency?: true
     coverImage?: true
     aiCustomPrompt?: true
+    isPublic?: true
     createdAt?: true
     updatedAt?: true
     creatorId?: true
@@ -4051,6 +4055,7 @@ export namespace Prisma {
     currency?: true
     coverImage?: true
     aiCustomPrompt?: true
+    isPublic?: true
     createdAt?: true
     updatedAt?: true
     creatorId?: true
@@ -4079,6 +4084,7 @@ export namespace Prisma {
     explorePlaces?: true
     mapPins?: true
     weatherCache?: true
+    isPublic?: true
     createdAt?: true
     updatedAt?: true
     creatorId?: true
@@ -4194,6 +4200,7 @@ export namespace Prisma {
     explorePlaces: JsonValue | null
     mapPins: JsonValue | null
     weatherCache: JsonValue | null
+    isPublic: boolean
     createdAt: Date
     updatedAt: Date
     creatorId: string
@@ -4241,6 +4248,7 @@ export namespace Prisma {
     explorePlaces?: boolean
     mapPins?: boolean
     weatherCache?: boolean
+    isPublic?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creatorId?: boolean
@@ -4280,6 +4288,7 @@ export namespace Prisma {
     explorePlaces?: boolean
     mapPins?: boolean
     weatherCache?: boolean
+    isPublic?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creatorId?: boolean
@@ -4309,6 +4318,7 @@ export namespace Prisma {
     explorePlaces?: boolean
     mapPins?: boolean
     weatherCache?: boolean
+    isPublic?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     creatorId?: boolean
@@ -4368,6 +4378,7 @@ export namespace Prisma {
       explorePlaces: Prisma.JsonValue | null
       mapPins: Prisma.JsonValue | null
       weatherCache: Prisma.JsonValue | null
+      isPublic: boolean
       createdAt: Date
       updatedAt: Date
       creatorId: string
@@ -4796,6 +4807,7 @@ export namespace Prisma {
     readonly explorePlaces: FieldRef<"Trip", 'Json'>
     readonly mapPins: FieldRef<"Trip", 'Json'>
     readonly weatherCache: FieldRef<"Trip", 'Json'>
+    readonly isPublic: FieldRef<"Trip", 'Boolean'>
     readonly createdAt: FieldRef<"Trip", 'DateTime'>
     readonly updatedAt: FieldRef<"Trip", 'DateTime'>
     readonly creatorId: FieldRef<"Trip", 'String'>
@@ -19898,6 +19910,7 @@ export namespace Prisma {
     explorePlaces: 'explorePlaces',
     mapPins: 'mapPins',
     weatherCache: 'weatherCache',
+    isPublic: 'isPublic',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt',
     creatorId: 'creatorId'
@@ -20227,6 +20240,13 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Boolean'
+   */
+  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
+    
+
+
+  /**
    * Reference to a field of type 'MemberRole'
    */
   export type EnumMemberRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MemberRole'>
@@ -20251,13 +20271,6 @@ export namespace Prisma {
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
   /**
    * Deep Input Types
@@ -20398,6 +20411,7 @@ export namespace Prisma {
     explorePlaces?: JsonNullableFilter<"Trip">
     mapPins?: JsonNullableFilter<"Trip">
     weatherCache?: JsonNullableFilter<"Trip">
+    isPublic?: BoolFilter<"Trip"> | boolean
     createdAt?: DateTimeFilter<"Trip"> | Date | string
     updatedAt?: DateTimeFilter<"Trip"> | Date | string
     creatorId?: StringFilter<"Trip"> | string
@@ -20436,6 +20450,7 @@ export namespace Prisma {
     explorePlaces?: SortOrderInput | SortOrder
     mapPins?: SortOrderInput | SortOrder
     weatherCache?: SortOrderInput | SortOrder
+    isPublic?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -20477,6 +20492,7 @@ export namespace Prisma {
     explorePlaces?: JsonNullableFilter<"Trip">
     mapPins?: JsonNullableFilter<"Trip">
     weatherCache?: JsonNullableFilter<"Trip">
+    isPublic?: BoolFilter<"Trip"> | boolean
     createdAt?: DateTimeFilter<"Trip"> | Date | string
     updatedAt?: DateTimeFilter<"Trip"> | Date | string
     creatorId?: StringFilter<"Trip"> | string
@@ -20515,6 +20531,7 @@ export namespace Prisma {
     explorePlaces?: SortOrderInput | SortOrder
     mapPins?: SortOrderInput | SortOrder
     weatherCache?: SortOrderInput | SortOrder
+    isPublic?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -20551,6 +20568,7 @@ export namespace Prisma {
     explorePlaces?: JsonNullableWithAggregatesFilter<"Trip">
     mapPins?: JsonNullableWithAggregatesFilter<"Trip">
     weatherCache?: JsonNullableWithAggregatesFilter<"Trip">
+    isPublic?: BoolWithAggregatesFilter<"Trip"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Trip"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Trip"> | Date | string
     creatorId?: StringWithAggregatesFilter<"Trip"> | string
@@ -21685,6 +21703,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -21722,6 +21741,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -21759,6 +21779,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -21796,6 +21817,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -21833,6 +21855,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -21861,6 +21884,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -21888,6 +21912,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -23160,6 +23185,11 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type UserRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -23198,6 +23228,7 @@ export namespace Prisma {
     explorePlaces?: SortOrder
     mapPins?: SortOrder
     weatherCache?: SortOrder
+    isPublic?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -23226,6 +23257,7 @@ export namespace Prisma {
     currency?: SortOrder
     coverImage?: SortOrder
     aiCustomPrompt?: SortOrder
+    isPublic?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -23248,6 +23280,7 @@ export namespace Prisma {
     currency?: SortOrder
     coverImage?: SortOrder
     aiCustomPrompt?: SortOrder
+    isPublic?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     creatorId?: SortOrder
@@ -23318,6 +23351,14 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedJsonNullableFilter<$PrismaModel>
     _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type EnumMemberRoleFilter<$PrismaModel = never> = {
@@ -23863,11 +23904,6 @@ export namespace Prisma {
     createdAt?: SortOrder
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type NotificationCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -23899,14 +23935,6 @@ export namespace Prisma {
     type?: SortOrder
     link?: SortOrder
     createdAt?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NoteCountOrderByAggregateInput = {
@@ -24629,6 +24657,10 @@ export namespace Prisma {
 
   export type NullableEnumTravelTypeFieldUpdateOperationsInput = {
     set?: $Enums.TravelType | null
+  }
+
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
   }
 
   export type UserUpdateOneRequiredWithoutTripsCreatedNestedInput = {
@@ -25441,10 +25473,6 @@ export namespace Prisma {
     connect?: UserWhereUniqueInput
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
   export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
     create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
     connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
@@ -25632,6 +25660,11 @@ export namespace Prisma {
     not?: NestedEnumTravelTypeNullableFilter<$PrismaModel> | $Enums.TravelType | null
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
     in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
@@ -25688,6 +25721,14 @@ export namespace Prisma {
     gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+  }
+
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedEnumMemberRoleFilter<$PrismaModel = never> = {
@@ -25775,19 +25816,6 @@ export namespace Prisma {
     _max?: NestedFloatFilter<$PrismaModel>
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
-  }
-
   export type TripCreateWithoutCreatorInput = {
     id?: string
     title: string
@@ -25811,6 +25839,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: TripMemberCreateNestedManyWithoutTripInput
@@ -25847,6 +25876,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     members?: TripMemberUncheckedCreateNestedManyWithoutTripInput
@@ -26212,6 +26242,7 @@ export namespace Prisma {
     explorePlaces?: JsonNullableFilter<"Trip">
     mapPins?: JsonNullableFilter<"Trip">
     weatherCache?: JsonNullableFilter<"Trip">
+    isPublic?: BoolFilter<"Trip"> | boolean
     createdAt?: DateTimeFilter<"Trip"> | Date | string
     updatedAt?: DateTimeFilter<"Trip"> | Date | string
     creatorId?: StringFilter<"Trip"> | string
@@ -27045,6 +27076,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -27081,6 +27113,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -27184,6 +27217,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -27220,6 +27254,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -27313,6 +27348,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -27349,6 +27385,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -27439,6 +27476,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -27475,6 +27513,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -27589,6 +27628,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -27625,6 +27665,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -27750,6 +27791,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -27786,6 +27828,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -27965,6 +28008,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -28001,6 +28045,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -28155,6 +28200,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -28191,6 +28237,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -28341,6 +28388,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -28377,6 +28425,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -28480,6 +28529,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -28516,6 +28566,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -28609,6 +28660,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -28645,6 +28697,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -28792,6 +28845,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -28828,6 +28882,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -29260,6 +29315,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -29296,6 +29352,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -29399,6 +29456,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -29435,6 +29493,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -29579,6 +29638,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -29615,6 +29675,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -29724,6 +29785,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -29760,6 +29822,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -29904,6 +29967,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creator: UserCreateNestedOneWithoutTripsCreatedInput
@@ -29940,6 +30004,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
     creatorId: string
@@ -30043,6 +30108,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creator?: UserUpdateOneRequiredWithoutTripsCreatedNestedInput
@@ -30079,6 +30145,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     creatorId?: StringFieldUpdateOperationsInput | string
@@ -30172,6 +30239,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: boolean
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -30291,6 +30359,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: TripMemberUpdateManyWithoutTripNestedInput
@@ -30327,6 +30396,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     members?: TripMemberUncheckedUpdateManyWithoutTripNestedInput
@@ -30363,6 +30433,7 @@ export namespace Prisma {
     explorePlaces?: NullableJsonNullValueInput | InputJsonValue
     mapPins?: NullableJsonNullValueInput | InputJsonValue
     weatherCache?: NullableJsonNullValueInput | InputJsonValue
+    isPublic?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

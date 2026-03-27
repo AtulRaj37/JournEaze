@@ -85,6 +85,7 @@ model Trip {
   explorePlaces      Json?
   mapPins            Json?
   weatherCache       Json?
+  isPublic           Boolean     @default(false)
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
 

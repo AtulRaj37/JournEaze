@@ -77,13 +77,18 @@ export default function MyTripsPage() {
     return (
         <main className="min-h-screen bg-zinc-950 text-white pt-24 pb-16 px-4">
             <div className="max-w-6xl mx-auto space-y-8">
-                {/* Header */}
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                    <h1 className="text-3xl font-bold tracking-tight">
-                        My <span className="text-orange-400">Trips</span>
-                    </h1>
-                    <p className="text-zinc-400 mt-1">All your journeys in one place.</p>
-                </motion.div>
+                {/* Header Section */}
+                <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 relative z-10 w-full mb-12">
+                    <div>
+                        <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#ff5f00] via-[#ff9b3d] to-yellow-400 tracking-tight flex items-center gap-3">
+                            <MapPin className="w-10 h-10 text-[#ff5f00]" />
+                            My Journeys
+                        </h1>
+                        <p className="text-zinc-400 mt-3 max-w-2xl text-lg">
+                            All your past, present, and future adventures tracked right here.
+                        </p>
+                    </div>
+                </div>
 
                 {trips.length === 0 ? (
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-20">
@@ -108,11 +113,15 @@ export default function MyTripsPage() {
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: i * 0.05 }}
                                 >
-                                    <div className={`relative group rounded-2xl border transition-all overflow-hidden ${isPast ? "bg-zinc-900/30 border-zinc-800/30" : "bg-zinc-900/60 border-zinc-800 hover:border-zinc-700"}`}>
+                                    <div className={`relative group rounded-3xl border transition-all duration-500 overflow-hidden ${isPast ? "glass-panel opacity-80 backdrop-blur-md border-zinc-800/30" : "glass-panel backdrop-blur-xl border-zinc-800 hover:border-[#ff5f00]/30 hover:shadow-[0_0_40px_rgba(255,95,0,0.15)] bg-zinc-900/40"}`}>
                                         {/* Trip Image */}
-                                        <div className="relative h-36 overflow-hidden">
-                                            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-zinc-900/90" />
-                                            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-purple-500/10" />
+                                        <div className="relative h-48 overflow-hidden bg-zinc-900">
+                                            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent z-10" />
+                                            {trip.coverImage ? (
+                                                <img src={trip.coverImage} className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700" alt={trip.destination} />
+                                            ) : (
+                                                <div className="absolute inset-0 bg-gradient-to-br from-[#ff5f00]/20 to-purple-500/20" />
+                                            )}
                                             <div className="absolute bottom-3 left-4 flex items-center gap-2">
                                                 <MapPin className="w-4 h-4 text-orange-400" />
                                                 <span className="text-white font-semibold text-lg truncate">{trip.destination}</span>
@@ -140,9 +149,9 @@ export default function MyTripsPage() {
                                                 )}
                                             </div>
 
-                                            <div className="flex items-center justify-between pt-2 border-t border-zinc-800/50">
-                                                <Link href={`/trip/${trip.id}`} className="flex items-center gap-1 text-sm text-orange-400 hover:text-orange-300 transition-colors font-medium">
-                                                    View Details <ArrowRight className="w-3.5 h-3.5" />
+                                            <div className="flex items-center justify-between pt-4 border-t border-zinc-800/50 mt-4">
+                                                <Link href={`/dashboard/trips/${trip.id}`} className="flex items-center gap-1.5 text-sm text-[#ff7a1a] hover:text-[#ff9b3d] transition-colors font-bold">
+                                                    Open Dashboard <ArrowRight className="w-4 h-4" />
                                                 </Link>
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger className="p-1.5 rounded-lg hover:bg-zinc-800 text-zinc-500 transition-colors outline-none">

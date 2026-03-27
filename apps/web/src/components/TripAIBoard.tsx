@@ -93,13 +93,13 @@ export default function TripAIBoard({ tripId, destination, apiUrl, getToken }: T
                                 transition={{ duration: 0.2 }}
                                 className={`flex items-start gap-4 max-w-[85%] ${msg.role === 'user' ? 'ml-auto flex-row-reverse' : ''}`}
                             >
-                                <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-lg ${msg.role === 'assistant' ? 'bg-zinc-800 border border-zinc-700' : 'bg-emerald-600 border border-emerald-500'}`}>
+                                <div className={`shrink-0 w-8 h-8 rounded-full flex items-center justify-center shadow-lg ${msg.role === 'assistant' ? 'bg-zinc-800 border border-zinc-700' : 'bg-orange-600 border border-orange-500'}`}>
                                     {msg.role === 'assistant' ? <Bot className="w-4 h-4 text-purple-400" /> : <User className="w-4 h-4 text-white" />}
                                 </div>
                                 
                                 <div className={`px-5 py-3.5 rounded-2xl text-sm leading-relaxed ${
                                     msg.role === 'user' 
-                                        ? 'bg-emerald-600/20 text-emerald-50 border border-emerald-500/20' 
+                                        ? 'bg-orange-600/20 text-orange-50 border border-orange-500/20' 
                                         : 'bg-zinc-800/60 text-zinc-200 border border-zinc-700/50 shadow-inner'
                                 }`}>
                                     <div className="prose prose-invert prose-p:leading-relaxed prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-zinc-800 max-w-none prose-sm">

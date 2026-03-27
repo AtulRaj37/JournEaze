@@ -32,6 +32,16 @@ export class TripsController {
     return this.tripsService.findAllForUser(user.id);
   }
 
+  @Get('public')
+  getPublicTrips() {
+    return this.tripsService.getPublicTrips();
+  }
+
+  @Post(':id/fork')
+  forkTrip(@Param('id') id: string, @CurrentUser() user: User) {
+    return this.tripsService.forkTrip(id, user.id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string, @CurrentUser() user: User) {
     return this.tripsService.findOne(id, user.id);

@@ -11,6 +11,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const EXPENSE_CATEGORIES = ["Food", "Transport", "Accommodation", "Activities", "Shopping", "Other"];
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b'];
 
+const SUPPORTED_CURRENCIES = ["INR", "USD", "EUR", "GBP", "JPY", "AED", "SGD", "AUD", "THB", "IDR"];
+const CURRENCY_SYMBOLS: Record<string, string> = { INR: "₹", USD: "$", EUR: "€", GBP: "£", JPY: "¥", AED: "د.إ", SGD: "S$", AUD: "A$", THB: "฿", IDR: "Rp" };
+
+
 interface TripLedgerBoardProps {
     tripId: string;
     expenses: any[];
@@ -27,6 +31,8 @@ export default function TripLedgerBoard({ tripId, expenses, settlements = [], bu
     const [desc, setDesc] = useState("");
     const [amount, setAmount] = useState("");
     const [category, setCategory] = useState("Food");
+    const [currency, setCurrency] = useState("INR");
+    const [isConverting, setIsConverting] = useState(false);
     const [splitType, setSplitType] = useState<"EQUAL" | "CUSTOM">("EQUAL");
     // For custom, mapping of userId -> amount
     const [customSplits, setCustomSplits] = useState<Record<string, number>>({});
@@ -129,9 +135,32 @@ export default function TripLedgerBoard({ tripId, expenses, settlements = [], bu
 
     const handleAddExpense = async (e: React.FormEvent) => {
         e.preventDefault();
-        const amt = Number(amount);
+        let amt = Number(amount);
         if (!desc.trim() || !amt || !payerId) return;
         setIsSubmitting(true);
+
+        // -- Multi-Currency Auto-Conversion --
+        if (currency !== "INR") {
+            setIsConverting(true);
+            try {
+                // Fetch real live market rates
+                const res = await fetch(`https://api.frankfurter.app/latest?from=${currency}&to=INR`);
+                if (!res.ok) throw new Error("Rate API failed");
+                const data = await res.json();
+                if (data?.rates?.INR) {
+                    amt = Number((amt * data.rates.INR).toFixed(2));
+                } else {
+                    throw new Error("Invalid rate format");
+                }
+            } catch (err) {
+                console.warn("Currency API failed, using fallback emergency rates", err);
+                // Emergency realistic fallback rates so the app never breaks
+                const fallbacks: any = { USD: 83.5, EUR: 90.2, GBP: 105.4, JPY: 0.55, AED: 22.7, SGD: 61.8, AUD: 54.3, THB: 2.3, IDR: 0.0053 };
+                amt = Number((amt * (fallbacks[currency] || 1)).toFixed(2));
+            } finally {
+                setIsConverting(false);
+            }
+        }
 
         const splitsData: any[] = [];
         if (splitType === "EQUAL") {
@@ -140,17 +169,32 @@ export default function TripLedgerBoard({ tripId, expenses, settlements = [], bu
                 splitsData.push({ userId: m.user?.id || m.userId, amount: perPerson });
             });
         } else {
-            // custom split
+            // custom split needs to be re-scaled if we converted currency!
+            // But to keep it simple, if custom, we mandate INR input for now.
             let totalSplit = 0;
             Object.values(customSplits).forEach(v => totalSplit += v);
-            if (Math.abs(totalSplit - amt) > 0.1) {
-                alert(`Custom splits (₹${totalSplit}) do not match total amount (₹${amt})`);
-                setIsSubmitting(false);
-                return;
+            if (currency !== "INR") {
+                // If they used custom splits + foreign currency, scale the user splits proportionally
+                const scale = amt / Number(amount);
+                Object.keys(customSplits).forEach(uid => {
+                    splitsData.push({ userId: uid, amount: customSplits[uid] * scale });
+                });
+            } else {
+                if (Math.abs(totalSplit - amt) > 0.1) {
+                    alert(`Custom splits (₹${totalSplit}) do not match total amount (₹${amt})`);
+                    setIsSubmitting(false);
+                    return;
+                }
+                Object.keys(customSplits).forEach(uid => {
+                    if (customSplits[uid] > 0) {
+                        splitsData.push({ userId: uid, amount: customSplits[uid] });
+                    }
+                });
             }
-            Object.entries(customSplits).forEach(([uid, val]) => {
-                if (val > 0) splitsData.push({ userId: uid, amount: val });
-            });
+            if (splitsData.length === 0) {
+                alert("Please assign amounts to at least one person.");
+                setIsSubmitting(false); return;
+            }
         }
 
         try {
@@ -200,9 +244,9 @@ export default function TripLedgerBoard({ tripId, expenses, settlements = [], bu
                 
                 {/* WHO OWES WHOM SETTLEMENTS */}
                 {balances.length > 0 && (
-                    <Card className="bg-zinc-900/40 border-emerald-900/50 backdrop-blur-xl">
+                    <Card className="bg-zinc-900/40 border-orange-900/50 backdrop-blur-xl">
                         <CardHeader className="pb-3 border-b border-zinc-800/50">
-                            <CardTitle className="text-lg text-emerald-400 flex items-center">
+                            <CardTitle className="text-lg text-orange-400 flex items-center">
                                 <HandCoins className="w-5 h-5 mr-2" /> Who Owes Whom
                             </CardTitle>
                         </CardHeader>
@@ -219,7 +263,7 @@ export default function TripLedgerBoard({ tripId, expenses, settlements = [], bu
                                     </div>
                                     <div className="flex items-center gap-4 border-t sm:border-0 border-zinc-800/50 pt-3 sm:pt-0">
                                         <span className="text-red-400 font-mono font-bold">₹{debt.amount.toLocaleString()}</span>
-                                        <Button size="sm" onClick={() => handleSettleUp(debt.from, debt.to, debt.amount)} className="bg-emerald-600 hover:bg-emerald-500 text-white h-7 text-xs px-3" disabled={isSettling}>
+                                        <Button size="sm" onClick={() => handleSettleUp(debt.from, debt.to, debt.amount)} className="bg-orange-600 hover:bg-orange-500 text-white h-7 text-xs px-3" disabled={isSettling}>
                                             Settle Up
                                         </Button>
                                     </div>
@@ -244,12 +288,20 @@ export default function TripLedgerBoard({ tripId, expenses, settlements = [], bu
                     <CardContent className="p-6 space-y-4">
                         {showExpenseForm && (
                             <form onSubmit={handleAddExpense} className="bg-zinc-800/50 border border-zinc-700 rounded-xl p-5 space-y-4 relative overflow-hidden">
-                                <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+                                <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
                                 
                                 <Input value={desc} onChange={e => setDesc(e.target.value)} placeholder="What was this for? (e.g. Dinner, Taxi)" className="bg-zinc-950 border-zinc-800 text-base" required />
                                 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <Input type="number" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Total Amount (₹)" className="bg-zinc-950 border-zinc-800 font-mono text-base" required />
+                                    <div className="flex gap-2">
+                                        <select value={currency} onChange={e => setCurrency(e.target.value)} className="bg-zinc-950 border border-zinc-800 focus:border-orange-500 outline-none rounded-md px-1 py-2 text-sm text-zinc-400 w-20 flex-shrink-0 text-center font-bold transition-colors">
+                                            {SUPPORTED_CURRENCIES.map(c => <option key={c} value={c}>{c}</option>)}
+                                        </select>
+                                        <div className="relative flex-1">
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 font-mono text-sm leading-none pt-0.5">{CURRENCY_SYMBOLS[currency]}</span>
+                                            <Input type="number" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} placeholder="Amount" className="bg-zinc-950 border-zinc-800 focus:border-orange-500 font-mono text-base pl-7 transition-colors" required />
+                                        </div>
+                                    </div>
                                     <select value={category} onChange={e => setCategory(e.target.value)} className="bg-zinc-950 border border-zinc-800 rounded-md px-3 py-2 text-sm text-white">
                                         {EXPENSE_CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                                     </select>
@@ -267,7 +319,7 @@ export default function TripLedgerBoard({ tripId, expenses, settlements = [], bu
                                     <div className="flex items-center justify-between border-t border-zinc-800 pt-3">
                                         <span className="text-sm text-zinc-400">Split type:</span>
                                         <div className="flex gap-2">
-                                            <button type="button" onClick={() => setSplitType("EQUAL")} className={`px-3 py-1 text-xs rounded-full border transition-colors ${splitType === 'EQUAL' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/50' : 'bg-zinc-900 text-zinc-500 border-zinc-800'}`}>Equally ({members.length})</button>
+                                            <button type="button" onClick={() => setSplitType("EQUAL")} className={`px-3 py-1 text-xs rounded-full border transition-colors ${splitType === 'EQUAL' ? 'bg-orange-500/20 text-orange-400 border-orange-500/50' : 'bg-zinc-900 text-zinc-500 border-zinc-800'}`}>Equally ({members.length})</button>
                                             <button type="button" onClick={() => setSplitType("CUSTOM")} className={`px-3 py-1 text-xs rounded-full border transition-colors ${splitType === 'CUSTOM' ? 'bg-purple-500/20 text-purple-400 border-purple-500/50' : 'bg-zinc-900 text-zinc-500 border-zinc-800'}`}>Custom</button>
                                         </div>
                                     </div>
@@ -294,7 +346,7 @@ export default function TripLedgerBoard({ tripId, expenses, settlements = [], bu
                                     )}
                                 </div>
 
-                                <Button type="submit" disabled={isSubmitting} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white h-11">
+                                <Button type="submit" disabled={isSubmitting} className="w-full bg-orange-600 hover:bg-orange-500 text-white h-11">
                                     {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <CheckCircle2 className="w-4 h-4 mr-2" />} Save Expense
                                 </Button>
                             </form>
@@ -339,7 +391,7 @@ export default function TripLedgerBoard({ tripId, expenses, settlements = [], bu
                     <CardHeader className="pb-2"><CardTitle className="text-lg text-white">Spending Analytics</CardTitle></CardHeader>
                     <CardContent className="space-y-6">
                         <div className="text-center p-6 bg-zinc-950/50 rounded-2xl border border-zinc-800">
-                            <p className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-emerald-400 to-emerald-600 font-mono tracking-tight">
+                            <p className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-orange-400 to-orange-600 font-mono tracking-tight">
                                 ₹{totalExpenses.toLocaleString()}
                             </p>
                             <p className="text-sm text-zinc-500 mt-2 font-medium uppercase tracking-widest">Total Spent</p>
@@ -393,13 +445,13 @@ export default function TripLedgerBoard({ tripId, expenses, settlements = [], bu
                                 </div>
                                 <div className="flex justify-between text-sm">
                                     <span className="text-zinc-400">Remaining</span>
-                                    <span className={`font-mono font-bold ${(budget - totalExpenses) >= 0 ? "text-emerald-400" : "text-red-400"}`}>
+                                    <span className={`font-mono font-bold ${(budget - totalExpenses) >= 0 ? "text-orange-400" : "text-red-400"}`}>
                                         ₹{(budget - totalExpenses).toLocaleString()}
                                     </span>
                                 </div>
                                 <div className="w-full bg-zinc-950 border border-zinc-800 rounded-full h-3 mt-3 overflow-hidden">
                                     <div 
-                                        className={`h-full transition-all duration-1000 ${totalExpenses > budget ? 'bg-red-500' : 'bg-gradient-to-r from-emerald-500 to-emerald-400'}`} 
+                                        className={`h-full transition-all duration-1000 ${totalExpenses > budget ? 'bg-red-500' : 'bg-gradient-to-r from-orange-500 to-orange-400'}`} 
                                         style={{ width: `${Math.min(100, (totalExpenses / budget) * 100)}%` }}
                                     ></div>
                                 </div>

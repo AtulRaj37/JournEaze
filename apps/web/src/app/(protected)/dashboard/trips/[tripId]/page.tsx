@@ -11,7 +11,7 @@ import {
     MapPin, Calendar, Users, Sparkles, Receipt, PlaneTakeoff, Loader2, ArrowLeft, CheckCircle2,
     StickyNote, Map as MapIcon, Plus, Trash2, Globe, Clock, Languages, Banknote, ThermometerSun, Bus,
     Info, FileText, UserPlus, ImageIcon, Paperclip, X, Edit2, Save, Download, UploadCloud,
-    Link2, Copy, Hash, Mail, QrCode, Check, Utensils, Bed, ExternalLink, Camera, Compass
+    Link2, Copy, Hash, Mail, QrCode, Check, Utensils, Bed, ExternalLink, Camera, Compass, Briefcase
 } from "lucide-react";
 import {
     DropdownMenu,
@@ -28,6 +28,7 @@ import TripItineraryBoard from "@/components/TripItineraryBoard";
 import TripLedgerBoard from "@/components/TripLedgerBoard";
 import TripNotesBoard from "@/components/TripNotesBoard";
 import TripAIBoard from "@/components/TripAIBoard";
+import TripPackingBoard from "@/components/TripPackingBoard";
 import TripExploreBoard from "@/components/TripExploreBoard";
 import WeatherWidget from "@/components/WeatherWidget";
 
@@ -115,6 +116,7 @@ export default function TripDetailsPage() {
     const [linkCopied, setLinkCopied] = useState(false);
     const [idCopied, setIdCopied] = useState(false);
     const [isChangingCover, setIsChangingCover] = useState(false);
+    const [isTogglingPublic, setIsTogglingPublic] = useState(false);
     
     // Cover Image Upload Ref
     const coverImageRef = useRef<HTMLInputElement>(null);
@@ -414,6 +416,21 @@ export default function TripDetailsPage() {
         } catch (e) { console.error(e); }
     };
 
+    const handleTogglePublic = async () => {
+        setIsTogglingPublic(true);
+        try {
+            const res = await fetch(`${apiUrl}/trips/${tripId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+                body: JSON.stringify({ isPublic: !trip.isPublic }),
+            });
+            if (res.ok) {
+                setTrip((prev: any) => ({ ...prev, isPublic: !prev.isPublic }));
+            }
+        } catch (e) { console.error(e); }
+        finally { setIsTogglingPublic(false); }
+    };
+
     if (isLoading) {
         return (
             <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
@@ -450,6 +467,19 @@ export default function TripDetailsPage() {
                 </div>
 
                 <div className="absolute top-6 right-6 z-20 flex gap-2">
+                    <Button 
+                        onClick={handleTogglePublic} 
+                        variant={trip.isPublic ? "default" : "outline"} 
+                        className={`hidden sm:flex h-10 rounded-full px-4 border transition-all duration-300 ${trip.isPublic ? 'bg-orange-600 hover:bg-orange-500 text-white border-transparent shadow-[0_0_15px_rgba(16,185,129,0.5)]' : 'bg-zinc-900/50 hover:bg-zinc-800 text-zinc-300 border-zinc-700 backdrop-blur-md'}`}
+                        disabled={isTogglingPublic}
+                    >
+                        {trip.isPublic ? (
+                            <><Globe className="w-4 h-4 mr-2" /> Public Template</>
+                        ) : (
+                            <><Globe className="w-4 h-4 mr-2 opacity-50" /> Make Public</>
+                        )}
+                    </Button>
+
                     <DropdownMenu>
                         <DropdownMenuTrigger className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 text-white hover:bg-white/20 backdrop-blur-md rounded-full px-4 h-10 border border-white/20">
                             <Download className="w-4 h-4 mr-2" /> Export Trip
@@ -459,7 +489,7 @@ export default function TripDetailsPage() {
                                 <FileText className="w-4 h-4 text-rose-400" /> Save as PDF
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={handleWhatsAppShare} className="hover:bg-zinc-800 cursor-pointer flex items-center gap-2">
-                                <Mail className="w-4 h-4 text-emerald-400" /> Share via WhatsApp
+                                <Mail className="w-4 h-4 text-orange-400" /> Share via WhatsApp
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={handleCopyLink} className="hover:bg-zinc-800 cursor-pointer flex items-center gap-2">
                                 <Link2 className="w-4 h-4 text-blue-400" /> Copy Trip Link
@@ -479,7 +509,7 @@ export default function TripDetailsPage() {
                                 Auto Generate
                             </DropdownMenuItem>
                             <DropdownMenuItem onClick={() => coverImageRef.current?.click()} className="hover:bg-zinc-800 cursor-pointer flex items-center gap-2">
-                                <UploadCloud className="w-4 h-4 text-emerald-400" />
+                                <UploadCloud className="w-4 h-4 text-orange-400" />
                                 Upload Custom
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -502,7 +532,7 @@ export default function TripDetailsPage() {
                         <div className="flex flex-wrap items-center gap-4 md:gap-6 text-zinc-300 mt-2 text-sm md:text-base font-medium">
                             <span className="flex items-center"><MapPin className="w-5 h-5 mr-2 text-blue-400" /> {trip.destinationCity || trip.destination}</span>
                             <span className="flex items-center"><Calendar className="w-5 h-5 mr-2 text-green-400" /> {fmtDate(trip.startDate)} – {fmtDate(trip.endDate)}</span>
-                            <span className="px-3 py-1 bg-emerald-600/20 border border-emerald-600/30 rounded-full text-emerald-300 text-sm font-bold">{dayCount} day{dayCount > 1 ? "s" : ""}</span>
+                            <span className="px-3 py-1 bg-orange-600/20 border border-orange-600/30 rounded-full text-orange-300 text-sm font-bold">{dayCount} day{dayCount > 1 ? "s" : ""}</span>
                             <span className="flex items-center"><Users className="w-5 h-5 mr-2 text-purple-400" /> {trip._count?.members || trip.members?.length || 1} Explorers</span>
                         </div>
                     </motion.div>
@@ -519,6 +549,9 @@ export default function TripDetailsPage() {
                         <TabsTrigger value="map" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400 whitespace-nowrap flex-shrink-0">
                             <MapIcon className="w-4 h-4 mr-2" /> Map
                         </TabsTrigger>
+                        <TabsTrigger value="packing" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400 whitespace-nowrap flex-shrink-0">
+                            <Briefcase className="w-4 h-4 mr-2" /> Packing List
+                        </TabsTrigger>
                         <TabsTrigger value="expenses" className="rounded-xl px-6 py-3 data-[state=active]:bg-zinc-800 data-[state=active]:text-white text-zinc-400 whitespace-nowrap flex-shrink-0">
                             <Receipt className="w-4 h-4 mr-2" /> Ledger
                         </TabsTrigger>
@@ -528,7 +561,7 @@ export default function TripDetailsPage() {
                         <TabsTrigger value="ai" className="rounded-xl px-6 py-3 data-[state=active]:bg-purple-900/40 data-[state=active]:text-purple-300 text-zinc-400 whitespace-nowrap flex-shrink-0">
                             <Sparkles className="w-4 h-4 mr-2" /> Ask AI
                         </TabsTrigger>
-                        <TabsTrigger value="explore" className="rounded-xl px-6 py-3 data-[state=active]:bg-emerald-900/40 data-[state=active]:text-emerald-300 text-zinc-400 whitespace-nowrap flex-shrink-0">
+                        <TabsTrigger value="explore" className="rounded-xl px-6 py-3 data-[state=active]:bg-orange-900/40 data-[state=active]:text-orange-300 text-zinc-400 whitespace-nowrap flex-shrink-0">
                             <Compass className="w-4 h-4 mr-2" /> Explore
                         </TabsTrigger>
                     </TabsList>
@@ -598,14 +631,14 @@ export default function TripDetailsPage() {
                                                 </div>
                                                 {overview?.topAttractions && Array.isArray(overview.topAttractions) && (
                                                     <div>
-                                                        <h3 className="text-lg font-bold text-emerald-400 mb-3 flex items-center gap-2">
+                                                        <h3 className="text-lg font-bold text-orange-400 mb-3 flex items-center gap-2">
                                                             <MapPin className="w-5 h-5" /> Top Attractions
                                                         </h3>
                                                         <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                             {overview.topAttractions.map((attraction: string, i: number) => (
                                                                 <li key={i} className="bg-zinc-800/50 border border-zinc-700/50 rounded-xl p-3 flex items-start gap-3">
-                                                                    <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                                                        <span className="text-xs font-bold text-emerald-400">{i+1}</span>
+                                                                    <div className="w-6 h-6 rounded-full bg-orange-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                                        <span className="text-xs font-bold text-orange-400">{i+1}</span>
                                                                     </div>
                                                                     <p className="text-sm text-zinc-300 leading-relaxed">{attraction}</p>
                                                                 </li>
@@ -739,12 +772,12 @@ export default function TripDetailsPage() {
                                                             <p className="hidden sm:block text-xs text-zinc-500 line-clamp-1">Booking.com</p>
                                                         </div>
                                                     </a>
-                                                    <a href={transitLink} target="_blank" rel="noopener noreferrer" className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 p-4 rounded-xl bg-zinc-800/30 border border-zinc-700/50 hover:bg-zinc-800 hover:border-emerald-500/50 transition-all group">
-                                                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform flex-shrink-0">
+                                                    <a href={transitLink} target="_blank" rel="noopener noreferrer" className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-3 p-4 rounded-xl bg-zinc-800/30 border border-zinc-700/50 hover:bg-zinc-800 hover:border-orange-500/50 transition-all group">
+                                                        <div className="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-400 group-hover:scale-110 transition-transform flex-shrink-0">
                                                             <Bus className="w-5 h-5" />
                                                         </div>
                                                         <div>
-                                                            <h5 className="text-sm font-semibold text-zinc-100 group-hover:text-emerald-400 transition-colors">Transit</h5>
+                                                            <h5 className="text-sm font-semibold text-zinc-100 group-hover:text-orange-400 transition-colors">Transit</h5>
                                                             <p className="hidden sm:block text-xs text-zinc-500 line-clamp-1">MakeMyTrip</p>
                                                         </div>
                                                     </a>
@@ -768,7 +801,7 @@ export default function TripDetailsPage() {
                                     <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl">
                                         <CardHeader className="border-b border-zinc-800/50 pb-4">
                                             <CardTitle className="text-xl text-white flex items-center gap-2">
-                                                <MapPin className="w-5 h-5 text-emerald-400" /> Places to Visit
+                                                <MapPin className="w-5 h-5 text-orange-400" /> Places to Visit
                                             </CardTitle>
                                         </CardHeader>
                                         <CardContent className="p-6">
@@ -879,7 +912,7 @@ export default function TripDetailsPage() {
                                                 <p className="text-xs text-zinc-500">Explorers</p>
                                             </div>
                                             <div className="text-center p-3 bg-zinc-800/50 rounded-xl">
-                                                <p className="text-2xl font-bold text-emerald-400">₹{totalExpenses.toLocaleString()}</p>
+                                                <p className="text-2xl font-bold text-orange-400">₹{totalExpenses.toLocaleString()}</p>
                                                 <p className="text-xs text-zinc-500">Spent</p>
                                             </div>
                                             <div className="text-center p-3 bg-zinc-800/50 rounded-xl">
@@ -948,7 +981,7 @@ export default function TripDetailsPage() {
                                                         <Button
                                                             size="sm"
                                                             onClick={() => { navigator.clipboard.writeText(`${window.location.origin}/join/${tripId}`); setLinkCopied(true); setTimeout(() => setLinkCopied(false), 2000); }}
-                                                            className={`h-9 px-3 transition-all ${ linkCopied ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-zinc-700 hover:bg-zinc-600' } text-white`}
+                                                            className={`h-9 px-3 transition-all ${ linkCopied ? 'bg-orange-600 hover:bg-orange-700' : 'bg-zinc-700 hover:bg-zinc-600' } text-white`}
                                                         >
                                                             {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                                                         </Button>
@@ -966,7 +999,7 @@ export default function TripDetailsPage() {
                                                         <Button
                                                             size="sm"
                                                             onClick={() => { navigator.clipboard.writeText(tripId); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
-                                                            className={`h-9 px-3 transition-all ${ idCopied ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-zinc-700 hover:bg-zinc-600' } text-white`}
+                                                            className={`h-9 px-3 transition-all ${ idCopied ? 'bg-orange-600 hover:bg-orange-700' : 'bg-zinc-700 hover:bg-zinc-600' } text-white`}
                                                         >
                                                             {idCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                                                         </Button>
@@ -1010,7 +1043,7 @@ export default function TripDetailsPage() {
                                                             {isInviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
                                                         </Button>
                                                     </div>
-                                                    {inviteMsg && <p className={`text-xs ${inviteMsg.startsWith('✅') ? 'text-emerald-400' : 'text-red-400'}`}>{inviteMsg}</p>}
+                                                    {inviteMsg && <p className={`text-xs ${inviteMsg.startsWith('✅') ? 'text-orange-400' : 'text-red-400'}`}>{inviteMsg}</p>}
                                                 </div>
                                             )}
 
@@ -1033,7 +1066,7 @@ export default function TripDetailsPage() {
                                                             {isInviting ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />}
                                                         </Button>
                                                     </div>
-                                                    {inviteMsg && <p className={`text-xs ${inviteMsg.startsWith('✅') || inviteMsg.toLowerCase().includes('sent') ? 'text-emerald-400' : 'text-red-400'}`}>{inviteMsg}</p>}
+                                                    {inviteMsg && <p className={`text-xs ${inviteMsg.startsWith('✅') || inviteMsg.toLowerCase().includes('sent') ? 'text-orange-400' : 'text-red-400'}`}>{inviteMsg}</p>}
                                                 </div>
                                             )}
                                         </div>
@@ -1054,6 +1087,14 @@ export default function TripDetailsPage() {
                                 />
                             </CardContent>
                         </Card>
+                    </TabsContent>
+
+                    {/* ═══ PACKING TAB ═══ */}
+                    <TabsContent value="packing" className="mt-0 outline-none">
+                        <TripPackingBoard
+                            trip={trip}
+                            onUpdate={fetchTripDetails}
+                        />
                     </TabsContent>
 
                     {/* ═══ LEDGER TAB ═══ */}

@@ -94,7 +94,7 @@ export default function WeatherWidget({ latitude, longitude, destinationName }: 
                                     {weather.precipitation_probability_max[idx]}% Rain
                                 </span>
                             ) : (
-                                <span className="text-[10px] text-emerald-400 mt-2 font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                                <span className="text-[10px] text-orange-400 mt-2 font-bold px-2 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/20">
                                     Clear
                                 </span>
                             )}

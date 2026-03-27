@@ -584,7 +584,7 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
         {/* Route Info */}
         {routeInfo && (
           <div className="mt-4 flex gap-4 bg-zinc-800/50 border border-zinc-700 rounded-xl p-3">
-            <div className="flex items-center gap-2 text-emerald-400">
+            <div className="flex items-center gap-2 text-orange-400">
               <MapPin className="w-4 h-4" />
               <span className="text-sm font-medium">{routeInfo.distance}</span>
             </div>
@@ -617,7 +617,7 @@ export default function TripMap({ destination, latitude, longitude }: TripMapPro
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white rounded-lg text-sm transition-colors"
         >
-          <MapPin className="w-4 h-4 text-emerald-400" />
+          <MapPin className="w-4 h-4 text-orange-400" />
           Open/Save in Google Maps
         </a>
       </div>

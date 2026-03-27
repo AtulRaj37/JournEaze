@@ -45,7 +45,7 @@ function parseNoteContent(rawContent: string) {
 const COLOR_OPTIONS = [
     { name: "zinc", bg: "bg-zinc-800/50", border: "border-zinc-700" },
     { name: "blue", bg: "bg-blue-900/30", border: "border-blue-800/50" },
-    { name: "emerald", bg: "bg-emerald-900/30", border: "border-emerald-800/50" },
+    { name: "orange", bg: "bg-orange-900/30", border: "border-orange-800/50" },
     { name: "amber", bg: "bg-amber-900/30", border: "border-amber-800/50" },
     { name: "rose", bg: "bg-rose-900/30", border: "border-rose-800/50" },
     { name: "purple", bg: "bg-purple-900/30", border: "border-purple-800/50" }
@@ -185,7 +185,7 @@ export default function TripNotesBoard({ tripId, notes, apiUrl, getToken, onUpda
                             {attachmentUrl && (
                                 <div className="flex items-center justify-between bg-zinc-800/50 border border-zinc-700 p-2 rounded-lg max-w-sm">
                                     <div className="flex items-center gap-2 overflow-hidden">
-                                        <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
+                                        <FileText className="w-4 h-4 text-orange-400 shrink-0" />
                                         <span className="text-sm text-zinc-300 truncate">{attachmentName}</span>
                                     </div>
                                     <button onClick={() => { setAttachmentUrl(null); setAttachmentName(null); }} className="text-zinc-500 hover:text-red-400 p-1"><X className="w-4 h-4" /></button>
@@ -197,14 +197,14 @@ export default function TripNotesBoard({ tripId, notes, apiUrl, getToken, onUpda
                                     value={newNoteText}
                                     onChange={e => setNewNoteText(e.target.value)}
                                     placeholder={newNoteType === "checklist" ? "Milk\nBread\nTickets..." : "Write a note..."}
-                                    className="bg-zinc-950 border border-zinc-800 flex-1 rounded-xl p-3 text-sm text-white resize-none min-h-[80px] focus:outline-none focus:border-emerald-500/50"
+                                    className="bg-zinc-950 border border-zinc-800 flex-1 rounded-xl p-3 text-sm text-white resize-none min-h-[80px] focus:outline-none focus:border-orange-500/50"
                                 />
                             </div>
 
                             <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-zinc-800/50 mt-1">
                                 <div className="flex items-center gap-2">
                                     <button onClick={() => setNewNoteType("text")} className={`p-1.5 rounded-md transition-colors ${newNoteType === 'text' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-300'}`} title="Text Note"><AlignLeft className="w-4 h-4" /></button>
-                                    <button onClick={() => setNewNoteType("checklist")} className={`p-1.5 rounded-md transition-colors ${newNoteType === 'checklist' ? 'bg-zinc-800 text-emerald-400' : 'text-zinc-500 hover:text-zinc-300'}`} title="Checklist"><CheckSquare className="w-4 h-4" /></button>
+                                    <button onClick={() => setNewNoteType("checklist")} className={`p-1.5 rounded-md transition-colors ${newNoteType === 'checklist' ? 'bg-zinc-800 text-orange-400' : 'text-zinc-500 hover:text-zinc-300'}`} title="Checklist"><CheckSquare className="w-4 h-4" /></button>
                                     <div className="w-px h-5 bg-zinc-800 mx-1"></div>
                                     
                                     <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" accept="image/*,.pdf" />
@@ -225,7 +225,7 @@ export default function TripNotesBoard({ tripId, notes, apiUrl, getToken, onUpda
                                         {TAG_OPTIONS.map(t => <option key={t} value={t}>{t}</option>)}
                                     </select>
                                 </div>
-                                <Button onClick={handleAddNote} disabled={isAddingNote || (!newNoteText.trim() && !attachmentUrl)} className="bg-emerald-600 hover:bg-emerald-500 text-white h-9 px-5 rounded-lg font-medium text-sm">
+                                <Button onClick={handleAddNote} disabled={isAddingNote || (!newNoteText.trim() && !attachmentUrl)} className="bg-orange-600 hover:bg-orange-500 text-white h-9 px-5 rounded-lg font-medium text-sm">
                                     {isAddingNote ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Plus className="w-4 h-4 mr-1.5" />} Add Note
                                 </Button>
                             </div>
@@ -292,7 +292,7 @@ export default function TripNotesBoard({ tripId, notes, apiUrl, getToken, onUpda
                                                 />
                                                 <div className="flex justify-end gap-2">
                                                     <Button size="sm" variant="ghost" onClick={() => setEditingNoteId(null)} className="h-7 text-xs text-white/70 hover:text-white">Cancel</Button>
-                                                    <Button size="sm" onClick={() => handleUpdateNoteAPI(note.id, editDraft)} disabled={isUpdatingNote} className="h-7 text-xs bg-emerald-600 text-white hover:bg-emerald-500">
+                                                    <Button size="sm" onClick={() => handleUpdateNoteAPI(note.id, editDraft)} disabled={isUpdatingNote} className="h-7 text-xs bg-orange-600 text-white hover:bg-orange-500">
                                                         {isUpdatingNote ? <Loader2 className="w-3 h-3 animate-spin"/> : "Save"}
                                                     </Button>
                                                 </div>
@@ -307,7 +307,7 @@ export default function TripNotesBoard({ tripId, notes, apiUrl, getToken, onUpda
                                                             <div key={idx} className="flex items-start gap-2 group/item">
                                                                 <button 
                                                                     onClick={() => toggleChecklistItem(note, idx)} 
-                                                                    className={`mt-0.5 flex-shrink-0 w-4 h-4 rounded border flex items-center justify-center transition-colors ${item.checked ? 'bg-emerald-500 border-emerald-500' : 'bg-transparent border-white/30 hover:border-white/60'}`}
+                                                                    className={`mt-0.5 flex-shrink-0 w-4 h-4 rounded border flex items-center justify-center transition-colors ${item.checked ? 'bg-orange-500 border-orange-500' : 'bg-transparent border-white/30 hover:border-white/60'}`}
                                                                 >
                                                                     {item.checked && <CheckSquare className="w-3 h-3 text-white" />}
                                                                 </button>
@@ -330,8 +330,8 @@ export default function TripNotesBoard({ tripId, notes, apiUrl, getToken, onUpda
                                                             </a>
                                                         ) : (
                                                             <a href={note.fileUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 p-2 bg-black/20 hover:bg-black/40 border border-white/10 rounded-lg text-sm text-white/80 transition-all">
-                                                                <div className="w-8 h-8 rounded bg-emerald-500/20 flex items-center justify-center shrink-0">
-                                                                    <FileText className="w-4 h-4 text-emerald-400" />
+                                                                <div className="w-8 h-8 rounded bg-orange-500/20 flex items-center justify-center shrink-0">
+                                                                    <FileText className="w-4 h-4 text-orange-400" />
                                                                 </div>
                                                                 <span className="flex-1 truncate text-xs font-medium">Document Attachment</span>
                                                                 <Download className="w-4 h-4 text-white/40" />
@@ -357,7 +357,7 @@ export default function TripNotesBoard({ tripId, notes, apiUrl, getToken, onUpda
                 <Card className="bg-zinc-900/50 border-zinc-800 backdrop-blur-xl sticky top-24">
                     <CardHeader className="pb-4 border-b border-zinc-800/50">
                         <CardTitle className="text-lg text-white flex items-center">
-                            <FileText className="w-5 h-5 mr-2 text-emerald-400" /> Vault
+                            <FileText className="w-5 h-5 mr-2 text-orange-400" /> Vault
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-4 space-y-3">
@@ -377,14 +377,14 @@ export default function TripNotesBoard({ tripId, notes, apiUrl, getToken, onUpda
                                         {isImg ? (
                                             <img src={note.fileUrl} className="w-full h-full object-cover opacity-80 group-hover:opacity-100" alt=""/>
                                         ) : (
-                                            <FileText className="w-4 h-4 text-emerald-500" />
+                                            <FileText className="w-4 h-4 text-orange-500" />
                                         )}
                                     </div>
                                     <div className="flex-1 min-w-0">
                                         <p className="text-xs font-medium text-zinc-300 truncate">File by {note.user?.name || "User"}</p>
                                         <p className="text-[10px] text-zinc-600">{new Date(note.createdAt).toLocaleDateString()}</p>
                                     </div>
-                                    <Download className="w-3 h-3 text-zinc-600 group-hover:text-emerald-400" />
+                                    <Download className="w-3 h-3 text-zinc-600 group-hover:text-orange-400" />
                                 </a>
                             )})
                         )}

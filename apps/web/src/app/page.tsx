@@ -205,7 +205,7 @@ function ChatDemo() {
     return () => ts.forEach(clearTimeout);
   }, [v]);
   return (
-    <div ref={r} className="rounded-2xl border border-zinc-700/40 bg-zinc-900/90 overflow-hidden shadow-2xl">
+    <div ref={r} className="glass-panel rounded-3xl overflow-hidden relative z-10">
       <div className="flex items-center gap-2 px-4 py-3 border-b border-zinc-800/80">
         <div className="flex gap-1.5">{["#ef4444", "#eab308", "#22c55e"].map(c => <div key={c} className="w-2.5 h-2.5 rounded-full" style={{ background: c }} />)}</div>
         <span className="text-xs text-zinc-500 ml-2 flex items-center gap-1"><Sparkles className="w-3 h-3 text-orange-400" />JournEaze AI</span>
@@ -247,7 +247,7 @@ function MapSVG() {
   const cities = [{ name: "Delhi", x: 130, y: 65 }, { name: "Jaipur", x: 100, y: 125 }, { name: "Udaipur", x: 90, y: 190 }, { name: "Mumbai", x: 80, y: 265 }];
   const r = useRef(null); const v = useInView(r, { once: true });
   return (
-    <div ref={r} className="rounded-2xl border border-zinc-700/40 bg-zinc-900/80 p-5 shadow-xl">
+    <div ref={r} className="glass-panel rounded-3xl p-6 relative z-10 transform-gpu hover:shadow-[0_0_40px_rgba(255,122,26,0.1)] transition-all duration-700">
       <div className="text-xs text-zinc-500 mb-3 flex items-center gap-2"><Route className="w-3.5 h-3.5 text-orange-400" />Delhi → Jaipur → Udaipur → Mumbai</div>
       <svg viewBox="0 0 220 310" className="w-full max-w-xs mx-auto">
         {cities.slice(0, -1).map((c, i) => (
@@ -272,7 +272,7 @@ function Stat({ val, label, suf = "" }: { val: number; label: string; suf?: stri
   const r = useRef(null); const v = useInView(r, { once: true }); const c = useCountUp(val, v);
   return (
     <motion.div ref={r} initial={{ opacity: 0, y: 24 }} animate={v ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.6 }} className="text-center">
-      <p className="text-5xl md:text-6xl font-extrabold bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg,#ff7a1a,#ffb86c)" }}>{c.toLocaleString()}{suf}</p>
+      <p className="text-5xl md:text-6xl font-extrabold text-gradient-brand">{c.toLocaleString()}{suf}</p>
       <p className="text-zinc-500 text-sm mt-2">{label}</p>
     </motion.div>
   );
@@ -512,7 +512,7 @@ export default function LandingPage() {
             <h2 className="text-4xl md:text-5xl font-extrabold tracking-tight leading-tight mb-6">Just Describe<br /><span className="text-zinc-500">Your Dream Trip.</span></h2>
             <p className="text-zinc-400 leading-relaxed mb-6">Our AI instantly generates a tailored day-by-day itinerary, cultural brief, and packing list for any destination on Earth.</p>
             <div className="space-y-3">{["Full day-by-day itinerary", "Local food & culture guide", "Weather & travel tips", "AI packing list"].map(t => (
-              <div key={t} className="flex items-center gap-3 text-sm text-zinc-300"><CheckCircle className="w-4 h-4 flex-shrink-0 text-emerald-400" />{t}</div>
+              <div key={t} className="flex items-center gap-3 text-sm text-zinc-300"><CheckCircle className="w-4 h-4 flex-shrink-0 text-orange-400" />{t}</div>
             ))}</div>
           </>} />
           <FU d={0.15} c={<ChatDemo />} />

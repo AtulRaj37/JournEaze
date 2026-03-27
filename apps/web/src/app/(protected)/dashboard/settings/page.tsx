@@ -251,7 +251,7 @@ export default function SettingsPage() {
                                     Save Changes
                                 </Button>
                                 {profileMsg && (
-                                    <p className={`text-sm ${profileMsg.startsWith("✅") ? "text-emerald-400" : "text-red-400"}`}>
+                                    <p className={`text-sm ${profileMsg.startsWith("✅") ? "text-orange-400" : "text-red-400"}`}>
                                         {profileMsg}
                                     </p>
                                 )}
@@ -330,7 +330,7 @@ export default function SettingsPage() {
                                     Update Password
                                 </Button>
                                 {passwordMsg && (
-                                    <p className={`text-sm ${passwordMsg.startsWith("✅") ? "text-emerald-400" : "text-red-400"}`}>
+                                    <p className={`text-sm ${passwordMsg.startsWith("✅") ? "text-orange-400" : "text-red-400"}`}>
                                         {passwordMsg}
                                     </p>
                                 )}
