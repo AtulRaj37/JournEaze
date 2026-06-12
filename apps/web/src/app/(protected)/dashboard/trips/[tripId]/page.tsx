@@ -813,7 +813,7 @@ export default function TripDetailsPage() {
                                                                 src={`${apiUrl}/images/search?query=${encodeURIComponent(place.name + ' ' + (trip.destinationCity || trip.destination))}&destination=${encodeURIComponent(trip.destinationCity || trip.destination)}`}
                                                                 alt={place.name}
                                                                 className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
-                                                                onError={(e) => { (e.target as HTMLImageElement).src = `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=60&w=400&auto=format`; }}
+                                                                onError={(e) => { (e.target as HTMLImageElement).src = `https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=60&w=400&auto=format`; }}
                                                             />
                                                             <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent" />
                                                             <span className="absolute bottom-2 left-3 text-white text-sm font-semibold drop-shadow">{place.name}</span>

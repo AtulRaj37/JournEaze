@@ -19,7 +19,7 @@ export class ImagesController {
     if (!this.unsplashKey) {
       // Return a high-quality fallback when no key is configured
       return {
-        imageUrl: `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&auto=format&fit=crop`,
+        imageUrl: `https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop`,
         source: 'fallback',
       };
     }
@@ -42,7 +42,7 @@ export class ImagesController {
       if (!res.ok) {
         console.error('Unsplash API error:', res.status, await res.text());
         return {
-          imageUrl: `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&auto=format&fit=crop`,
+          imageUrl: `https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop`,
           source: 'fallback',
         };
       }
@@ -58,13 +58,13 @@ export class ImagesController {
       }
 
       return {
-        imageUrl: `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&auto=format&fit=crop`,
+        imageUrl: `https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop`,
         source: 'fallback',
       };
     } catch (error) {
       console.error('Unsplash fetch error:', error);
       return {
-        imageUrl: `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1200&auto=format&fit=crop`,
+        imageUrl: `https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1200&auto=format&fit=crop`,
         source: 'fallback',
       };
     }
@@ -76,7 +76,7 @@ export class ImagesController {
     @Query('destination') destination: string,
     @Res() response: Response
   ) {
-    const fallbackImage = `https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=600&auto=format&fit=crop`;
+    const fallbackImage = `https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=600&auto=format&fit=crop`;
     
     if (!query || !this.unsplashKey) {
       return response.redirect(fallbackImage);

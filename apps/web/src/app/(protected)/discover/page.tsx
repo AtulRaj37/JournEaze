@@ -144,7 +144,7 @@ export default function DiscoverPage() {
                       src={trip.coverImage || `https://source.unsplash.com/800x600/?${encodeURIComponent(trip.destinationCity || trip.destination)}`}
                       alt={trip.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out opacity-80 group-hover:opacity-100"
-                      onError={(e: any) => { e.target.src = "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=800"; }}
+                      onError={(e: any) => { e.target.src = "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&q=80&w=800"; }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent" />
                     
