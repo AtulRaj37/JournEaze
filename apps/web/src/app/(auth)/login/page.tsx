@@ -67,19 +67,19 @@ export default function LoginPage() {
                     initial={{ scale: 1.05 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 1.5, ease: "easeOut" }}
-                    src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=2021&auto=format&fit=crop" 
+                    src="/login_bg.png" 
                     className="absolute inset-0 w-full h-full object-cover" 
                     alt="Scenic travel destination"
                 />
                 
                 {/* Floating UI Elements on Image */}
                 <div className="relative z-20 flex flex-col justify-between p-12 h-full w-full">
-                    <div className="flex items-center gap-3">
+                    <Link href="/" className="flex items-center gap-3 w-fit hover:opacity-90 transition-opacity">
                         <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20 shadow-2xl">
                             <Compass className="w-6 h-6 text-white" />
                         </div>
                         <span className="font-bold text-2xl tracking-tight text-white drop-shadow-md">JournEaze</span>
-                    </div>
+                    </Link>
 
                     <div className="max-w-md pb-12">
                         <motion.h1 
