@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Eye, EyeOff, Mail, ArrowLeft, ArrowRight, Compass } from "lucide-react";
+import { Loader2, Eye, EyeOff, Mail, ArrowLeft, ArrowRight } from "lucide-react";
 
 const GoogleIcon = () => (
     <svg viewBox="0 0 24 24" className="w-5 h-5 mr-3">
@@ -28,6 +29,11 @@ export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [authMethod, setAuthMethod] = useState<"initial" | "email">("initial");
+    const [bgImage, setBgImage] = useState("/login_bg.png");
+
+    useEffect(() => {
+        setBgImage(`https://images.unsplash.com/featured/1600x900/?travel,adventure,nature,landscape&sig=${Math.floor(Math.random() * 10000)}`);
+    }, []);
 
     const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -69,7 +75,7 @@ export default function RegisterPage() {
                     initial={{ scale: 1.05 }}
                     animate={{ scale: 1 }}
                     transition={{ duration: 1.5, ease: "easeOut" }}
-                    src="/login_bg.png" 
+                    src={bgImage} 
                     className="absolute inset-0 w-full h-full object-cover" 
                     alt="Breathtaking mountain lake view"
                 />
@@ -77,9 +83,13 @@ export default function RegisterPage() {
                 {/* Floating UI Elements on Image */}
                 <div className="relative z-20 flex flex-col justify-between p-12 h-full w-full">
                     <Link href="/" className="flex items-center gap-3 w-fit hover:opacity-90 transition-opacity">
-                        <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center backdrop-blur-md border border-white/20 shadow-2xl">
-                            <Compass className="w-6 h-6 text-white" />
-                        </div>
+                        <Image
+                            src="/logo/only-logo.png"
+                            alt="JournEaze Logo"
+                            width={40}
+                            height={40}
+                            className="object-contain"
+                        />
                         <span className="font-bold text-2xl tracking-tight text-white drop-shadow-md">JournEaze</span>
                     </Link>
 
