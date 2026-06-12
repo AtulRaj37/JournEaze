@@ -19,6 +19,17 @@ const GoogleIcon = () => (
     </svg>
 );
 
+const BACKGROUNDS = [
+    "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=1600&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1510312305653-8ed496efae75?q=80&w=1600&auto=format&fit=crop"
+];
+
 export default function LoginPage() {
     const router = useRouter();
     const [identifier, setIdentifier] = useState("");
@@ -27,10 +38,11 @@ export default function LoginPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [authMethod, setAuthMethod] = useState<"initial" | "email">("initial");
-    const [bgImage, setBgImage] = useState("/login_bg.png");
+    const [bgImage, setBgImage] = useState(BACKGROUNDS[0]);
 
     useEffect(() => {
-        setBgImage(`https://images.unsplash.com/featured/1600x900/?travel,adventure,nature,landscape&sig=${Math.floor(Math.random() * 10000)}`);
+        const randomBg = BACKGROUNDS[Math.floor(Math.random() * BACKGROUNDS.length)];
+        setBgImage(randomBg);
     }, []);
 
     const handleLogin = async (e: React.FormEvent) => {
